@@ -1,6 +1,13 @@
 #include <iostream>
 
+
+void squareNum(int* num) {
+    *num *= *num;
+}
+
 int main() {
-    std::cout << "Hello World" << std::endl;
+    int number = 5;
+    squareNum(&number);
+    std::cout << number << std::endl;
     return 0;
 }
