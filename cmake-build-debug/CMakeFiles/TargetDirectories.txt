@@ -1,3 +1,0 @@
-/home/jacob/Desktop/GameScout/GameScout/cmake-build-debug/CMakeFiles/GameScout.dir
-/home/jacob/Desktop/GameScout/GameScout/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jacob/Desktop/GameScout/GameScout/cmake-build-debug/CMakeFiles/rebuild_cache.dir
