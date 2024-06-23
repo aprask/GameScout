@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @release_date %>
+
+<div>
+  <%= link_to "Edit this release date", edit_release_date_path(@release_date) %> |
+  <%= link_to "Back to release dates", release_dates_path %>
+
+  <%= button_to "Destroy this release date", @release_date, method: :delete %>
+</div>

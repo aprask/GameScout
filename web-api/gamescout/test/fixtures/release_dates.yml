@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  human: MyString
+  platform: one
+  game: one
+
+two:
+  human: MyString
+  platform: two
+  game: two

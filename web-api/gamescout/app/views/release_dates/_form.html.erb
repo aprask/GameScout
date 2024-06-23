@@ -1,0 +1,32 @@
+<%= form_with(model: release_date) do |form| %>
+  <% if release_date.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(release_date.errors.count, "error") %> prohibited this release_date from being saved:</h2>
+
+      <ul>
+        <% release_date.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :human, style: "display: block" %>
+    <%= form.text_field :human %>
+  </div>
+
+  <div>
+    <%= form.label :platform_id, style: "display: block" %>
+    <%= form.text_field :platform_id %>
+  </div>
+
+  <div>
+    <%= form.label :game_id, style: "display: block" %>
+    <%= form.text_field :game_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

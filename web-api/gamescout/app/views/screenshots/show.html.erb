@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @screenshot %>
+
+<div>
+  <%= link_to "Edit this screenshot", edit_screenshot_path(@screenshot) %> |
+  <%= link_to "Back to screenshots", screenshots_path %>
+
+  <%= button_to "Destroy this screenshot", @screenshot, method: :delete %>
+</div>

@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Release dates</h1>
+
+<div id="release_dates">
+  <% @release_dates.each do |release_date| %>
+    <%= render release_date %>
+    <p>
+      <%= link_to "Show this release date", release_date %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New release date", new_release_date_path %>

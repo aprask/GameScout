@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Screenshots</h1>
+
+<div id="screenshots">
+  <% @screenshots.each do |screenshot| %>
+    <%= render screenshot %>
+    <p>
+      <%= link_to "Show this screenshot", screenshot %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New screenshot", new_screenshot_path %>

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  igdb_id: 1
+  name: MyString
+  summary: MyText
+  storyline: MyText
+  rating: 9.99
+  popularity: 9.99
+
+two:
+  igdb_id: 1
+  name: MyString
+  summary: MyText
+  storyline: MyText
+  rating: 9.99
+  popularity: 9.99
