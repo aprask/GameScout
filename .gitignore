@@ -1,3 +1,5 @@
 .idea/
 CMakeLists.txt
 cmake-build-debug/
+wii.csv
+cmake-build-debug-event-trace
