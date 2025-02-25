@@ -36,14 +36,14 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('game_id', 'integer', (col) => col.notNull())
     .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
-  //Profiel Table
+  //Profile Table
   await db.schema
     .createTable('profile')
     .addColumn('profile_id', 'serial', (col) => col.primaryKey())
     .addColumn('user_id', 'integer', (col) =>
       col.notNull().references('user.user_id').onUpdate('cascade').onDelete('cascade')
     )
-    .addColumn('profile_pic', 'varchar') //need to figure out how to store image
+    .addColumn('profile_pic', 'varchar', (col) => col.notNull()) //need to figure out how to store image
     .addColumn('profile_name', 'varchar(24)', (col) => col.notNull())
     .execute();
   //Follower Table
