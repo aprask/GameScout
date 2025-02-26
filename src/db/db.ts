@@ -2,8 +2,6 @@ import pg from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Database } from './types';
 
-console.log(process.env.POSTGRES_PASSWORD);
-
 const dialect = new PostgresDialect({
   pool: new pg.Pool({
     database: process.env.POSTGRES_DB,
