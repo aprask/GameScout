@@ -1,44 +1,43 @@
 import { ColumnType, Generated } from 'kysely';
+import { UUID } from 'crypto';
 
 export interface UserTable {
-  user_id: Generated<number>;
-  google_id: string;
-  email: string;
-  username: string;
-  hashed_password: string;
-  created_at: Generated<Date>;
+  user_id: Generated<UUID>;
+  google_id: ColumnType<string, string, undefined>;
+  email: ColumnType<string, string, undefined>;
+  created_at: Generated<ColumnType<Date, Date, undefined>>;
   updated_at: Date;
   last_login: Date;
   is_active: boolean;
 }
 
 export interface ReviewTable {
-  review_id: Generated<number>;
-  user_id: number;
-  game_id: number;
+  review_id: Generated<UUID>;
+  user_id: ColumnType<UUID, UUID, undefined>;
+  game_id: ColumnType<UUID, UUID, undefined>;
   rating: number;
   review: string | null;
-  created_at: Generated<Date>;
+  created_at: Generated<ColumnType<Date, Date, undefined>>;
 }
 
 export interface WishlistTable {
-  wishlist_id: Generated<number>;
-  user_id: number;
-  game_id: number;
+  wishlist_id: Generated<UUID>;
+  user_id: ColumnType<UUID, UUID, undefined>;
+  game_id: ColumnType<UUID, UUID, undefined>;
   created_at: Date;
 }
 
 export interface ProfileTable {
-  profile_id: Generated<number>;
-  user_id: number;
+  profile_id: Generated<UUID>;
+  user_id: ColumnType<UUID, UUID, undefined>;
   profile_pic: string;
   profile_name: string;
 }
 
 export interface FollowsTable {
-  follow_id: Generated<number>;
-  user_id_following: number;
-  user_id_follower: number;
+  follow_id: Generated<UUID>;
+  user_id_following: ColumnType<UUID, UUID, undefined>;
+  user_id_follower: ColumnType<UUID, UUID, undefined>;
   status: string;
   followed_time: Date;
 }

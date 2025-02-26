@@ -1,15 +1,20 @@
 import * as path from 'path';
-import { Pool } from 'pg';
+import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
-import { Kysely, Migrator, PostgresDialect, FileMigrationProvider } from 'kysely';
-import { db } from './db.js';
+import {Migrator, FileMigrationProvider } from 'kysely';
+import { db } from './db';
+
+// couldn't find a cleaner way to do this
+// path to file + we rm that path by getting its dir via .dirname, then we can append migrations to in FileMigrationProvider
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const migrator = new Migrator({
   db,
   provider: new FileMigrationProvider({
     fs,
     path,
-    migrationFolder: path.join(import.meta.dirname, 'migrations'),
+    migrationFolder: path.join(__dirname, 'migrations'), // Kept receiving an undefined error w/ path.join (Node v23)
   }),
 });
 
