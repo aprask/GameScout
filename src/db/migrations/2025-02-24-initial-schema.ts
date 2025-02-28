@@ -19,7 +19,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('user_id', 'uuid', (col) =>
       col.notNull().references('user.user_id').onUpdate('cascade').onDelete('cascade')
     )
-    .addColumn('game_id', 'uuid', (col) => col.notNull())
+    .addColumn('game_id', 'integer', (col) => col.notNull())
     .addColumn('rating', 'integer', (col) => col.notNull())
     .addColumn('review', 'text')
     .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
@@ -31,7 +31,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('user_id', 'uuid', (col) =>
       col.notNull().references('user.user_id').onUpdate('cascade').onDelete('cascade')
     )
-    .addColumn('game_id', 'uuid', (col) => col.notNull())
+    .addColumn('game_id', 'integer', (col) => col.notNull())
     .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
   //Profile Table

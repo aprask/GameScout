@@ -14,7 +14,7 @@ export interface UserTable {
 export interface ReviewTable {
   review_id: Generated<UUID>;
   user_id: ColumnType<UUID, UUID, undefined>;
-  game_id: ColumnType<UUID, UUID, undefined>;
+  game_id: ColumnType<number, number, undefined>;
   rating: number;
   review: string | null;
   created_at: Generated<ColumnType<Date, Date, undefined>>;
@@ -23,7 +23,7 @@ export interface ReviewTable {
 export interface WishlistTable {
   wishlist_id: Generated<UUID>;
   user_id: ColumnType<UUID, UUID, undefined>;
-  game_id: ColumnType<UUID, UUID, undefined>;
+  game_id: ColumnType<number, number, undefined>;
   created_at: Date;
 }
 
