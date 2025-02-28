@@ -9,4 +9,8 @@ export async function GET() {
 
 export async function POST() {
   await migrateToLatest();
+  return Response.json({
+    status: "ok",
+    message: "Made migration"
+  });
 }
