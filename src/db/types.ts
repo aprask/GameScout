@@ -1,43 +1,40 @@
-import { ColumnType, Generated } from 'kysely';
-import { UUID } from 'crypto';
-
 export interface UserTable {
-  user_id: Generated<UUID>;
-  google_id: ColumnType<string, string, undefined>;
-  email: ColumnType<string, string, undefined>;
-  created_at: Generated<ColumnType<Date, Date, undefined>>;
+  user_id: string;
+  google_id: string;
+  email: string;
+  created_at: Date;
   updated_at: Date;
   last_login: Date;
   is_active: boolean;
 }
 
 export interface ReviewTable {
-  review_id: Generated<UUID>;
-  user_id: ColumnType<UUID, UUID, undefined>;
-  game_id: ColumnType<number, number, undefined>;
+  review_id: string;
+  user_id: string;
+  game_id: number;
   rating: number;
   review: string | null;
-  created_at: Generated<ColumnType<Date, Date, undefined>>;
+  created_at: Date;
 }
 
 export interface WishlistTable {
-  wishlist_id: Generated<UUID>;
-  user_id: ColumnType<UUID, UUID, undefined>;
-  game_id: ColumnType<number, number, undefined>;
+  wishlist_id: string;
+  user_id: string;
+  game_id: number;
   created_at: Date;
 }
 
 export interface ProfileTable {
-  profile_id: Generated<UUID>;
-  user_id: ColumnType<UUID, UUID, undefined>;
+  profile_id: string;
+  user_id: string;
   profile_pic: string;
   profile_name: string;
 }
 
 export interface FollowsTable {
-  follow_id: Generated<UUID>;
-  user_id_following: ColumnType<UUID, UUID, undefined>;
-  user_id_follower: ColumnType<UUID, UUID, undefined>;
+  follow_id: string;
+  user_id_following: string;
+  user_id_follower: string;
   status: string;
   followed_time: Date;
 }
