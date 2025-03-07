@@ -1,13 +1,14 @@
 'use server';
 import * as userRepo from '@/app/api/core/repositories/user'
 import { UserTable } from '@/db/types';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate } from 'uuid';
 
 export async function getAllUsers(): Promise<UserTable[]> {
     return userRepo.getAllUsers();
 }
 
 export async function getUserById(id: string): Promise<UserTable> {
+    if (!validate(id)) throw new Error("Invalid ID type");
     return userRepo.getUserById(id);
 }
 
@@ -34,6 +35,7 @@ export async function createUser(google_id: string, email: string): Promise<User
 
 export async function updateUser(last_login: Date, is_active: boolean, id: string): Promise<UserTable> {
     let errorMessage = '';
+    if (!validate(id)) errorMessage += "Invalid ID type";
     if (!last_login) errorMessage += 'Missing last login date';
     if (is_active === undefined) errorMessage += 'Missing active status';
     if (errorMessage) {
@@ -44,5 +46,6 @@ export async function updateUser(last_login: Date, is_active: boolean, id: strin
 }
 
 export async function deleteUser(id: string): Promise<void> {
+    if (!validate(id)) throw new Error("Invalid ID type");
     return userRepo.deleteUser(id);
 }
