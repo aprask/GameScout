@@ -1,6 +1,6 @@
 'use server';
 import { db } from '@/db/db'
-import { UserTable } from '@/db/types';
+import { UserTable, ProfileTable } from '@/db/types';
 
 export async function getAllUsers(): Promise<UserTable[]> {
     return await db
@@ -17,21 +17,32 @@ export async function getUserById(id: string): Promise<UserTable> {
         .executeTakeFirstOrThrow();
 }
 
-export async function createUser(user: UserTable): Promise<UserTable> {
-    const newUser = await db
-        .insertInto('user')
-        .values({
-            user_id: user.user_id,
-            email: user.email,
-            google_id: user.google_id,
-            is_active: user.is_active,
-            last_login: user.last_login,
-            created_at: user.created_at,
-            updated_at: user.updated_at
-        })
-        .returningAll()
-        .executeTakeFirstOrThrow();
-    return newUser;
+export async function createUser(user: UserTable, profile: ProfileTable): Promise<UserTable> {
+    return await db.transaction().execute(async (t) => {
+        const createdUser: UserTable = await t
+            .insertInto('user')
+            .values({
+                user_id: user.user_id,
+                email: user.email,
+                google_id: user.google_id,
+                is_active: user.is_active,
+                last_login: user.last_login,
+                created_at: user.created_at,
+                updated_at: user.updated_at
+            })
+            .returningAll()
+            .executeTakeFirstOrThrow();
+        await t
+            .insertInto('profile')
+            .values({
+                profile_id: profile.profile_id,
+                user_id: profile.user_id,
+                profile_pic: profile.profile_pic,
+                profile_name: profile.profile_name
+            })
+            .executeTakeFirstOrThrow();
+        return createdUser;
+    })
 }
 
 export async function updateUser(last_login: Date, is_active: boolean, id: string): Promise<UserTable> {
