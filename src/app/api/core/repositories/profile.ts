@@ -13,43 +13,26 @@ export async function getProfileById(id: string): Promise<ProfileTable> {
     return await db
         .selectFrom('profile')
         .selectAll()
+        .where('profile.profile_id', '=', id)
         .executeTakeFirstOrThrow();
 }
 
-// export async function createUser(user: UserTable): Promise<UserTable> {
-//     const newUser = await db
-//         .insertInto('user')
-//         .values({
-//             user_id: user.user_id,
-//             email: user.email,
-//             google_id: user.google_id,
-//             is_active: user.is_active,
-//             last_login: user.last_login,
-//             created_at: user.created_at,
-//             updated_at: user.updated_at
-//         })
-//         .returningAll()
-//         .executeTakeFirstOrThrow();
-//     return newUser;
-// }
+export async function updateProfile(id: string, profilePicture: string, profileName: string): Promise<ProfileTable> {
+    const updatedProfile = await db
+        .updateTable('profile')
+        .set({
+            profile_pic: profilePicture,
+            profile_name: profileName
+        })
+        .where('profile.profile_id', '=', id)
+        .returningAll()
+        .executeTakeFirstOrThrow();
+    return updatedProfile;
+}
 
-// export async function updateUser(last_login: Date, is_active: boolean, id: string): Promise<UserTable> {
-//     const updatedUser = await db
-//         .updateTable('user')
-//         .set({
-//             last_login: last_login,
-//             is_active: is_active,
-//             updated_at: new Date()
-//         })
-//         .where('user.user_id', '=', id)
-//         .returningAll()
-//         .executeTakeFirstOrThrow();
-//     return updatedUser;
-// }
-
-// export async function deleteUser(id: string): Promise<void> {
-//     await db
-//         .deleteFrom('user')
-//         .where('user.user_id', '=', id)
-//         .executeTakeFirstOrThrow();
-// }
+export async function deleteProfile(id: string): Promise<void> {
+    await db
+        .deleteFrom('profile')
+        .where('profile.profile_id', '=', id)
+        .executeTakeFirstOrThrow();
+}

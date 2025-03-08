@@ -54,5 +54,5 @@ export async function updateUser(last_login: Date, is_active: boolean, id: strin
 
 export async function deleteUser(id: string): Promise<void> {
     if (!validate(id)) throw new Error("Invalid ID type");
-    return userRepo.deleteUser(id);
+    userRepo.deleteUser(id);
 }

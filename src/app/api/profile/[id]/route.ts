@@ -1,18 +1,18 @@
 'use server';
-import * as userService from '@/app/api/core/services/user';
+import * as profileService from '@/app/api/core/services/profile';
 
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url);
         const pathVars = url.pathname.split('/');
-        const userId = pathVars[pathVars.length-1];
-        if (!userId) {
-            throw new Error("User ID is required");
+        const profileId = pathVars[pathVars.length-1];
+        if (!profileId) {
+            throw new Error("Profile ID is required");
         }
-        const user = await userService.getUserById(userId);
+        const profile = await profileService.getProfileById(profileId);
         return Response.json({
             status: "ok",
-            user: user,
+            profile: profile,
         }, { status: 200 });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
@@ -30,16 +30,16 @@ export async function PUT(req: Request) {
     try {
         const url = new URL(req.url);
         const pathVars = url.pathname.split('/');
-        const userId = pathVars[pathVars.length-1];
-        if (!userId) {
+        const profileId = pathVars[pathVars.length-1];
+        if (!profileId) {
             throw new Error("User ID is required");
         }
         const body = await req.json();
-        const { last_login, is_active } = body;
-        const user = await userService.updateUser(last_login, is_active, userId);
+        const { profile_picture, profile_name } = body;
+        const profile = await profileService.updateProfile(profileId, profile_picture, profile_name);
         return Response.json({
             status: "ok",
-            user: user,
+            user: profile,
         }, { status: 200 });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
@@ -51,18 +51,19 @@ export async function PUT(req: Request) {
             }
         );
     }
+
 }
 
 export async function DELETE(req: Request) {
     try {
         const url = new URL(req.url);
         const pathVars = url.pathname.split('/');
-        const userId = pathVars[pathVars.length-1];
-        if (!userId) {
-            throw new Error("User ID is required");
+        const profileId = pathVars[pathVars.length-1];
+        if (!profileId) {
+            throw new Error("Profile ID is required");
         }
-        await userService.deleteUser(userId);
-        return Response.json({ status: 200 }); // for some reason using a 204 threw an error...
+        await profileService.deleteProfile(profileId);
+        return Response.json({ status: 200 });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
         return new Response(
