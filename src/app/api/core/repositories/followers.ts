@@ -11,7 +11,8 @@ export async function setFollowingStatus(follow: FollowsTable): Promise<FollowsT
                 user_id_following: follow.user_id_following,
                 user_id_follower: follow.user_id_follower,
                 status: follow.status,
-                followed_time: follow.followed_time
+                followed_time: follow.followed_time,
+                last_visit: new Date()
             })
             .returningAll()
             .executeTakeFirstOrThrow();
