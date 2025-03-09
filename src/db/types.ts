@@ -46,3 +46,11 @@ export interface Database {
   profile: ProfileTable;
   follows: FollowsTable;
 }
+
+// ADDITIONAL MODELS (do not persist)
+
+export interface FollowerProfile {
+  profile_name: string;
+  profile_pic: string;
+  profile_id: string;
+};

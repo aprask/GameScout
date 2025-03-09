@@ -22,9 +22,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json()
+        const body = await req.json();
         const {email, google_id} = body;
-        const user = await userService.createUser(email, google_id);
+        const user = await userService.createUser(google_id, email);
         return Response.json({
             status: "created",
             user: user,
