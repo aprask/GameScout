@@ -19,7 +19,8 @@ export async function createFollowingRelationship(following: string, follower: s
         user_id_following: following,
         user_id_follower: follower,
         status: status,
-        followed_time: new Date()
+        followed_time: new Date(),
+        last_visit: new Date()
     }
     return followsRepo.setFollowingStatus(followingStatus);
 }

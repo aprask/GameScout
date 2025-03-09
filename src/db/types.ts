@@ -37,6 +37,7 @@ export interface FollowsTable {
   user_id_follower: string;
   status: string;
   followed_time: Date;
+  last_visit: Date;
 }
 
 export interface Database {
