@@ -1,3 +1,4 @@
+'use server';
 import { migrateToLatest } from '../../../db/migrates';
 
 export async function GET() {
