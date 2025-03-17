@@ -5,15 +5,15 @@ export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
     const pathVars = url.pathname.split("/");
-    const reviewId = +pathVars[pathVars.length - 1];
-    if (!reviewId) {
-      throw new Error("Review ID is required");
+    const gameId = +pathVars[pathVars.length - 1];
+    if (!gameId) {
+      throw new Error("Game ID is required");
     }
-    const review = await reviewService.getReviewsByGameId(reviewId);
+    const reviews = await reviewService.getReviewsByGameId(gameId);
     return Response.json(
       {
         status: "ok",
-        review: review,
+        review: reviews,
       },
       { status: 200 }
     );
