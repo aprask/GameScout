@@ -11,6 +11,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await stopTestServer();
+  console
 });
 
 describe("GET /api/health", () => {

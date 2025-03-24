@@ -11,13 +11,13 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await stopTestServer();
+  console.log("User test has ended");
 });
 
-describe("GET /api/users", () => {
+describe("GET /api/users", async () => {
   it("should return an empty array because no users have been created", async () => {
     const response = await request(serverUrl).get("/api/user");
     expect(response.body).toEqual({ status: "ok", users: [] });
-
     expect(response.status).toBe(200);
   });
 });
