@@ -1,7 +1,6 @@
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import React from 'react';
 
 function NavBar() {
     return (
