@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import VError from 'verror';
+import { migrateToLatest } from '../src/db/migrate.js';
 
 export const app = express();
 app.use(express.json());
@@ -16,5 +17,6 @@ const PORT = process.env.PORT ?? 3000;
 if (process.env.APP_ENV !== 'test') {
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
+        migrateToLatest();
     });
 }
