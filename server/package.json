@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "APP_ENV=development NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
+    "build": "tsc",
+    "testAb": "APP_ENV=test tsx --test ./test/*.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@types/node": "^22.13.14",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.1",
+    "@types/verror": "^1.10.11",
+    "express": "^4.21.2",
+    "kysely": "^0.27.6",
+    "verror": "^1.10.1"
+  }
+}
