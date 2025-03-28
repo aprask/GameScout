@@ -1,9 +1,10 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import VError from 'verror';
 
 export const app = express();
 app.use(express.json());
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     const info = VError.info(err);
     console.log(err);
