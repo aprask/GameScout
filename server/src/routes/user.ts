@@ -1,7 +1,10 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import * as userService from "../service/user.js";
+import { authMiddleware } from '../middleware/auth.js';
+
+router.use(authMiddleware as RequestHandler);
 
 router.get('/', asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();

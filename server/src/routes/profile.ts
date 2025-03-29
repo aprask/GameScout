@@ -1,7 +1,10 @@
-import express from 'express';
 const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import * as profileService from '../service/profile.js';
+import { authMiddleware } from '../middleware/auth.js';
+import express, { RequestHandler } from 'express';
+
+router.use(authMiddleware as RequestHandler);
 
 router.get('/', asyncHandler(async (req, res) => {
     const profiles = await profileService.getAllProfiles();

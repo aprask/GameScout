@@ -1,6 +1,9 @@
-import express from 'express';
 const router = express.Router();
 import asyncHandler from 'express-async-handler';
+import { authMiddleware } from '../middleware/auth.js';
+import express, { RequestHandler } from 'express';
+
+router.use(authMiddleware as RequestHandler);
 
 import * as articleService from '../service/articles.js';
 import * as commentService from '../service/article_comments.js';

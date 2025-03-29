@@ -1,8 +1,11 @@
-import express from 'express';
 const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import { v4 as uuidv4 } from "uuid";
 import * as adminService from "../service/admin.js";
+import { authMiddleware } from '../middleware/auth.js';
+import express, { RequestHandler } from 'express';
+
+router.use(authMiddleware as RequestHandler);
 
 router.get('/', asyncHandler(async (req, res) => {
     const admins = await adminService.getAllAdmins();
