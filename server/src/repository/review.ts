@@ -62,3 +62,14 @@ export async function deleteReview(review_id: string): Promise<void> {
         .where("review_id", "=", review_id)
         .executeTakeFirstOrThrow();
 }
+
+export async function verifyReviewOwnership(user_id: string, review_id: string): Promise<boolean> {
+    const review = await db
+        .selectFrom('review')
+        .selectAll()
+        .where('review_id', '=', review_id)
+        .where('user_id', '=', user_id)
+        .executeTakeFirst();
+    if (!review) return false;
+    return true;
+}

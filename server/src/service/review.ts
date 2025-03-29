@@ -1,5 +1,6 @@
 import { ReviewTable } from "../data/models/models.js";
 import * as reviewRepo from "../repository/review.js";
+import * as adminRepo from "../repository/admin.js";
 import { throwErrorException } from "../util/error.js";
 import { v4 as uuidv4, validate } from "uuid";
 
@@ -59,7 +60,17 @@ export async function updateReview(review_id: string, user_id: string, game_id: 
     return reviewRepo.updateReview(review_id, updatedReview);
 }
 
-export async function deleteReview(review_id: string): Promise<void> {
+export async function deleteReview(review_id: string, user_id: string | null, admin_id: string | null): Promise<void> {
     if (!validate(review_id)) throwErrorException(`[service.review.deleteReview] Invalid UUID: ${review_id}`, 'Invalid review ID', 400);
-    return reviewRepo.deleteReview(review_id);
+    if (admin_id) {
+        if (!validate(admin_id)) throwErrorException(`[service.review.deleteReview] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+        if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.review.deleteReview] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 403);
+        else reviewRepo.deleteReview(review_id);
+    }
+    else if (user_id) {
+        if (!validate(user_id)) throwErrorException(`[service.review.deleteReview] Invalid UUID: ${user_id}`, 'Invalid User ID', 400);
+        if (!(await reviewRepo.verifyReviewOwnership(user_id, review_id))) throwErrorException(`[service.review.deleteReview] User does not own review: ${review_id}`, 'User ID and Review ID mismatch', 403);
+        else reviewRepo.deleteReview(review_id);
+    }
+    else throwErrorException(`[service.review.deleteReview] No valid ID providded`, 'Cannot delete review', 403);
 }

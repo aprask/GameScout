@@ -21,7 +21,7 @@ router.post('/', asyncHandler(async (req, res) => {
 
 router.put('/:user_id', asyncHandler(async (req, res) => {
     const { email, password, is_active, is_banned, last_login } = req.body;
-    const updatedUser = await userService.updateUser(req.params.user_id, email, password, is_active, is_banned, last_login);
+    const updatedUser = await userService.updateUser(req.params.user_id, email, password, is_active, is_banned, new Date(last_login));
     res.status(200).json({updated_user: updatedUser});
 }));
 

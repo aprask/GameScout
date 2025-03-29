@@ -1,0 +1,49 @@
+import express from 'express';
+const router = express.Router();
+import asyncHandler from 'express-async-handler';
+import * as followsService from '../service/follows.js';
+
+router.get('/', asyncHandler(async (req, res) => {
+    const follows = await followsService.getAllFollows();
+    res.status(200).json({ follows });
+}));
+
+router.get('/:follow_id', asyncHandler(async (req, res) => {
+    const follow = await followsService.getFollowById(req.params.follow_id);
+    res.status(200).json({ follow });
+}));
+
+router.post('/', asyncHandler(async (req, res) => {
+    const { user_id_following, user_id_follower, status, followed_time } = req.body;
+    const newFollow = await followsService.createFollow(user_id_following, user_id_follower, status, followed_time);
+    res.status(201).json({ new_follow: newFollow });
+}));
+
+router.put('/:follow_id', asyncHandler(async (req, res) => {
+    const { user_id_following, user_id_follower, status, followed_time } = req.body;
+
+    const updatedFollow = await followsService.updateFollow(
+        req.params.follow_id,
+        user_id_following,
+        user_id_follower,
+        status,
+        new Date(followed_time)
+    );
+
+    res.status(200).json({ updated_follow: updatedFollow });
+}));
+
+router.delete('/:follow_id', asyncHandler(async (req, res) => {
+    const { follow_id } = req.params;
+
+    let admin_id: string | null = null;
+    let user_id: string | null = null;
+    if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
+    if (typeof req.query.user_id === 'string') user_id = req.query.user_id;
+
+    await followsService.deleteFollow(follow_id, user_id, admin_id);
+    res.sendStatus(204);
+}));
+
+
+export default router;

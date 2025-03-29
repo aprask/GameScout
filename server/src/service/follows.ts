@@ -1,6 +1,7 @@
 import { FollowsTable } from "../data/models/models.js";
 import * as followsRepo from "../repository/follows.js";
 import { throwErrorException } from "../util/error.js";
+import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
 
 export function getAllFollows(): Promise<FollowsTable[]> {
@@ -70,7 +71,18 @@ export async function updateFollow(
     return followsRepo.updateFollow(follow_id, updatedFollow);
 }
 
-export async function deleteFollow(follow_id: string): Promise<void> {
-    if (!validate(follow_id)) throwErrorException(`[service.follows.deleteFollow] Invalid UUID: ${follow_id}`, 'Invalid follow ID', 400);
-    return followsRepo.deleteFollow(follow_id);
+export async function deleteFollow(follow_id: string, user_id: string | null, admin_id: string | null): Promise<void> {
+    if ((admin_id || user_id) && follow_id) {
+        if (admin_id) {
+            if (!validate(admin_id)) throwErrorException(`[service.follows.deleteFollow] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+            if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.follows.deleteFollow] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
+        } else if (user_id) {
+            if (!validate(user_id)) throwErrorException(`[service.follows.deleteFollow] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+        }
+
+        if (!validate(follow_id)) throwErrorException(`[service.follows.deleteFollow] Invalid UUID: ${follow_id}`, 'Invalid follow ID', 400);
+        else await followsRepo.deleteFollow(follow_id);
+    }
+    else throwErrorException(`[service.follows.deleteFollow] No valid ID provided`, 'Cannot delete follow', 403);
 }
+
