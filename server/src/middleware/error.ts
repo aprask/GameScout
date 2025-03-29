@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import VError from 'verror';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
-    const info = VError.info(err);
-    res.status(info?.statusCode ?? 500).json({ error: info?.response ?? 'Internal Server Error' });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+export function errorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
+    const statusCode = err.statusCode ?? 500;
+    const message = err.response ?? 'Internal Server Error';
+    res.status(statusCode).json({ error: message });
 }
