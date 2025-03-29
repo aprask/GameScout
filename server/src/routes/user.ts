@@ -32,7 +32,7 @@ router.delete('/:user_id', asyncHandler(async (req, res) => {
     if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
     if (typeof req.query.client_secret === 'string') client_secret = req.query.client_secret;
     await userService.deleteUser(user_id, admin_id, client_secret);
-    res.status(204);
+    res.sendStatus(204);
 }));
 
 export default router;

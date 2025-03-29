@@ -18,10 +18,10 @@ export async function verifyJWT(token: string): Promise<boolean> {
     return false;
 }
 
-export async function signJWT(userId: string, email: string): Promise<string | undefined> {
+export async function signJWT(email: string): Promise<string | undefined> {
     try {
         const private_key = await fs.readFile('./keys/private_key.pem', "utf-8");
-        const token = jwt.sign({ sub: userId, email: email }, private_key, { expiresIn: '24h' })
+        const token = jwt.sign({ email: email }, private_key, { expiresIn: '24h' })
         return token;
     } catch (error) {
         throwErrorException(`[server.src.utils.token.signJWT] error signing token`, (error as Error).message, 401);

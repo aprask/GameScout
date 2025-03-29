@@ -2,6 +2,9 @@ import { AdminTable } from "../data/models/models.js";
 import * as adminRepo from "../repository/admin.js";
 import { throwErrorException } from "../util/error.js";
 import { v4 as uuidv4, validate } from "uuid";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export function getAllAdmins(): Promise<AdminTable[]> {
     return adminRepo.getAllAdmins();
@@ -50,7 +53,8 @@ export async function updateAdmin(admin_id: string, admin_key: string | null): P
     return adminRepo.updateAdmin(admin_id, updatedAdmin);
 }
 
-export async function deleteAdmin(admin_id: string): Promise<void> {
+export async function deleteAdmin(admin_id: string, admin_secret: string): Promise<void> {
     if (!validate(admin_id)) throwErrorException(`[service.admin.deleteAdmin] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+    if (admin_secret !== process.env.ADMIN_SECRET) throwErrorException(`[service.admin.deleteAdmin] Invalid Admin Secret`, 'Invalid admin secret', 403);
     return adminRepo.deleteAdmin(admin_id);
 }

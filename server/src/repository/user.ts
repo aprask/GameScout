@@ -10,6 +10,16 @@ export async function getAllUsers(): Promise<UserTable[]> {
     if (users === undefined) throwErrorException(`[repository.user.getAllUsers] cannot get users`, 'Users is undefined', 404);
     return users; 
   }
+
+  export async function getUserByEmail(email: string): Promise<UserTable> {
+    const user = await db
+      .selectFrom('user')
+      .selectAll()
+      .where('email', '=', email)
+      .executeTakeFirst();
+    if (!user) throwErrorException(`[repository.user.getUserByEmail] cannot get user`, 'Cannot find user from email', 404);
+    return user!;
+  }
   
   export async function getUserById(id: string): Promise<UserTable> {
     const user = await db

@@ -27,7 +27,7 @@ export async function createUser(email: string, password: string): Promise<UserT
     }
     const currentDate = new Date();
     const user_id = uuidv4();
-    const token = await signJWT(user_id, email);
+    const token = await signJWT(email);
     if (token === undefined) throwErrorException(`[service.user.createUser] Invalid token parameters`, 'Cannot create token', 400);
     const hashedPassword = await hashPassword(password);
     if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
