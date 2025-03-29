@@ -11,6 +11,26 @@ export async function getAllArticles(): Promise<ArticleTable[]> {
     return articles;
 }
 
+export async function getArticlesByUserId(user_id: string): Promise<ArticleTable[]> {
+    const articles = await db
+        .selectFrom('articles')
+        .selectAll()
+        .execute();
+    if (articles === undefined) throwErrorException(`[repository.article.getArticlesByUserId] cannot get articles from user ID ${user_id}`, 'Articles is undefined', 404);
+    return articles;
+}
+
+export async function verifyArticleOwnership(user_id: string, article_id: string): Promise<boolean> {
+    const article = await db
+        .selectFrom('articles')
+        .selectAll()
+        .where('articles.article_id', '=', article_id)
+        .where('articles.article_owner', '=', user_id)
+        .executeTakeFirst();
+    if (!article) return false;
+    return true;
+}
+
 export async function getArticleById(article_id: string): Promise<ArticleTable> {
     const article = await db
         .selectFrom("articles")

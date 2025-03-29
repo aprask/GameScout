@@ -1,11 +1,13 @@
 import express from 'express'
 import { migrateToLatest } from '../src/data/migrate.js';
 import { errorMiddleware } from './middleware/error.js';
+import healthRouter from './routes/health.js';
 
 export const app = express();
 
 app.use(express.json());
 app.use(errorMiddleware);
+app.use('/api/v1/health', healthRouter)
 
 const PORT = process.env.PORT ?? 3000;
 

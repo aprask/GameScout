@@ -1,5 +1,6 @@
 import { ArticleCommentTable } from "../data/models/models.js";
 import * as commentRepo from "../repository/article_comments.js";
+import * as adminRepo from "../repository/admin.js";
 import { throwErrorException } from "../util/error.js";
 import { v4 as uuidv4, validate } from "uuid";
 
@@ -62,7 +63,17 @@ export async function updateComment(
     return commentRepo.updateComment(comment_id, updatedComment);
 }
 
-export async function deleteComment(comment_id: string): Promise<void> {
+export async function deleteComment(comment_id: string, comment_owner: string | null, admin_id: string | null): Promise<void> {
     if (!validate(comment_id)) throwErrorException(`[service.articleComment.deleteComment] Invalid UUID: ${comment_id}`, 'Invalid comment ID', 400);
-    return commentRepo.deleteComment(comment_id);
+    if (admin_id) {
+        if (!validate(admin_id)) throwErrorException(`[service.articleComment.deleteComment] Invalid UUID: ${comment_id}`, 'Invalid admin ID', 400);
+        if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.articleComment.deleteComment] Admin ID invalid: ${admin_id}`, 'Admin ID is invalid', 403);
+        else commentRepo.deleteComment(comment_id);
+    }
+    else if (comment_owner) {
+        if (!validate(comment_owner)) throwErrorException(`[service.articleComment.deleteComment] Invalid UUID: ${comment_id}`, 'Invalid User ID', 400);
+        if (!(await commentRepo.verifyCommentOwnership(comment_owner, comment_id))) throwErrorException(`[service.articleComment.deleteComment] User does not own comment: ${comment_id}`, 'User ID and Comment ID mismatch', 403);
+        else commentRepo.deleteComment(comment_id);
+    }
+    else throwErrorException(`[service.articleComment.deleteComment] No valid ID providded`, 'Cannot delete article', 403);
 }

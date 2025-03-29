@@ -1,5 +1,6 @@
 import { ArticleTable } from "../data/models/models.js";
 import * as articleRepo from "../repository/articles.js";
+import * as adminRepo from "../repository/admin.js";
 import { throwErrorException } from "../util/error.js";
 import { v4 as uuidv4, validate } from "uuid";
 
@@ -54,7 +55,17 @@ export async function updateArticle(article_id: string, article_title: string, a
     return articleRepo.updateArticle(article_id, updatedArticle);
 }
 
-export async function deleteArticle(article_id: string): Promise<void> {
+export async function deleteArticle(article_id: string, article_owner: string | null, admin_id: string | null): Promise<void> {
     if (!validate(article_id)) throwErrorException(`[service.articles.deleteArticle] Invalid UUID: ${article_id}`, 'Invalid article ID', 400);
-    return articleRepo.deleteArticle(article_id);
+    if (admin_id) {
+        if (!validate(admin_id)) throwErrorException(`[service.articles.deleteArticle] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+        if (!(await adminRepo.getAdminById(admin_id!))) throwErrorException(`[service.articles.deleteArticle] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 403);
+        else articleRepo.deleteArticle(article_id);
+    }
+    else if (article_owner) {
+        if (!validate(article_owner)) throwErrorException(`[service.articles.deleteArticle] Invalid UUID: ${article_owner}`, 'Invalid User ID', 400);
+        if (!(await articleRepo.verifyArticleOwnership(article_owner, article_id))) throwErrorException(`[service.articles.deleteArticle] User does not own article: ${article_id}`, 'User ID and Article ID mismatch', 403);
+        else articleRepo.deleteArticle(article_id);
+    }
+    else throwErrorException(`[service.articles.deleteArticle] No valid ID providded`, 'Cannot delete article', 403);
 }

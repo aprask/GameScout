@@ -12,6 +12,27 @@ export async function getAllCommentsByArticleId(id: string): Promise<ArticleComm
     return comments;
 }
 
+export async function getCommentsByUserId(user_id: string): Promise<ArticleCommentTable[]> {
+    const comments = await db
+        .selectFrom('article_comments')
+        .selectAll()
+        .where('article_comments.comment_owner', '=', user_id)
+        .execute();
+    if (comments === undefined) throwErrorException(`[repository.article_comments.getCommentsByUserId] cannot get comments`, 'Comments is undefined', 404);
+    return comments;
+}
+
+export async function verifyCommentOwnership(user_id: string, comment_id: string): Promise<boolean> {
+    const comment = await db
+        .selectFrom('article_comments')
+        .selectAll()
+        .where('article_comments.comment_id', '=', comment_id)
+        .where('article_comments.comment_owner', '=', user_id)
+        .executeTakeFirst();
+    if (!comment) return false;
+    return true;
+}
+
 export async function getCommentByCommentId(id: string): Promise<ArticleCommentTable> {
     const comment = await db
         .selectFrom('article_comments')
