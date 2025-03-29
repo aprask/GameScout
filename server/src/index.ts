@@ -1,16 +1,11 @@
-import express, { NextFunction, Request, Response } from 'express';
-import VError from 'verror';
-import { migrateToLatest } from '../src/db/migrate.js';
+import express from 'express'
+import { migrateToLatest } from '../src/data/migrate.js';
+import { errorMiddleware } from './middleware/error.js';
 
 export const app = express();
-app.use(express.json());
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    const info = VError.info(err);
-    console.log(err);
-    res.status(info?.statusCode ?? 500).json({ error: info?.response ?? 'Internal Server Error' });
-});
+app.use(express.json());
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT ?? 3000;
 

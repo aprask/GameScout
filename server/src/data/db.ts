@@ -8,7 +8,7 @@ dotenv.config();
 const dialect = new PostgresDialect({
     pool: new pg.Pool({
         database: process.env.POSTGRES_DB,
-        host: "localhost",
+        host: process.env.DEV_HOST,
         user: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         port: 5432,
