@@ -57,8 +57,7 @@ export async function updateArticle(article_id: string, article_title: string, a
 
 export async function deleteArticle(article_id: string, article_owner: string | null, admin_id: string | null): Promise<void> {
     if (!validate(article_id)) throwErrorException(`[service.articles.deleteArticle] Invalid UUID: ${article_id}`, 'Invalid article ID', 400);
-    if (admin_id) {
-        if (!validate(admin_id)) throwErrorException(`[service.articles.deleteArticle] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+    if (admin_id && validate(admin_id)) {
         if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.articles.deleteArticle] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 403);
         else articleRepo.deleteArticle(article_id);
     }

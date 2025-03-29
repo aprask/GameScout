@@ -32,6 +32,7 @@ export async function createGame(
         if (!company) errorMessage += "Company not given";
         if (!release_date) errorMessage += "Release date not given";
         if (!age_rating) errorMessage += "Age rating not given";
+        if (!game_art) errorMessage += "Game art not given"
         if (errorMessage) {
             errorMessage.trim();
             throwErrorException(`[service.game.createGame] ${errorMessage}`, 'Cannot create game', 400);

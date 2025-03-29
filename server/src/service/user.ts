@@ -94,8 +94,7 @@ export async function updateUser(user_id: string, email: string, password: strin
 }
 
 export async function deleteUser(user_id: string | null, admin_id: string | null, client_secret: string | null): Promise<void> {
-    if (admin_id) {
-        if (!validate(admin_id)) throwErrorException(`[service.user.deleteUser] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
+    if (admin_id && validate(admin_id)) {
         if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.user.deleteUser] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
         if (user_id && validate(user_id)) userRepo.deleteUser(user_id);
     }

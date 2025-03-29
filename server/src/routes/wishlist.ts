@@ -14,12 +14,12 @@ router.get('/:wishlist_id', asyncHandler(async (req, res) => {
 }));
 
 router.post('/', asyncHandler(async (req, res) => {
-    const { user_id, game_id } = req.body;
-    let admin_id: string = "";
-    if (typeof req.query.admin_id === 'string') {
-        admin_id = req.query.admin_id;
+    const { game_id } = req.body;
+    let owner_id: string = "";
+    if (typeof req.query.owner_id === 'string') {
+        owner_id = req.query.owner_id;
     }
-    const newWishlist = await wishlistService.createWishlist(user_id, game_id, admin_id);
+    const newWishlist = await wishlistService.createWishlist(owner_id, game_id, owner_id);
     res.status(201).json({ new_wishlist: newWishlist });
 }));
 

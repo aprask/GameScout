@@ -13,18 +13,13 @@ export async function getWishlistById(wishlist_id: string): Promise<WishlistTabl
     return wishlistRepo.getWishlistById(wishlist_id);
 }
 
-export async function createWishlist(user_id: string, game_id: string, admin_id: string): Promise<WishlistTable> {
-    if (!admin_id) {
+export async function createWishlist(user_id: string, game_id: string, owner_id: string): Promise<WishlistTable> {
+    if (!owner_id) {
         throwErrorException(`[service.wishlist.createWishlist] No valid ID provided`, 'Cannot create wishlist', 403);
     }
 
-    if (!validate(admin_id)) {
-        throwErrorException(`[service.wishlist.createWishlist] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
-    }
-
-    const admin = await adminRepo.getAdminById(admin_id);
-    if (!admin) {
-        throwErrorException(`[service.wishlist.createWishlist] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
+    if (!validate(owner_id)) {
+        throwErrorException(`[service.wishlist.createWishlist] Invalid UUID: ${owner_id}`, 'Invalid owner ID', 400);
     }
 
     let errorMessage = '';

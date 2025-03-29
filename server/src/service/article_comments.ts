@@ -65,8 +65,7 @@ export async function updateComment(
 
 export async function deleteComment(comment_id: string, comment_owner: string | null, admin_id: string | null): Promise<void> {
     if (!validate(comment_id)) throwErrorException(`[service.articleComment.deleteComment] Invalid UUID: ${comment_id}`, 'Invalid comment ID', 400);
-    if (admin_id) {
-        if (!validate(admin_id)) throwErrorException(`[service.articleComment.deleteComment] Invalid UUID: ${comment_id}`, 'Invalid admin ID', 400);
+    if (admin_id && validate(admin_id)) {
         if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.articleComment.deleteComment] Admin ID invalid: ${admin_id}`, 'Admin ID is invalid', 403);
         else commentRepo.deleteComment(comment_id);
     }
