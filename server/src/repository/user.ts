@@ -74,3 +74,11 @@ export async function getAllUsers(): Promise<UserTable[]> {
     return !!user;
   }
   
+  export async function checkUserEmail(email: string): Promise<boolean> {
+    const user = await db
+        .selectFrom('user')
+        .selectAll()
+        .where('user.email', '=', email)
+        .executeTakeFirst();
+    return !!user;
+  }

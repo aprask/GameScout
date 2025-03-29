@@ -39,7 +39,7 @@ export async function createComment(comment: ArticleCommentTable): Promise<Artic
     return newComment!;
 }
 
-export async function updateComment(comment: Omit<ArticleCommentTable, 'comment_id' | 'created_at' | 'updated_at'>): Promise<ArticleCommentTable> {
+export async function updateComment(comment_id: string, comment: Omit<ArticleCommentTable, 'comment_id' | 'created_at' | 'updated_at'>): Promise<ArticleCommentTable> {
     const updatedComment = await db
         .updateTable('article_comments')
         .set({
@@ -48,6 +48,7 @@ export async function updateComment(comment: Omit<ArticleCommentTable, 'comment_
             comment_content: comment.comment_content,
             updated_at: new Date()  
         })
+        .where('article_comments.comment_id', '=', comment_id)
         .returningAll()
         .executeTakeFirst();
     if (!updatedComment || updatedComment === undefined) throwErrorException(`[repository.article_comments.updateComment] cannot update comment`, 'Cannot update comment', 500);

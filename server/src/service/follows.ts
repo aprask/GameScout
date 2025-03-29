@@ -1,0 +1,76 @@
+import { FollowsTable } from "../data/models/models.js";
+import * as followsRepo from "../repository/follows.js";
+import { throwErrorException } from "../util/error.js";
+import { v4 as uuidv4, validate } from "uuid";
+
+export function getAllFollows(): Promise<FollowsTable[]> {
+    return followsRepo.getAllFollows();
+}
+
+export async function getFollowById(follow_id: string): Promise<FollowsTable> {
+    if (!validate(follow_id)) throwErrorException(`[service.follows.getFollowById] Invalid UUID: ${follow_id}`, 'Invalid follow ID', 400);
+    return followsRepo.getFollowById(follow_id);
+}
+
+export async function createFollow(
+    user_id_following: string,
+    user_id_follower: string,
+    status: string,
+    followed_time: Date
+): Promise<FollowsTable> {
+    let errorMessage = '';
+    if (!user_id_following) errorMessage += "Following user ID not given";
+    if (!user_id_follower) errorMessage += "Follower user ID not given";
+    if (!validate(user_id_following)) errorMessage += "Following user ID is invalid";
+    if (!validate(user_id_follower)) errorMessage += "Follower user ID is invalid";
+    if (!status) errorMessage += "Follow status not given";
+    if (!followed_time) errorMessage += "Followed time not given";
+    if (errorMessage) {
+        errorMessage.trim();
+        throwErrorException(`[service.follows.createFollow] ${errorMessage}`, 'Cannot create follow', 400);
+    }
+
+    const currentDate = new Date();
+    const newFollow: FollowsTable = {
+        follow_id: uuidv4(),
+        user_id_following,
+        user_id_follower,
+        status,
+        followed_time,
+        created_at: currentDate,
+        updated_at: currentDate
+    };
+
+    return followsRepo.createFollow(newFollow);
+}
+
+export async function updateFollow(
+    follow_id: string,
+    user_id_following: string,
+    user_id_follower: string,
+    status: string,
+    followed_time: Date
+): Promise<FollowsTable> {
+    let errorMessage = '';
+    if (!follow_id) errorMessage += "Follow ID not given";
+    if (!validate(follow_id)) errorMessage += "Follow ID is invalid";
+    if (errorMessage) {
+        errorMessage.trim();
+        throwErrorException(`[service.follows.updateFollow] ${errorMessage}`, 'Cannot update follow', 400);
+    }
+
+    const currentFollow = await followsRepo.getFollowById(follow_id);
+    const updatedFollow: Omit<FollowsTable, 'follow_id' | 'created_at' | 'updated_at'> = {
+        user_id_following: user_id_following ?? currentFollow.user_id_following,
+        user_id_follower: user_id_follower ?? currentFollow.user_id_follower,
+        status: status ?? currentFollow.status,
+        followed_time: followed_time ?? currentFollow.followed_time
+    };
+
+    return followsRepo.updateFollow(follow_id, updatedFollow);
+}
+
+export async function deleteFollow(follow_id: string): Promise<void> {
+    if (!validate(follow_id)) throwErrorException(`[service.follows.deleteFollow] Invalid UUID: ${follow_id}`, 'Invalid follow ID', 400);
+    return followsRepo.deleteFollow(follow_id);
+}

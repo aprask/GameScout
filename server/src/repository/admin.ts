@@ -37,11 +37,10 @@ export async function createAdmin(admin: AdminTable): Promise<AdminTable> {
     return newAdmin!;
 }
 
-export async function updateAdmin(admin_id: string, admin: Omit<AdminTable, 'admin_id' | 'created_at' | 'updated_at'>): Promise<AdminTable> {
+export async function updateAdmin(admin_id: string, admin: Omit<AdminTable, 'user_id' | 'admin_id' | 'created_at' | 'updated_at'>): Promise<AdminTable> {
     const updatedAdmin = await db
         .updateTable("admin")
         .set({
-            user_id: admin.user_id,
             admin_key: admin.admin_key,
             updated_at: new Date()
         })
