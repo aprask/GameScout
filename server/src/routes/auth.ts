@@ -14,10 +14,13 @@ router.post('/login', asyncHandler(async (req, res) => {
     const emailAndPasswordMatch = await authService.verifyEmailAndPasswordCombination(email, password);
     if (!emailAndPasswordMatch) res.status(401).json({message: "Invalid Password and Email Combination"});
     else {
-        const { token } = await authService.getTokenByEmail(email);
-        const isTokenValid = await verifyJWT(token);
-        if (isTokenValid) res.status(200).json({message: "Welcome to Gamescout!"});
-        else res.sendStatus(401);
+        const token = req.headers['authorization'];
+        if (typeof token === 'string') {
+            const isTokenValid = await verifyJWT(token);
+            if (isTokenValid) res.status(200).json({message: "Welcome to Gamescout!"});
+            else res.status(400).json({message: "Invalid headers"});
+        }
+        else res.status(401).json({message: "Invalid credentials"});
     }
 }));
 

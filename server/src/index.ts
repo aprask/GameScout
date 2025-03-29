@@ -13,6 +13,7 @@ import followRouter from './routes/follows.js';
 import articlesRouter from './routes/articles.js';
 import wishlistRouter from './routes/wishlist.js';
 import profileRouter from './routes/profile.js';
+import authRouter from './routes/auth.js';
 
 export const app = express();
 
@@ -29,6 +30,8 @@ app.use('/api/v1/follow', followRouter);
 app.use('/api/v1/community/articles', articlesRouter);
 app.use('/api/v1/wishlist', wishlistRouter);
 app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/auth', authRouter);
+
 
 const PORT = process.env.PORT ?? 3000;
 
