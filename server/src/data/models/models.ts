@@ -7,6 +7,7 @@ export interface UserTable {
   last_login: Date;
   is_active: boolean;
   is_banned: boolean;
+  client_secret: string;
 }
 
 export interface AdminTable {
