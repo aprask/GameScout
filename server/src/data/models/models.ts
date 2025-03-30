@@ -31,10 +31,8 @@ export interface GameTable {
   game_name: string;
   game_art: string;
   is_supported: boolean;
-  company: string;
   summary: string;
   release_date: Date;
-  age_rating: string;
   created_at: Date;
   updated_at: Date;
 }

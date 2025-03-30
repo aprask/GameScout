@@ -3,6 +3,9 @@ import asyncHandler from 'express-async-handler';
 import * as gameService from '../service/game.js';
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 router.use(authMiddleware as RequestHandler);
 
@@ -21,10 +24,8 @@ router.post('/', asyncHandler(async (req, res) => {
         game_name,
         game_art,
         is_supported,
-        company,
         summary,
         release_date,
-        age_rating
     } = req.body;
 
     let admin_id: string = '';
@@ -34,10 +35,8 @@ router.post('/', asyncHandler(async (req, res) => {
         game_name,
         game_art,
         is_supported,
-        company,
         summary,
         new Date(release_date),
-        age_rating,
         admin_id
     );
 
@@ -49,10 +48,8 @@ router.put('/:game_id', asyncHandler(async (req, res) => {
         game_name,
         game_art,
         is_supported,
-        company,
         summary,
         release_date,
-        age_rating
     } = req.body;
 
     let admin_id: string = '';
@@ -63,10 +60,8 @@ router.put('/:game_id', asyncHandler(async (req, res) => {
         game_name,
         game_art,
         is_supported,
-        company,
         summary,
         new Date(release_date),
-        age_rating,
         admin_id
     );
 

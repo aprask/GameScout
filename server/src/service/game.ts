@@ -17,10 +17,8 @@ export async function createGame(
     game_name: string,
     game_art: string,
     is_supported: boolean,
-    company: string,
     summary: string,
     release_date: Date,
-    age_rating: string,
     admin_id: string
 ): Promise<GameTable | undefined> {
     if (admin_id) {
@@ -29,9 +27,7 @@ export async function createGame(
 
         let errorMessage = '';
         if (!game_name) errorMessage += "Game name not given";
-        if (!company) errorMessage += "Company not given";
         if (!release_date) errorMessage += "Release date not given";
-        if (!age_rating) errorMessage += "Age rating not given";
         if (!game_art) errorMessage += "Game art not given"
         if (errorMessage) {
             errorMessage.trim();
@@ -44,10 +40,8 @@ export async function createGame(
             game_name,
             game_art,
             is_supported,
-            company,
             summary,
             release_date,
-            age_rating,
             created_at: currentDate,
             updated_at: currentDate
         };
@@ -62,10 +56,8 @@ export async function updateGame(
     game_name: string,
     game_art: string,
     is_supported: boolean,
-    company: string,
     summary: string,
     release_date: Date,
-    age_rating: string,
     admin_id: string
 ): Promise<GameTable | undefined> {
     if (admin_id && game_id) {
@@ -79,10 +71,8 @@ export async function updateGame(
             game_name: game_name ?? currentGame.game_name,
             game_art: game_art ?? currentGame.game_art,
             is_supported: is_supported ?? currentGame.is_supported,
-            company: company ?? currentGame.company,
             summary: summary ?? currentGame.summary,
             release_date: release_date ?? currentGame.release_date,
-            age_rating: age_rating ?? currentGame.age_rating
         };
 
         return gameRepo.updateGame(game_id, updatedGame);
@@ -98,4 +88,11 @@ export async function deleteGame(game_id: string, admin_id: string): Promise<voi
         else await gameRepo.deleteGame(game_id);
     }
     else throwErrorException(`[service.game.deleteGame] No valid ID provided`, 'Cannot delete game', 403);
+}
+
+export async function bulkGameInsert(games: Omit<GameTable, 'created_at' | 'updated_at'>[]): Promise<void> {
+    if (games) {
+        console.log(games);
+    }
+    else throwErrorException(`[service.game.bulkGameInsert] No games given`, 'No games to insert', 400);
 }

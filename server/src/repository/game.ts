@@ -29,10 +29,8 @@ export async function createGame(game: GameTable): Promise<GameTable> {
             game_name: game.game_name,
             game_art: game.game_art,
             is_supported: game.is_supported,
-            company: game.company,
             summary: game.summary,
             release_date: game.release_date,
-            age_rating: game.age_rating,
             created_at: game.created_at,
             updated_at: game.updated_at,
         })
@@ -49,10 +47,8 @@ export async function updateGame(game_id: string, game: Omit<GameTable, 'game_id
             game_name: game.game_name,
             game_art: game.game_art,
             is_supported: game.is_supported,
-            company: game.company,
             summary: game.summary,
             release_date: game.release_date,
-            age_rating: game.age_rating,
             updated_at: new Date()
         })
         .where("game_id", "=", game_id)
