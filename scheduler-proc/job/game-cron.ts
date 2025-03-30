@@ -13,7 +13,7 @@ interface Game {
 }
 
 export default function gameJob() {
-  cron.schedule('0 7 22 * * 6',
+  cron.schedule('0 0 18 * * 6',
      async () => { // this will occur once a week (6 pm every Sat) https://www.npmjs.com/package/node-cron?activeTab=readme
       try {
         let response = await axios.post(
