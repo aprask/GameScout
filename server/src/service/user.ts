@@ -104,5 +104,5 @@ export async function deleteUser(user_id: string | null, admin_id: string | null
         if (!(await userRepo.getUserIdByClientSecret(client_secret, user_id))) throwErrorException(`[service.user.deleteUser] Cannot find user`, 'User ID/Secret invalid', 404);
         else userRepo.deleteUser(user_id);
     }
-    else throwErrorException(`[service.user.deleteUser] No valid ID providded`, 'Cannot delete user', 403);
+    else throwErrorException(`[service.user.deleteUser] No valid ID provided`, 'Cannot delete user', 403);
 }
