@@ -1,20 +1,43 @@
-import express, { NextFunction, Request, Response } from 'express';
-import VError from 'verror';
+import express from 'express'
+
+import { migrateToLatest } from '../src/data/migrate.js';
+import { errorMiddleware } from './middleware/error.js';
+
+import healthRouter from './routes/health.js';
+import userRouter from "./routes/user.js";
+import adminRouter from "./routes/admin.js";
+import imageRouter from "./routes/image.js";
+import gameRouter from './routes/game.js';
+import reviewRouter from "./routes/review.js";
+import followRouter from './routes/follows.js';
+import articlesRouter from './routes/articles.js';
+import wishlistRouter from './routes/wishlist.js';
+import profileRouter from './routes/profile.js';
+import authRouter from './routes/auth.js';
 
 export const app = express();
-app.use(express.json());
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    const info = VError.info(err);
-    console.log(err);
-    res.status(info?.statusCode ?? 500).json({ error: info?.response ?? 'Internal Server Error' });
-});
+app.use(express.json());
+app.use(errorMiddleware);
+
+app.use('/api/v1/health', healthRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/image', imageRouter);
+app.use('/api/v1/game', gameRouter);
+app.use('/api/v1/review', reviewRouter);
+app.use('/api/v1/follow', followRouter);
+app.use('/api/v1/community/articles', articlesRouter);
+app.use('/api/v1/wishlist', wishlistRouter);
+app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/auth', authRouter);
+
 
 const PORT = process.env.PORT ?? 3000;
 
 if (process.env.APP_ENV !== 'test') {
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
+        migrateToLatest();
     });
 }
