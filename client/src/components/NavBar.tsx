@@ -5,7 +5,6 @@ import {
   Typography,
   Drawer,
   List,
-  ListItemText,
   IconButton,
   CssBaseline,
   Box,
@@ -14,6 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
+import { NavLink } from "react-router";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -37,12 +37,7 @@ function NavBar() {
         }}
       >
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer}
-          >
+          <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
             <SportsEsportsIcon />
           </IconButton>
           <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
@@ -68,13 +63,41 @@ function NavBar() {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {["Dashboard", "Community", "Games", "Profile", "Articles"].map(
-              (text) => (
-                <ListItemButton key={text}>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              )
-            )}
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Dashboard</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Community</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/search"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Games</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Profile</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Articles</ListItemButton>
+            </NavLink>
           </List>
         </Box>
       </Drawer>

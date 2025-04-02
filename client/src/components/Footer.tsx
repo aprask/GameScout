@@ -5,10 +5,6 @@ function Footer() {
     <Box
       component="footer"
       sx={{
-        position: "relative",
-        bottom: 0,
-        left: 0,
-        width: "100%",
         backgroundColor: "primary.main",
         color: "primary.contrastText",
         textAlign: "center",
