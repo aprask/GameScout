@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import { CORS_OPTIONS } from "../../config/cors_config.js";
+import { CORS_OPTIONS } from "../config/cors_config.js";
 import dotenv from 'dotenv';
 
 dotenv.config();

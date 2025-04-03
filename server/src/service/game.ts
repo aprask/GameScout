@@ -90,9 +90,6 @@ export async function deleteGame(game_id: string, admin_id: string): Promise<voi
     else throwErrorException(`[service.game.deleteGame] No valid ID provided`, 'Cannot delete game', 403);
 }
 
-export async function bulkGameInsert(games: Omit<GameTable, 'created_at' | 'updated_at'>[]): Promise<void> {
-    if (games) {
-        console.log(games);
-    }
-    else throwErrorException(`[service.game.bulkGameInsert] No games given`, 'No games to insert', 400);
+export async function bulkGameInsert(gamesBuffer: string): Promise<void> {
+    console.log(gamesBuffer);
 }
