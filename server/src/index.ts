@@ -2,6 +2,7 @@ import express from 'express'
 
 import { migrateToLatest } from '../src/data/migrate.js';
 import { errorMiddleware } from './middleware/error.js';
+import { Consumer } from './config/consumer.js'
 
 import healthRouter from './routes/health.js';
 import userRouter from "./routes/user.js";
@@ -35,8 +36,10 @@ app.use('/api/v1/auth', authRouter);
 
 const PORT = process.env.PORT ?? 3000;
 
+const CONSUMER = new Consumer("GAME_DATA");
+await CONSUMER.consumerConfig();
 if (process.env.APP_ENV !== 'test') {
-    app.listen(PORT, () => {
+    app.listen(+PORT, '0.0.0.0', () => {
         console.log(`Listening on port ${PORT}`);
         migrateToLatest();
     });
