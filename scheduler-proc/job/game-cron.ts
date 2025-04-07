@@ -16,7 +16,7 @@ interface Game {
 export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
   const games: Game[] = [];
-  cron.schedule('0 1 22 * * 3',
+  cron.schedule('0 38 20 * * 0',
      async () => {
       try {
         let response = await axios.post(
@@ -25,7 +25,7 @@ export default async function gameJob() {
         );
         const { access_token } = response.data;
         response = await axios.post(
-          'https://api.igdb.com/v4/games?limit=1&fields=name,cover,updated_at,involved_companies,summary,first_release_date',
+          'https://api.igdb.com/v4/games?limit=500&fields=name,cover,updated_at,involved_companies,summary,first_release_date',
           null,
           {
             headers: {
