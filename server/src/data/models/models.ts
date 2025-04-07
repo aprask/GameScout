@@ -99,3 +99,11 @@ export interface AuthTable {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface GameMessage {
+  game_name: string;
+  game_art: { type: "Buffer"; data: number[] };
+  is_supported: boolean;
+  summary: string;
+  release_date: number;
+}

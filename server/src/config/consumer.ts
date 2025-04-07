@@ -1,6 +1,7 @@
 import amqplib from 'amqplib';
 import { ConsumeMessage } from 'amqplib';
 import { bulkGameInsert } from '../service/game.js';
+import { GameMessage } from '../data/models/models.js';
 
 const HOST = process.env.RABBIT_HOST;
 const PORT = process.env.RABBIT_PORT;
@@ -19,7 +20,7 @@ export class Consumer {
 
     private async waitForMQ(url: string): Promise<void> {
         const retries = 10;
-        const delay = 100000;
+        const delay = 10000;
         for (let i = 0; i < retries; ++i) {
             try {
                 const connection = await amqplib.connect(url);
@@ -39,9 +40,10 @@ export class Consumer {
         this.channel = await this.connection.createChannel();
         this.channel.assertQueue(this.queue, {durable: true}); // durable makes sure messages aren't lost
         console.log("queue: ", this.queue);
-        this.channel.consume(this.queue, (message: ConsumeMessage | null) => {
+        this.channel.consume(this.queue, async (message: ConsumeMessage | null) => {
+            console.log(`Message ${message}`);
             if (message !== null) {
-                bulkGameInsert(message.content.toString());
+                await bulkGameInsert(JSON.parse(message.content.toString()) as GameMessage[]);
                 this.channel.ack(message);
             } else {
                 console.log("Not received a message");

@@ -64,3 +64,13 @@ export async function deleteGame(game_id: string): Promise<void> {
         .where("game_id", "=", game_id)
         .executeTakeFirstOrThrow();
 }
+
+export async function doesGameExist(game_name: string, game_summary: string): Promise<boolean> {
+    const game = await db
+        .selectFrom('games')
+        .selectAll()
+        .where('game_name', '=', game_name)
+        .where('summary', '=', game_summary)
+        .executeTakeFirst();
+    return !!game;
+}

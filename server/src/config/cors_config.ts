@@ -1,4 +1,4 @@
-const WHITE_LIST = ['http://example2.com'];
+const WHITE_LIST = ['http://localhost:5173'];
 
 export const CORS_OPTIONS = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) {
