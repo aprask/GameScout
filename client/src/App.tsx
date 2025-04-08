@@ -1,10 +1,11 @@
-import { createTheme, ThemeProvider, CssBaseline, Box } from "@mui/material";
+import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import NavBar from "./components/NavBar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DynamicGame from "./components/DynamicGame/DynamicGame";
 import SearchGame from "./components/SearchGame/SearchGame";
 import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router";
+import GameReviews from "./components/GameReviews/GameReviews";
 
 const customTheme = createTheme({
   palette: {
@@ -30,15 +31,18 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <NavBar />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/game" element={<DynamicGame />} />
-            <Route path="/search" element={<SearchGame />} />
-          </Routes>
+          <main>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/game" element={<DynamicGame />} />
+              <Route path="/search" element={<SearchGame />} />
+              <Route path="/game/:id" element={<DynamicGame />} />
+              <Route path="/game/reviews/:id" element={<GameReviews />} />
+            </Routes>
+          </main>
         </BrowserRouter>
-        <Box>
-          <Footer />
-        </Box>
+
+        <Footer />
       </ThemeProvider>
     </>
   );

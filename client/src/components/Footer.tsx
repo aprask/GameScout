@@ -8,6 +8,9 @@ function Footer() {
         backgroundColor: "primary.main",
         color: "primary.contrastText",
         textAlign: "center",
+        position: "relative",
+        bottom: 0,
+        width: "100%",
       }}
     >
       <Typography variant="body2">Copyright &copy; GameScout 2025</Typography>

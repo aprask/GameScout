@@ -7,12 +7,13 @@ import {
   ImageList,
   ImageListItem,
   Typography,
-  useTheme,
+  //useTheme,
 } from "@mui/material";
 import image from "../../assets/image.png";
+import { JSX } from "react";
 
-function Dashboard() {
-  const theme = useTheme();
+function Dashboard(): JSX.Element {
+  //const theme = useTheme();
 
   const arrOfLen5: number[] = [0, 1, 2, 3, 4];
 
@@ -28,7 +29,7 @@ function Dashboard() {
         </Typography>
         <Box>
           <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
-            <Card sx={{ m: 5, ml: 2 }}>
+            <Card sx={{ m: 5, mr: 1 }}>
               <CardContent sx={{ textAlign: "left" }}>
                 <Typography sx={{ ml: 3 }} variant="h5">
                   Top Games
@@ -57,7 +58,7 @@ function Dashboard() {
               </CardContent>
             </Card>
           </Box>
-          <Card sx={{ m: 5 }}>
+          <Card sx={{ m: 5, mt: 0 }}>
             <CardContent>
               <Typography variant="h5">Articles</Typography>
             </CardContent>
