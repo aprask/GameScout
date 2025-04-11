@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
+import { useEffect } from "react";
 
 interface GameData {
   id: number;
@@ -22,65 +23,36 @@ interface GameData {
   rating?: number;
 }
 
-const witcher3: GameData = {
-  id: 1,
-  name: "The Witcher 3: Wild Hunt",
-  summary:
-    "The Witcher 3: Wild Hunt is a story-driven, open world RPG set in a visually stunning fantasy universe full of meaningful choices and impactful consequences.",
-  cover: {
-    url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1wyy.jpg",
-  },
-  genres: [{ name: "RPG" }, { name: "Adventure" }],
-  first_release_date: 1432147200, // May 20, 2015
-  rating: 9.5,
-};
-
-function GameDetails(): JSX.Element {
-  const { id } = useParams<{ id: string }>();
-  const [game, setGame] = useState<GameData | null>(witcher3);
+function DynamicGame(): JSX.Element {
+  const { id } = useParams();
+  const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const fetchTokenAndData = async () => {
-  //     try {
-  //       const tokenRes = await axios.post(
-  //         "https://id.twitch.tv/oauth2/token",
-  //         null,
-  //         {
-  //           params: {
-  //             client_id: import.meta.env.CLIENT_ID,
-  //             client_secret: import.meta.env.CLIENT_SECRET,
-  //             grant_type: "client_credentials",
-  //           },
-  //         }
-  //       );
+  useEffect(() => {
+    const fetchGameDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:3000/api/v1/igdb/${id}`);
 
-  //       const accessToken = tokenRes.data.access_token;
+        if (!response.ok) {
+          console.log("aaaaaaahhhhh");
+          throw new Error("Failed to fetch game details");
+        }
 
-  //       const gameRes = await axios.post(
-  //         "https://api.igdb.com/v4/games",
-  //         `fields name,summary,cover.url,genres.name,first_release_date,rating; where id = ${id};`,
-  //         {
-  //           headers: {
-  //             "Client-ID": import.meta.env.VITE_IGDB_CLIENT_ID,
-  //             Authorization: `Bearer ${accessToken}`,
-  //             "Content-Type": "text/plain",
-  //           },
-  //         }
-  //       );
+        const data: GameData = await response.json();
+        setGame(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching game details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //       if (gameRes.data.length > 0) {
-  //         setGame(gameRes.data[0]);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching game data:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchTokenAndData();
-  // }, [id]);
+    if (id) {
+      fetchGameDetails();
+    }
+  }, [id]);
 
   if (loading) {
     return (
@@ -157,4 +129,4 @@ function GameDetails(): JSX.Element {
   );
 }
 
-export default GameDetails;
+export default DynamicGame;
