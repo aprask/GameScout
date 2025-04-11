@@ -1,5 +1,6 @@
-import { GameTable } from "../data/models/models.js";
+import { GameTable, GameMessage, ImageTable } from "../data/models/models.js";
 import * as gameRepo from "../repository/game.js";
+import * as imgRepo from "../repository/image.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
@@ -90,9 +91,40 @@ export async function deleteGame(game_id: string, admin_id: string): Promise<voi
     else throwErrorException(`[service.game.deleteGame] No valid ID provided`, 'Cannot delete game', 403);
 }
 
-export async function bulkGameInsert(games: Omit<GameTable, 'created_at' | 'updated_at'>[]): Promise<void> {
-    if (games) {
-        console.log(games);
+export async function bulkGameInsert(gameMsg: GameMessage[]): Promise<void> {
+    for (let i = 0; i < gameMsg.length; ++i) {
+        const gameName = gameMsg[i].game_name;
+        console.log(`Game Name: ${gameName}`);
+        const gameSummary = gameMsg[i].summary;
+        const releaseDate = gameMsg[i].release_date;
+        const isSupported = gameMsg[i].is_supported;
+        if (await gameRepo.doesGameExist(gameName, gameSummary)) continue;
+        if (isNaN(releaseDate)) continue;
+        if (gameName === undefined || gameSummary === undefined || releaseDate === undefined || isSupported === undefined) continue;
+
+        const currentDate = new Date();
+        const imageData = Buffer.from(gameMsg[i].game_art.data);
+        if (imageData === undefined) continue;
+        const imageId = uuidv4();
+        const imageInstance: ImageTable = {
+            image_id: imageId,
+            image_text: "",
+            image_data: imageData,
+            created_at: currentDate,
+            updated_at: currentDate
+        }
+        await imgRepo.createImage(imageInstance);
+        const formattedReleaseDate = new Date(+gameMsg[i].release_date * 1000);
+        const gameInstance: GameTable = {
+            game_id: uuidv4(),
+            game_art: imageId,
+            is_supported: isSupported,
+            summary: gameSummary,
+            game_name: gameName,
+            release_date: formattedReleaseDate,
+            created_at: currentDate,
+            updated_at: currentDate
+        }
+        await gameRepo.createGame(gameInstance);
     }
-    else throwErrorException(`[service.game.bulkGameInsert] No games given`, 'No games to insert', 400);
 }

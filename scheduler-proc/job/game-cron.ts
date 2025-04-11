@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { Producer } from "../config/producer.js";
 
 dotenv.config();
 
@@ -12,9 +13,11 @@ interface Game {
   release_date: Date;
 }
 
-export default function gameJob() {
-  cron.schedule('0 0 18 * * 6',
-     async () => { // this will occur once a week (6 pm every Sat) https://www.npmjs.com/package/node-cron?activeTab=readme
+export default async function gameJob() {
+  const producer = new Producer("GAME_DATA", "");
+  const games: Game[] = [];
+  cron.schedule('0 38 20 * * 0',
+     async () => {
       try {
         let response = await axios.post(
             `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
@@ -22,7 +25,7 @@ export default function gameJob() {
         );
         const { access_token } = response.data;
         response = await axios.post(
-          'https://api.igdb.com/v4/games?limit=5&fields=name,cover,updated_at,involved_companies,summary,first_release_date',
+          'https://api.igdb.com/v4/games?limit=500&fields=name,cover,updated_at,involved_companies,summary,first_release_date',
           null,
           {
             headers: {
@@ -32,7 +35,6 @@ export default function gameJob() {
             }
           }
         )
-        const games: Game[] = [];
         for (let i = 0; i < response.data.length; i++) {
           const { cover, first_release_date, name, summary, updated_at, } = response.data[i];
       
@@ -73,6 +75,8 @@ export default function gameJob() {
         } catch (error) {
           console.error('Error:', error);
       }
+      producer.setMessage(JSON.stringify(games));
+      await producer.producerConfig();
     },
     {
       scheduled: true,
