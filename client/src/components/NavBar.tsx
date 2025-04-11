@@ -1,24 +1,120 @@
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import { AppBar, Toolbar, Typography, Button } from "@mui/material";
-import { Box } from "@mui/system";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  IconButton,
+  CssBaseline,
+  Box,
+  ListItemButton,
+  Avatar,
+  useTheme,
+} from "@mui/material";
+import { useState } from "react";
+import { NavLink } from "react-router";
 
 function NavBar() {
-    return (
-        <Box>
-            <AppBar position="static">
-                <Toolbar>
-                <SportsEsportsIcon sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    Gamescout
-                </Typography>
-                    <Button color="inherit">Dashboard</Button>
-                    <Button color="inherit">Community</Button>
-                    <Button color="inherit">Games</Button>
-                    <Button color="inherit">Profile</Button>
-                </Toolbar>
-            </AppBar>
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+
+      <AppBar
+        position="fixed"
+        color="primary"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: theme.palette.primary.main,
+        }}
+      >
+        <Toolbar>
+          <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+            <SportsEsportsIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
+            Gamescout
+          </Typography>
+          <Avatar alt="Profile Pic" src="" />
+        </Toolbar>
+      </AppBar>
+
+      <Drawer
+        //variant="persistent"
+        anchor="left"
+        open={drawerOpen}
+        sx={{
+          width: 250,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: 250,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ overflow: "auto" }}>
+          <List>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Dashboard</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Community</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/search"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Games</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Profile</ListItemButton>
+            </NavLink>
+            <NavLink
+              to="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Articles</ListItemButton>
+            </NavLink>
+          </List>
         </Box>
-    )
+      </Drawer>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          marginLeft: drawerOpen ? "250px" : "0px",
+          transition: "margin-left 0.3s ease",
+        }}
+      >
+        <Toolbar />
+      </Box>
+    </Box>
+  );
 }
 
 export default NavBar;

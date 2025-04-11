@@ -17,8 +17,10 @@
     "@mui/material": "^7.0.1",
     "@mui/styled-engine-sc": "^7.0.1",
     "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.8.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router": "^7.4.1",
     "react-router-dom": "^7.4.0",
     "styled-components": "^6.1.16"
   },
