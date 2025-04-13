@@ -6,6 +6,16 @@ import { authMiddleware } from '../middleware/auth.js';
 
 router.use(authMiddleware as RequestHandler);
 
+router.post('/', asyncHandler(async (req, res) => {
+    console.log("HERE");
+    let new_user_token: string = "";
+    if (typeof req.query.new_user === 'string') new_user_token = req.query.new_user;
+    const { email, password } = req.body;
+    const newUser = await userService.createUser(email, password, new_user_token);
+    res.status(201).json({new_user: newUser});
+}));
+
+
 router.get('/', asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
     res.status(200).json({users: users});
@@ -14,12 +24,6 @@ router.get('/', asyncHandler(async (req, res) => {
 router.get('/:user_id', asyncHandler(async (req, res) => {
     const user = await userService.getUserById(req.params.user_id);
     res.status(200).json({user: user});
-}));
-
-router.post('/', asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-    const newUser = await userService.createUser(email, password);
-    res.status(201).json({new_user: newUser});
 }));
 
 router.put('/:user_id', asyncHandler(async (req, res) => {

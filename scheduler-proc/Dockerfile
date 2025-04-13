@@ -1,4 +1,4 @@
-FROM node:23.11.0-alpine
+FROM node:23-bullseye-slim
 
 WORKDIR /usr/local/app
 

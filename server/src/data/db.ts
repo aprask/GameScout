@@ -11,8 +11,13 @@ const dialect = new PostgresDialect({
     host: process.env.DEV_HOST,
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
-    port: 5432,
+    port: Number(process.env.DB_PORT || 5432),
     max: 10,
+    idleTimeoutMillis: 30000, // how long a connection will stay idle in the pool
+    connectionTimeoutMillis: 10000, // max time to wait for a new connection
+    statement_timeout: 30000, // max time for any query statement to complete (subset of query)
+    query_timeout: 30000, // max time to wait for query to complete (all query statements)
+    keepAlive: true
   }),
 });
 

@@ -43,6 +43,7 @@ export async function getAllUsers(): Promise<UserTable[]> {
   }
   
   export async function createUser(user: UserTable, profile: ProfileTable, auth: AuthTable, image: ImageTable): Promise<UserTable> {
+    console.log("HERE");
     return await db.transaction().execute(async (t) => {
       const newUser = await t
       .insertInto("user")
