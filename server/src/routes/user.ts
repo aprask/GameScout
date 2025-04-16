@@ -3,15 +3,15 @@ const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import * as userService from "../service/user.js";
 import { authMiddleware } from '../middleware/auth.js';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
 
 router.post('/', asyncHandler(async (req, res) => {
-    console.log("HERE");
-    let new_user_token: string = "";
-    if (typeof req.query.new_user === 'string') new_user_token = req.query.new_user;
+    const token = req.headers['authorization'];
     const { email, password } = req.body;
-    const newUser = await userService.createUser(email, password, new_user_token);
+    const newUser = await userService.createUser(email, password, token!);
     res.status(201).json({new_user: newUser});
 }));
 

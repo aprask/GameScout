@@ -4,6 +4,8 @@ import * as igdbService from '../service/igdb.js';
 //import { authMiddleware } from '../middleware/auth.js';
 import express from 'express';
 import dotenv from 'dotenv';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 dotenv.config();
 
