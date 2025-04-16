@@ -8,6 +8,11 @@ export function getAllProfiles(): Promise<ProfileTable[]> {
     return profileRepo.getAllProfiles();
 }
 
+export async function getProfileByUserId(user_id: string): Promise<ProfileTable> {
+    if (!validate(user_id)) throwErrorException(`[service.profile.getProfileById] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    return profileRepo.getProfileByUserId(user_id);
+}
+
 export async function getProfileById(profile_id: string): Promise<ProfileTable> {
     if (!validate(profile_id)) throwErrorException(`[service.profile.getProfileById] Invalid UUID: ${profile_id}`, 'Invalid profile ID', 400);
     return profileRepo.getProfileById(profile_id);
