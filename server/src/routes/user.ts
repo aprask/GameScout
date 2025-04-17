@@ -3,8 +3,18 @@ const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import * as userService from "../service/user.js";
 import { authMiddleware } from '../middleware/auth.js';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
+
+router.post('/', asyncHandler(async (req, res) => {
+    const token = req.headers['authorization'];
+    const { email, password } = req.body;
+    const newUser = await userService.createUser(email, password, token!);
+    res.status(201).json({new_user: newUser});
+}));
+
 
 router.get('/', asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
@@ -14,12 +24,6 @@ router.get('/', asyncHandler(async (req, res) => {
 router.get('/:user_id', asyncHandler(async (req, res) => {
     const user = await userService.getUserById(req.params.user_id);
     res.status(200).json({user: user});
-}));
-
-router.post('/', asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-    const newUser = await userService.createUser(email, password);
-    res.status(201).json({new_user: newUser});
 }));
 
 router.put('/:user_id', asyncHandler(async (req, res) => {

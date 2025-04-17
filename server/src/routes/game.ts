@@ -4,6 +4,8 @@ import * as gameService from '../service/game.js';
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import dotenv from 'dotenv';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 dotenv.config();
 

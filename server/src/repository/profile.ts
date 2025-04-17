@@ -11,6 +11,16 @@ export async function getAllProfiles(): Promise<ProfileTable[]> {
     return profiles;
 }
 
+export async function getProfileByUserId(user_id: string): Promise<ProfileTable> {
+    const profile = await db
+        .selectFrom("profile")
+        .selectAll()
+        .where("profile.user_id", '=', user_id)
+        .executeTakeFirst();
+    if (!profile || profile === undefined) throwErrorException(`[repository.profile.getProfileById] cannot find profile with user ID ${user_id}`, 'Profile not found', 404);
+    return profile;
+}
+
 export async function getProfileById(profile_id: string): Promise<ProfileTable> {
     const profile = await db
         .selectFrom("profile")

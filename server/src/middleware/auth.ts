@@ -7,6 +7,7 @@ dotenv.config();
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     if (process.env.APP_ENV === 'test') next();
+    else if (req.headers['authorization'] === process.env.API_MANAGEMENT_KEY) next();
     else {
         try {
             const token = req.headers['authorization'];

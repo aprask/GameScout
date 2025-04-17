@@ -3,6 +3,8 @@ import asyncHandler from 'express-async-handler';
 import * as profileService from '../service/profile.js';
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
 

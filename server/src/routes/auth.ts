@@ -2,7 +2,9 @@ import express from 'express';
 const router = express.Router();
 import asyncHandler from 'express-async-handler';
 import * as authService from "../service/auth.js";
-import { verifyJWT } from '../auth/token.js';
+import * as profileService from "../service/profile.js";
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 router.get('/:user_id', asyncHandler(async(req, res) => {
     const authDetails = await authService.getTokenByUserId(req.params.user_id);
@@ -11,24 +13,23 @@ router.get('/:user_id', asyncHandler(async(req, res) => {
 
 router.post('/login', asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const emailAndPasswordMatch = await authService.verifyEmailAndPasswordCombination(email, password);
-    if (!emailAndPasswordMatch) res.status(401).json({message: "Invalid Password and Email Combination"});
+    const user = await authService.verifyEmailAndPasswordCombination(email, password);
+    if (!user) res.status(401).json({message: "Invalid Password and Email Combination"});
     else {
-        const token = req.headers['authorization'];
-        if (typeof token === 'string') {
-            const isTokenValid = await verifyJWT(token);
-            if (isTokenValid) res.status(200).json({message: "Welcome to Gamescout!"});
-            else res.status(400).json({message: "Invalid headers"});
-        }
-        else res.status(401).json({message: "Invalid credentials"});
+        const token = await authService.createToken(email);
+        const profile = await profileService.getProfileByUserId(user.user_id);
+        if (!profile || !token) res.status(401).json({message: "Cannot authenticate user"});
+        res.status(200).json({
+            token: token,
+            user_id: user.user_id,
+            profile_id: profile.profile_id
+        });
     }
 }));
 
-router.delete('/:user_id', asyncHandler(async (req, res) => {
-    const { user_id } = req.params;
-    let admin_id: string = "";
-    if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
-    await authService.deleteTokenByUserId(user_id, admin_id);
+router.post('/logout', asyncHandler(async (req, res) => {
+    const { user_id } = req.body;
+    await authService.deleteTokenByUserId(user_id);
     res.sendStatus(204);
 }));
 

@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import * as adminService from "../service/admin.js";
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
+import { resourceSharer } from '../middleware/resource.js';
+router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
 

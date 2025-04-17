@@ -5,6 +5,9 @@ import { throwErrorException } from "../util/error.js";
 import { v4 as uuidv4, validate } from 'uuid';
 import { signJWT } from '../auth/token.js';
 import { hashPassword } from '../auth/password.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export function getAllUsers(): Promise<UserTable[]> {
     return userRepo.getAllUsers();
@@ -16,8 +19,9 @@ export async function getUserById(user_id: string): Promise<UserTable> {
     return userRepo.getUserById(user_id);
 }
 
-export async function createUser(email: string, password: string): Promise<UserTable> {
+export async function createUser(email: string, password: string, new_user_token: string): Promise<UserTable> {
     let errorMessage = '';
+    if (!new_user_token || new_user_token !== process.env.NEW_USER) errorMessage += "Invalid New User Token"; 
     if (!email) errorMessage += "Email not given";
     if (!password) errorMessage += "Password not given";
     if (await userRepo.checkUserEmail(email)) errorMessage += "Duplicate email";
@@ -65,6 +69,7 @@ export async function createUser(email: string, password: string): Promise<UserT
         created_at: currentDate,
         updated_at: currentDate,
     }
+    console.log("HERE");
     return userRepo.createUser(newUser, newProfile, authDetails, newImage);
 }
 

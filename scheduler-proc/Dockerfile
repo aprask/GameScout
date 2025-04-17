@@ -1,4 +1,4 @@
-FROM node:23.11.0-alpine
+FROM node:23-bullseye-slim
 
 WORKDIR /usr/local/app
 
@@ -7,6 +7,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+EXPOSE 3002
 
 CMD ["npm", "run", "dev"]
