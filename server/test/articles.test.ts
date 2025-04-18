@@ -92,22 +92,53 @@ describe('Articles Routes', () => {
     assert.equal(res.body.updated_article.article_content, 'This is an Updated article.');
   });
 
-  it('should delete an article', async () => {
+  it('should delete an article by admin_id', async () => {
+    const preAdminRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'adminuser@example.com',
+      password: 'securepassword',
+    });
+    assert.strictEqual(preAdminRes.status, 201);
+
+    const adminRes = await request.post('/api/v1/admin').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: preAdminRes.body.new_user.user_id,
+    });
+
+    const adminId = adminRes.body.new_admin.admin_id;
+
     const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
       email: 'user@example.com',
       password: 'securepassword',
     });
     const userId = userRes.body.new_user.user_id;
-    const user;
 
-    const originalArticleRes = await request.post('/api/v1/community/articles').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+    const articleRes = await request.post('/api/v1/community/articles').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
       article_title: 'Test Article',
       article_owner: userId,
       article_content: 'This is a test article.',
     });
-    const articleId = originalArticleRes.body.new_article.article_id;
+    const articleId = articleRes.body.new_article.article_id;
 
-    const response = await request.delete(`/api/v1/community/articles/${articleId}`);
+    const response = await request.delete(`/api/v1/community/articles/${articleId}?admin_id=${adminId}`).set('Authorization', process.env.API_MANAGEMENT_KEY!);
+    assert.equal(response.status, 204);
+  });
+
+  it('should delete an article by owner id', async () => {
+    const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user@example.com',
+      password: 'securepassword',
+    });
+    const userId = userRes.body.new_user.user_id;
+
+    const articleRes = await request.post('/api/v1/community/articles').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      article_title: 'Test Article',
+      article_owner: userId,
+      article_content: 'This is a test article.',
+    });
+    const articleId = articleRes.body.new_article.article_id;
+
+    const response = await request
+      .delete(`/api/v1/community/articles/${articleId}?article_owner=${userId}`)
+      .set('Authorization', process.env.API_MANAGEMENT_KEY!);
     assert.equal(response.status, 204);
   });
 });
