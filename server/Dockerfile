@@ -8,6 +8,6 @@ RUN apt-get update && apt-get install -y libpq-dev postgresql-client
 
 COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]

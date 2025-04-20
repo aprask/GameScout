@@ -1,0 +1,10 @@
+services:
+  server:
+    volumes:
+      - ./server:/usr/local/app
+      - ./server/src/auth/keys:/usr/local/app/src/auth/keys:ro
+    environment:
+      - NODE_ENV=development
+      - DEV_HOST=db
+      - DB_HOST=db
+    command: npm run dev

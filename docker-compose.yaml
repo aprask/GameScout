@@ -26,12 +26,12 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     networks:
       - default
     volumes:
-      - ./server:/usr/local/app
+      - ./server/src/auth/keys:/usr/local/app/src/auth/keys:ro # read only!
     environment:
       - NODE_ENV=production
       - DEV_HOST=db
@@ -53,8 +53,8 @@ services:
       context: ./scheduler-proc
       dockerfile: Dockerfile
     container_name: scheduler-proc
-    volumes:
-      - ./scheduler-proc:/usr/local/app
+    expose:
+      - "3002"
     depends_on:
       - server
       - rabbitmq
