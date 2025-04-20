@@ -14,9 +14,15 @@ FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
 RUN rm /etc/nginx/nginx.conf
 
-COPY nginx.conf /etc/nginx/nginx.conf
-
+# after we build we are copying the files over into the directory where nginx can access them
 COPY --from=builder /usr/local/app/dist /usr/share/nginx/html
+# our config
+COPY nginx.conf /etc/nginx/nginx.conf
+# checks to see if the server is up for nginx config (/api/ location directive)
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# "--" in bash means end of options so the "-g" or "nginx" does not get misinterpreted as an option
+CMD ["./wait-for-it.sh", "server:3000", "--", "nginx", "-g", "daemon off;"]
