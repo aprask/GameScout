@@ -10,7 +10,8 @@ COPY . .
 RUN npm run build
 
 FROM nginx:latest
-
+# for prod env (need to explicitly install bash.exe)
+RUN apt update && apt install -y bash
 RUN rm /etc/nginx/conf.d/default.conf
 RUN rm /etc/nginx/nginx.conf
 
