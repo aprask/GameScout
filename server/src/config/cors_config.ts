@@ -2,7 +2,8 @@ const WHITE_LIST = [
     'http://localhost',
     'http://client',
     'http://localhost:80',
-    'http://64.225.31.139'
+    'http://64.225.31.139',
+    'https://64.225.31.139'
 ];
 export const CORS_OPTIONS = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) {
