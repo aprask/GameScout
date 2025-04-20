@@ -32,7 +32,7 @@ function DynamicGame(): JSX.Element {
     const fetchGameDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/igdb/${id}`);
+        const response = await fetch(`/api/v1/igdb/${id}`);
 
         if (!response.ok) {
           console.log("aaaaaaahhhhh");

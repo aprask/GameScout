@@ -67,7 +67,7 @@ function SignUpPage() {
     
         try {
           const res = await axios.post(
-            "http://localhost:3000/api/v1/users",
+            "/api/v1/users",
             {
               email: formValues.email,
               password: formValues.password,

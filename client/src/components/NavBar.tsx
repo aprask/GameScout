@@ -32,7 +32,7 @@ function NavBar() {
     const fetchProfileImg = async() => {
       try {
         let res = await axios.get(
-          `http://localhost:3000/api/v1/profile/${profileId}`,
+          `/api/v1/profile/${profileId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function NavBar() {
           }
         );
         res = await axios.get(
-            `http://localhost:3000/api/v1/image/${res.data.profile.profile_img}`,
+            `/api/v1/image/${res.data.profile.profile_img}`,
             {
               headers: {
                 "Content-Type": "application/json",
