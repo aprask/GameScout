@@ -42,12 +42,11 @@ function SearchGame(): JSX.Element {
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
   const currentGames = filteredGames.slice(indexOfFirstGame, indexOfLastGame);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setCurrentPage(value);
-  };
+  // const handlePageChange = (
+  //   value: number
+  // ) => {
+  //   setCurrentPage(value);
+  // };
 
   return (
     <>
@@ -93,7 +92,7 @@ function SearchGame(): JSX.Element {
           <Pagination
             count={Math.ceil(filteredGames.length / gamesPerPage)}
             page={currentPage}
-            onChange={handlePageChange}
+            // onChange={handlePageChange}
             color="primary"
           />
         </Box>
