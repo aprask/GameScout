@@ -31,7 +31,7 @@ services:
     networks:
       - default
     volumes:
-      - ./server/src/auth/keys:/usr/local/app/auth/keys:ro # read only!
+      - ./server/src/auth/keys:/usr/local/app/dist/auth/keys:ro
     environment:
       - NODE_ENV=production
       - DEV_HOST=db
