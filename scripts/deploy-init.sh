@@ -9,7 +9,8 @@ sudo apt install -y \
     curl \
     gnupg \
     lsb-release \
-    git
+    git \
+    certbot python3-certbot-nginx
 
 ## NODE ##
 # https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04
