@@ -46,6 +46,7 @@ services:
       - "80:80"
     networks:
       - default
+    volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       - VITE_APP_ENV=production
