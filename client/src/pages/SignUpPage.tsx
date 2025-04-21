@@ -64,7 +64,8 @@ function SignUpPage() {
           setPasswordErrorMessage('Passwords do not match');
           return;
         }
-        let res: import("axios").AxiosResponse | null = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let res: any | null = null;
         if (`${import.meta.env.VITE_APP_ENV}` === "production") {
           try {
             res = await axios.post(
