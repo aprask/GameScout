@@ -33,7 +33,7 @@ services:
     volumes:
       - ./server/src/auth/keys:/usr/local/app/dist/auth/keys:ro
     environment:
-      - NODE_ENV=production
+      - APP_ENV=production
       - DEV_HOST=db
     depends_on:
       - db
@@ -47,19 +47,18 @@ services:
     networks:
       - default
     environment:
-      - NODE_ENV=production
+      - VITE_APP_ENV=production
   scheduler-proc:
-    build:
-      context: ./scheduler-proc
-      dockerfile: Dockerfile
-    container_name: scheduler-proc
-    expose:
-      - "3002"
-    depends_on:
-      - server
-      - rabbitmq
-    environment:
-      - NODE_ENV=production
+      build:
+        context: ./scheduler-proc
+        dockerfile: Dockerfile.dev
+      ports:
+        - "3002:3002"
+      volumes:
+        - ./scheduler-proc:/usr/local/app
+        - /usr/local/app/node_modules
+      environment:
+      - APP_ENV=production
 
 volumes:
   postgres-data:

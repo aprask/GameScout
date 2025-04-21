@@ -30,18 +30,12 @@ function NavBar() {
   useEffect(() => {
     if (!isAuthenticated) return;
     const fetchProfileImg = async() => {
-      try {
-        let res = await axios.get(
-          `/api/v1/profile/${profileId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            }
-          }
-        );
-        res = await axios.get(
-            `/api/v1/image/${res.data.profile.profile_img}`,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let res: any | null = null;
+      if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+        try {
+          res = await axios.get(
+            `/api/v1/profile/${profileId}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -49,13 +43,51 @@ function NavBar() {
               }
             }
           );
-          const blob = new Blob([res.data.image.image_data.data], { type: 'image/png' });
-          if (blob) {
-            const imageURL = URL.createObjectURL(blob);
-            setProfileImage(imageURL);
-          }
-      } catch (err) {
-        console.error("Error fetching profile image:", err)
+          res = await axios.get(
+              `/api/v1/image/${res.data.profile.profile_img}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                }
+              }
+            );
+            const blob = new Blob([res.data.image.image_data.data], { type: 'image/png' });
+            if (blob) {
+              const imageURL = URL.createObjectURL(blob);
+              setProfileImage(imageURL);
+            }
+        } catch (err) {
+          console.error("Error fetching profile image:", err)
+        }  
+      } else {
+        try {
+          res = await axios.get(
+            `${import.meta.env.VITE_DEV_URL}/api/v1/profile/${profileId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              }
+            }
+          );
+          res = await axios.get(
+              `${import.meta.env.VITE_DEV_URL}/api/v1/image/${res.data.profile.profile_img}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                }
+              }
+            );
+            const blob = new Blob([res.data.image.image_data.data], { type: 'image/png' });
+            if (blob) {
+              const imageURL = URL.createObjectURL(blob);
+              setProfileImage(imageURL);
+            }
+        } catch (err) {
+          console.error("Error fetching profile image:", err)
+        }  
       }
     }
     fetchProfileImg();

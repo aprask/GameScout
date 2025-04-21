@@ -31,21 +31,43 @@ function DynamicGame(): JSX.Element {
   useEffect(() => {
     const fetchGameDetails = async () => {
       setLoading(true);
-      try {
-        const response = await fetch(`/api/v1/igdb/${id}`);
-
-        if (!response.ok) {
-          console.log("aaaaaaahhhhh");
-          throw new Error("Failed to fetch game details");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let res: any | null = null;
+      if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+        try {
+          res = await fetch(`/api/v1/igdb/${id}`);
+  
+          if (!res.ok) {
+            console.log("aaaaaaahhhhh");
+            throw new Error("Failed to fetch game details");
+          }
+  
+          const data: GameData = await res.json();
+          setGame(data);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching game details:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        try {
+          res = await fetch(`${import.meta.env.VITE_APP_ENV}/api/v1/igdb/${id}`);
+  
+          if (!res.ok) {
+            console.log("aaaaaaahhhhh");
+            throw new Error("Failed to fetch game details");
+          }
+  
+          const data: GameData = await res.json();
+          setGame(data);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching game details:", error);
+        } finally {
+          setLoading(false);
         }
 
-        const data: GameData = await response.json();
-        setGame(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching game details:", error);
-      } finally {
-        setLoading(false);
       }
     };
 

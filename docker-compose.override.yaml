@@ -1,10 +1,34 @@
 services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/usr/local/app
+      - /usr/local/app/node_modules
+    environment:
+      - VITE_APP_ENV=development
   server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
     volumes:
       - ./server:/usr/local/app
-      - ./server/src/auth/keys:/usr/local/app/src/auth/keys:ro
+      - /usr/local/app/node_modules
     environment:
-      - NODE_ENV=development
-      - DEV_HOST=db
-      - DB_HOST=db
-    command: npm run dev
+      - APP_ENV=development
+  scheduler-proc:
+    build:
+      context: ./scheduler-proc
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./scheduler-proc:/usr/local/app
+      - /usr/local/app/node_modules
+    environment:
+      - APP_ENV=development

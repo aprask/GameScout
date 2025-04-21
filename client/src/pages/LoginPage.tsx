@@ -72,31 +72,53 @@ function LoginPage() {
     async function handleSubmit(event: { preventDefault: () => void; }) {
         event.preventDefault();
         if (!validateInputs()) return;
-    
-        try {
-          const res = await axios.post(
-            "/api/v1/auth/login",
-            {
-              email: formValues.email,
-              password: formValues.password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let res: any | null = null;
+        if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+          try {
+            res = await axios.post(
+              "/api/v1/auth/login",
+              {
+                email: formValues.email,
+                password: formValues.password,
               },
-            }
-          );
-          console.log(res.status);
-          console.log(res.data);
-          if (res.status === 200) {
-            await updateAuthState(res.data);
-            setFormValues({ email: '', password: '' });
-            navigate('/', {replace: true});
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
+          } catch (err) {
+            setInvalidLogin(true);
+            console.log(`Encountered an error: ${err}`);
           }
-        } catch (err) {
-          setInvalidLogin(true);
-          console.log(`Encountered an error: ${err}`);
+        } else {
+          try {
+            res = await axios.post(
+              `${import.meta.env.VITE_DEV_URL}/api/v1/auth/login`,
+              {
+                email: formValues.email,
+                password: formValues.password,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
+          } catch (err) {
+            setInvalidLogin(true);
+            console.log(`Encountered an error: ${err}`);
+          }
+        }
+
+
+        if (res.status === 200) {
+          await updateAuthState(res.data);
+          setFormValues({ email: '', password: '' });
+          navigate('/', {replace: true});
         }
     }
 

@@ -64,28 +64,47 @@ function SignUpPage() {
           setPasswordErrorMessage('Passwords do not match');
           return;
         }
-    
-        try {
-          const res = await axios.post(
-            "/api/v1/users",
-            {
-              email: formValues.email,
-              password: formValues.password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+        let res: import("axios").AxiosResponse | null = null;
+        if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+          try {
+            res = await axios.post(
+              "/api/v1/users",
+              {
+                email: formValues.email,
+                password: formValues.password,
               },
-            }
-          );
-    
-          if (res.status === 201) {
-            setFormValues({ email: '', password: '', confirmedPassword: '' });
-            navigate('/login', {replace: true});
-          }
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
         } catch (err) {
           console.log(`Encountered an error: ${err}`);
+        }
+        } else {
+          try {
+            res = await axios.post(
+              `${import.meta.env.VITE_DEV_URL}/api/v1/users`,
+              {
+                email: formValues.email,
+                password: formValues.password,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
+          } catch (err) {
+            console.log(`Encountered an error: ${err}`);
+          }
+        }
+        if (res !== null && res.status === 201) {
+          setFormValues({ email: '', password: '', confirmedPassword: '' });
+          navigate('/login', {replace: true});
         }
     }
 
