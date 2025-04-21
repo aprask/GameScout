@@ -6,8 +6,26 @@ import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
 import { isDigit } from "../util/digit.js";
 
+function sortGamesByNew(games: GameTable[]): GameTable[] {
+    return games.sort((a, b) => {
+        if (a.created_at < b.created_at) return -1;
+        if (a.created_at > b.created_at) return 1;
+        return 0;
+    });
+}
 
-export async function getPaginatedGames(lim: string, page: string): Promise<PaginatedGame> {
+function sortGamesByOld(games: GameTable[]): GameTable[] {
+    return games.sort((a, b) => {
+        if (a.created_at < b.created_at) return 1;
+        if (a.created_at > b.created_at) return -1;
+        return 0;
+    });
+}
+
+export async function getPaginatedGames(lim: string, page: string, sort: string): Promise<PaginatedGame> {
+    const sortTypes: string[] = ["new", "old"];
+    if (!sortTypes.includes(sort)) sort = sortTypes[0];
+
     let numLim: number = 0; // for entries per page
     let numPage: number = 0; // the actual page number
 
@@ -23,7 +41,19 @@ export async function getPaginatedGames(lim: string, page: string): Promise<Pagi
 
     const games = await getAllGames();
     const totalEntries = games.length;
-    
+    let sortedGames: GameTable[];
+    switch (sort) {
+        case "new":
+            sortedGames = sortGamesByNew(games)
+            break;
+        case "old":
+            sortedGames = sortGamesByOld(games)
+            break;
+        default:
+            sortedGames = sortGamesByNew(games)
+            break;
+    }
+
     // if the user inputs a limit that is greater than the number of pages
     if (numLim > totalEntries) numLim = 1;
 
@@ -37,11 +67,11 @@ export async function getPaginatedGames(lim: string, page: string): Promise<Pagi
     const start = (numPage - 1) * numLim;
     // this gives us column offset (basically it tells us where in that page we stop)
     const end = start + numLim;
-    
+
     const paginatedGames: GameTable[] = [];
     for (let i = start; i < end; ++i) {
-        if (i >= games.length) break;
-        paginatedGames.push(games[i]);
+        if (i >= sortedGames.length) break;
+        paginatedGames.push(sortedGames[i]);
     }
 
     const paginatedGameRes: PaginatedGame = {
