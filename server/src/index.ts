@@ -36,9 +36,9 @@ app.use('/api/v1/auth', authRouter);
 
 const PORT = process.env.PORT ?? 3000;
 
-const CONSUMER = new Consumer("GAME_DATA");
-await CONSUMER.consumerConfig();
 if (process.env.APP_ENV !== 'test') {
+    const CONSUMER = new Consumer("GAME_DATA");
+    await CONSUMER.consumerConfig();
     app.listen(+PORT, '0.0.0.0', () => {
         console.log(`Listening on port ${PORT}`);
         migrateToLatest();

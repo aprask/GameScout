@@ -21,7 +21,7 @@ export async function getUserById(user_id: string): Promise<UserTable> {
 
 export async function createUser(email: string, password: string, new_user_token: string): Promise<UserTable> {
     let errorMessage = '';
-    if (!new_user_token || new_user_token !== process.env.NEW_USER) errorMessage += "Invalid New User Token"; 
+    if (!new_user_token || new_user_token !== process.env.API_MANAGEMENT_KEY) errorMessage += "Invalid New User Token"; 
     if (!email) errorMessage += "Email not given";
     if (!password) errorMessage += "Password not given";
     if (await userRepo.checkUserEmail(email)) errorMessage += "Duplicate email";
