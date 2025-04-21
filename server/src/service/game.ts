@@ -1,9 +1,58 @@
-import { GameTable, GameMessage, ImageTable } from "../data/models/models.js";
+import { GameTable, GameMessage, ImageTable, PaginatedGame } from "../data/models/models.js";
 import * as gameRepo from "../repository/game.js";
 import * as imgRepo from "../repository/image.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
+import { isDigit } from "../util/digit.js";
+
+
+export async function getPaginatedGames(lim: string, page: string): Promise<PaginatedGame> {
+    let numLim: number = 0; // for entries per page
+    let numPage: number = 0; // the actual page number
+
+    // we're going to gracefully handle this (not sending a 400 for invalid query params)
+
+    if (!isDigit(lim)) numLim = 1;
+    else if (+lim <= 0) numLim = 1;
+    else numLim = +lim;
+
+    if (!isDigit(page)) numPage = 1;
+    else if (+page <= 0) numPage = 1;
+    else numPage = +page;
+
+    const games = await getAllGames();
+    const totalEntries = games.length;
+    
+    // if the user inputs a limit that is greater than the number of pages
+    if (numLim > totalEntries) numLim = 1;
+
+    let totalPages = Math.ceil(totalEntries / numLim);
+    if (totalPages <= 0) totalPages = 1;
+
+    // cannot exceed page limit
+    if (numPage > totalPages) numPage = totalPages;
+
+    // simple enough, we're getting the start of it Pg-1, since we start at 1 and then the number of rows we shift
+    const start = (numPage - 1) * numLim;
+    // this gives us column offset (basically it tells us where in that page we stop)
+    const end = start + numLim;
+    
+    const paginatedGames: GameTable[] = [];
+    for (let i = start; i < end; ++i) {
+        if (i >= games.length) break;
+        paginatedGames.push(games[i]);
+    }
+
+    const paginatedGameRes: PaginatedGame = {
+        current_page: numPage,
+        limit: numLim,
+        items: totalEntries,
+        pages: totalPages,
+        data: paginatedGames
+    }
+    return paginatedGameRes;
+}
 
 export function getAllGames(): Promise<GameTable[]> {
     return gameRepo.getAllGames();

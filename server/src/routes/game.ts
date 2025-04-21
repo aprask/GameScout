@@ -16,6 +16,15 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json({ games });
 }));
 
+router.get('/list', asyncHandler(async (req, res) => {
+    let lim: string = '';
+    let page: string = '';
+    if (typeof req.query.lim === 'string') lim = req.query.lim;
+    if (typeof req.query.page === 'string') page = req.query.page;
+    const games = await gameService.getPaginatedGames(lim, page);
+    res.status(200).json({ games });
+}));
+
 router.get('/:game_id', asyncHandler(async (req, res) => {
     const game = await gameService.getGameById(req.params.game_id);
     res.status(200).json({ game });
