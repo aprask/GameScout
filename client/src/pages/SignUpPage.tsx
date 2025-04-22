@@ -66,6 +66,7 @@ function SignUpPage() {
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let res: any | null = null;
+        console.log(`PROD: ${import.meta.env.VITE_PROD_URL}`)
         if (`${import.meta.env.VITE_APP_ENV}` === "production") {
           try {
             res = await axios.post(
