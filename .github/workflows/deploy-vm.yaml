@@ -11,7 +11,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{secrets.SSH_HOST}}
-          key: ${{secrets.VM_PRIV}}
+          key: ${{secrets.VM_PUB}}
           username: ${{secrets.VM_USER}}
           script: |
             docker compose down
