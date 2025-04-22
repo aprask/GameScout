@@ -33,15 +33,30 @@ function GameReviews(): JSX.Element {
   // Fetch reviews for the game
   useEffect(() => {
     const fetchReviews = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/api/reviews/${gameId}`);
-        setReviews(response.data.reviews);
-      } catch (err) {
-        console.log(err);
-        setError("Failed to fetch reviews.");
-      } finally {
-        setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let res: any | null = null;
+      if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+        try {
+          setLoading(true);
+          res = await axios.get(`${import.meta.env.VITE_PROD_URL}/api/reviews/${gameId}`);
+          setReviews(res.data.reviews);
+        } catch (err) {
+          console.log(err);
+          setError("Failed to fetch reviews.");
+        } finally {
+          setLoading(false);
+        } 
+      } else {
+        try {
+          setLoading(true);
+          res = await axios.get(`${import.meta.env.VITE_DEV_URL}/api/reviews/${gameId}`);
+          setReviews(res.data.reviews);
+        } catch (err) {
+          console.log(err);
+          setError("Failed to fetch reviews.");
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -57,13 +72,24 @@ function GameReviews(): JSX.Element {
 
     try {
       setError(null);
-      const response = await axios.post(`/api/reviews`, {
-        game_id: gameId,
-        user_id: "current_user_id", // Replace with actual user ID
-        rating,
-        review_text: newReview,
-      });
-      setReviews((prev) => [...prev, response.data.new_review]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let res: any | null = null;
+      if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+        res = await axios.post(`${import.meta.env.VITE_PROD_URL}/api/reviews`, {
+          game_id: gameId,
+          user_id: "current_user_id", // Replace with actual user ID
+          rating,
+          review_text: newReview,
+        });
+      } else {
+        res = await axios.post(`${import.meta.env.VITE_DEV_URL}/api/reviews`, {
+          game_id: gameId,
+          user_id: "current_user_id", // Replace with actual user ID
+          rating,
+          review_text: newReview,
+        });
+      }
+      setReviews((prev) => [...prev, res.data.new_review]);
       setNewReview("");
       setRating(0);
     } catch (err) {
