@@ -10,6 +10,11 @@ export function getAllAdmins(): Promise<AdminTable[]> {
     return adminRepo.getAllAdmins();
 }
 
+export function getAdminByUserId(userId: string): Promise<AdminTable | undefined> {
+    if (!validate(userId)) throwErrorException(`[service.admin.getUserId] Invalid UUID: ${userId}`, 'Invalid userId ID', 400);
+    return adminRepo.getAdminByUserId(userId);
+}
+
 export async function getAdminById(admin_id: string): Promise<AdminTable> {
     if (!validate(admin_id)) throwErrorException(`[service.admin.getAdminById] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
     return adminRepo.getAdminById(admin_id);

@@ -14,6 +14,12 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json({admins: admins});
 }));
 
+router.get('/:user_id', asyncHandler(async (req, res) => {
+    const admin = await adminService.getAdminByUserId(req.params.user_id);
+    if (admin === undefined) res.status(200).json({isAdmin: false});
+    else res.status(200).json({isAdmin: true});
+}));
+
 router.get('/:admin_id', asyncHandler (async (req, res) => {
     const admin = await adminService.getAdminById(req.params.admin_id);
     res.status(200).json({admin: admin});
