@@ -27,7 +27,7 @@ export default async function gameJob() {
         );
         const { access_token } = response.data;
         response = await axios.post(
-          "https://api.igdb.com/v4/games?limit=50&fields=name,cover,updated_at,involved_companies,summary,first_release_date",
+          "https://api.igdb.com/v4/games?limit=500&fields=name,cover,updated_at,involved_companies,summary,first_release_date",
           null,
           {
             headers: {
