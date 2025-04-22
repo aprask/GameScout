@@ -33,7 +33,7 @@ export default function UnbanUserForm() {
         
             if (res.status !== 200) {
                 console.log("Failed to unban user");
-                setError(`Failed to ban user: ${email}`);
+                setError(`Failed to unban user: ${email}`);
             } else {
                 console.log("Successfully unbanned user");
                 setSuccess(`Successfully unbanned user: ${email}`);
