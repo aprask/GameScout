@@ -17,7 +17,7 @@ router.get('/', asyncHandler(async (req, res) => {
 router.get('/:user_id', asyncHandler(async (req, res) => {
     const admin = await adminService.getAdminByUserId(req.params.user_id);
     if (admin === undefined) res.status(200).json({isAdmin: false});
-    else res.status(200).json({isAdmin: true});
+    else res.status(200).json({isAdmin: true, admin_id: admin.admin_id});
 }));
 
 router.get('/:admin_id', asyncHandler (async (req, res) => {

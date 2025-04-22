@@ -143,6 +143,13 @@ function NavBar() {
               <ListItemButton>Games</ListItemButton>
             </NavLink>
             <NavLink
+              to="/admin"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Admin</ListItemButton>
+            </NavLink>
+            <NavLink
               to="/"
               style={{ textDecoration: "none", color: "inherit" }}
               onClick={toggleDrawer}
