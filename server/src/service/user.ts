@@ -19,6 +19,34 @@ export async function getUserById(user_id: string): Promise<UserTable> {
     return userRepo.getUserById(user_id);
 }
 
+export async function banUserByEmail(email: string, adminId: string): Promise<void> {
+    let errorMessage = '';
+    if (!email) errorMessage += "Email not provided";
+    if (!adminId) errorMessage += "Admin ID not provided";
+    if (!validate(adminId)) errorMessage += "Admin ID is invalid";
+    if (errorMessage) {
+        errorMessage.trim();
+        throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
+    }
+    const admin = adminRepo.getAdminById(adminId);
+    if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
+    await userRepo.banUserByEmail(email);
+}
+
+export async function unbanUserByEmail(email: string, adminId: string): Promise<void> {
+    let errorMessage = '';
+    if (!email) errorMessage += "Email not provided";
+    if (!adminId) errorMessage += "Admin ID not provided";
+    if (!validate(adminId)) errorMessage += "Admin ID is invalid";
+    if (errorMessage) {
+        errorMessage.trim();
+        throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
+    }
+    const admin = adminRepo.getAdminById(adminId);
+    if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
+    await userRepo.unbanUserByEmail(email);
+}
+
 export async function createUser(email: string, password: string, new_user_token: string): Promise<UserTable> {
     let errorMessage = '';
     if (!new_user_token || new_user_token !== process.env.API_MANAGEMENT_KEY) errorMessage += "Invalid New User Token"; 
