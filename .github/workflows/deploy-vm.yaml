@@ -4,7 +4,7 @@ on:
     types: [labeled]
 jobs:
   deploy:
-    if: github.event.label.name == 'deploy'
+    if: ${{github.event.label.name == 'deploy'}}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Node JS App
