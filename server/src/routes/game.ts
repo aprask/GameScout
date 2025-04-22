@@ -14,6 +14,17 @@ router.use(authMiddleware as RequestHandler);
 router.get('/', asyncHandler(async (req, res) => {
     const games = await gameService.getAllGames();
     res.status(200).json({ games });
+})); 
+
+router.get('/list', asyncHandler(async (req, res) => {
+    let lim: string = '';
+    let page: string = '';
+    let sort: string = '';
+    if (typeof req.query.lim === 'string') lim = req.query.lim;
+    if (typeof req.query.page === 'string') page = req.query.page;
+    if (typeof req.query.sort === 'string') sort = req.query.sort;
+    const games = await gameService.getPaginatedGames(lim, page, sort);
+    res.status(200).json({ games });
 }));
 
 router.get('/:game_id', asyncHandler(async (req, res) => {

@@ -8,6 +8,16 @@ export async function getAllAdmins(): Promise<AdminTable[]> {
   return admins;
 }
 
+export async function getAdminByUserId(user_id: string): Promise<AdminTable | undefined> {
+    const admin = await db
+        .selectFrom("admin")
+        .selectAll()
+        .where("admin.user_id", "=", user_id)
+        .executeTakeFirst();
+    if (!admin) return undefined;
+    else return admin;
+} 
+
 export async function getAdminById(admin_id: string): Promise<AdminTable> {
   console.log(admin_id);
   const admin = await db.selectFrom('admin').selectAll().where('admin_id', '=', admin_id).executeTakeFirst();

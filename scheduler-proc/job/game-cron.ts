@@ -27,7 +27,7 @@ export default async function gameJob() {
         );
         const { access_token } = response.data;
         response = await axios.post(
-          "https://api.igdb.com/v4/games?limit=500&fields=name,cover,updated_at,involved_companies,summary,first_release_date",
+          "https://api.igdb.com/v4/games?limit=50&fields=name,cover,updated_at,involved_companies,summary,first_release_date",
           null,
           {
             headers: {
@@ -40,7 +40,6 @@ export default async function gameJob() {
         for (let i = 0; i < response.data.length; i++) {
           const { cover, first_release_date, name, summary, updated_at } =
             response.data[i];
-          console.log(`Cover: ${cover}`);
 
           const convert_release_date = new Date(first_release_date * 1000);
           const convert_recent_date = new Date(updated_at * 1000);

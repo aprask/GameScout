@@ -13,8 +13,11 @@ import { Box } from "@mui/material";
 
 interface loginResp {
   token: string,
+  email: string,
   user_id: string,
-  profile_id: string
+  profile_id: string,
+  isAdmin: boolean,
+  admin_id: string
 }
 
 function LoginPage() {
@@ -30,9 +33,11 @@ function LoginPage() {
     async function updateAuthState(data: loginResp) {
       await login(
         data.token,
-        formValues.email,
+        data.email,
         data.user_id,
-        data.profile_id
+        data.profile_id,
+        data.isAdmin,
+        data.admin_id
       );
     }
 
@@ -74,7 +79,7 @@ function LoginPage() {
         if (!validateInputs()) return;
     
         try {
-          const res = await axios.post(
+          let res = await axios.post(
             "http://localhost:3000/api/v1/auth/login",
             {
               email: formValues.email,
@@ -90,7 +95,29 @@ function LoginPage() {
           console.log(res.status);
           console.log(res.data);
           if (res.status === 200) {
-            await updateAuthState(res.data);
+            const loginRespData: loginResp = {
+              token: res.data.token,
+              user_id: res.data.user_id,
+              email: res.data.email,
+              profile_id: res.data.profile_id,
+              isAdmin: false,
+              admin_id: ""
+            };
+            res = await axios.get(
+              `http://localhost:3000/api/v1/admin/${res.data.user_id}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${res.data.token}`,
+                }
+              }
+            );
+            if (res.data.isAdmin) {
+              console.log("Admin");
+              loginRespData.isAdmin = true
+              loginRespData.admin_id = res.data.admin_id;
+            } else console.log("Not an admin");
+            await updateAuthState(loginRespData);
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }

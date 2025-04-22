@@ -107,3 +107,11 @@ export interface GameMessage {
   release_date: number;
   cover_id: string;
 }
+
+export interface PaginatedGame {
+  current_page: number;
+  limit: number;
+  items: number;
+  pages: number;
+  data: GameTable[];
+}

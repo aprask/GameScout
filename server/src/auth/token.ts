@@ -9,7 +9,7 @@ const dirName = path.dirname(fileName);
 
 export async function verifyJWT(token: string): Promise<boolean> {
     try {
-        const public_key = await fs.readFile(path.join(dirName, 'public.pem'), "utf-8");
+        const public_key = await fs.readFile(path.join(dirName, './keys/public.pem'), "utf-8");
         const authSegments = token.split(' ');
         if (authSegments.length !== 2 || authSegments[0] !== 'Bearer') {
             throwErrorException(`[server.src.utils.token.verifyJWT] token invalid`, 'Invalid Token', 401);
@@ -25,7 +25,7 @@ export async function verifyJWT(token: string): Promise<boolean> {
 
 export async function signJWT(email: string): Promise<string | undefined> {
     try {
-        const private_key = await fs.readFile(path.join(dirName, 'private.pem'), "utf-8");
+        const private_key = await fs.readFile(path.join(dirName, './keys/private.pem'), "utf-8");
         const token = jwt.sign({ email: email }, private_key, { algorithm: 'RS256' })
         return token;
     } catch (error) {

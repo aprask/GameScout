@@ -42,4 +42,17 @@ router.delete('/:user_id', asyncHandler(async (req, res) => {
     res.sendStatus(204);
 }));
 
+router.patch('/ban', asyncHandler(async (req, res) => {
+    const ban_action: boolean = req.query.ban_action === 'true';
+    const { email, admin_id } = req.body;
+    if (ban_action === true) {
+        await userService.banUserByEmail(email, admin_id);
+        res.status(200).json({banned_user: email});
+    }
+    else {
+        await userService.unbanUserByEmail(email, admin_id);
+        res.status(200).json({unbanned_user: email});
+    }
+}));
+
 export default router;
