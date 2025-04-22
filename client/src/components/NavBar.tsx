@@ -35,7 +35,7 @@ function NavBar() {
       if (`${import.meta.env.VITE_APP_ENV}` === "production") {
         try {
           res = await axios.get(
-            `/api/v1/profile/${profileId}`,
+            `${import.meta.env.VITE_PROD_URL}/api/v1/profile/${profileId}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -44,7 +44,7 @@ function NavBar() {
             }
           );
           res = await axios.get(
-              `/api/v1/image/${res.data.profile.profile_img}`,
+              `${import.meta.env.VITE_PROD_URL}/api/v1/image/${res.data.profile.profile_img}`,
               {
                 headers: {
                   "Content-Type": "application/json",

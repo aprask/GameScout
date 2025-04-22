@@ -35,7 +35,7 @@ function DynamicGame(): JSX.Element {
       let res: any | null = null;
       if (`${import.meta.env.VITE_APP_ENV}` === "production") {
         try {
-          res = await fetch(`/api/v1/igdb/${id}`);
+          res = await fetch(`${import.meta.env.VITE_PROD_URL}/api/v1/igdb/${id}`);
   
           if (!res.ok) {
             console.log("aaaaaaahhhhh");

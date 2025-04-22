@@ -77,7 +77,7 @@ function LoginPage() {
         if (`${import.meta.env.VITE_APP_ENV}` === "production") {
           try {
             res = await axios.post(
-              "/api/v1/auth/login",
+              `${import.meta.env.VITE_PROD_URL}/api/v1/auth/login`,
               {
                 email: formValues.email,
                 password: formValues.password,
