@@ -29,12 +29,12 @@ export interface ImageTable {
 export interface GameTable {
   game_id: string;
   game_name: string;
-  game_art: string;
   is_supported: boolean;
   summary: string;
   release_date: Date;
   created_at: Date;
   updated_at: Date;
+  cover_id: string;
 }
 
 export interface ReviewTable {
@@ -102,8 +102,8 @@ export interface AuthTable {
 
 export interface GameMessage {
   game_name: string;
-  game_art: { type: "Buffer"; data: number[] };
   is_supported: boolean;
   summary: string;
   release_date: number;
+  cover_id: string;
 }
