@@ -20,7 +20,7 @@ import { useAuth } from '../context/AuthContext';
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileImage, setProfileImage] = useState<string>("/anon.png");
-  const { isAuthenticated, profileId, token, logout } = useAuth()
+  const { isAuthenticated, profileId, token, logout, isAdmin } = useAuth()
 
   const handleLogout = () => {
     logout();
@@ -174,6 +174,13 @@ function NavBar() {
             >
               <ListItemButton>Games</ListItemButton>
             </NavLink>
+            {isAdmin && <NavLink
+              to="/admin"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={toggleDrawer}
+            >
+              <ListItemButton>Admin</ListItemButton>
+            </NavLink>}
             <NavLink
               to="/"
               style={{ textDecoration: "none", color: "inherit" }}
