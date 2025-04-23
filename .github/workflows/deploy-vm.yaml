@@ -93,4 +93,5 @@ jobs:
             cd ..
             echo 'Starting containers...'
             docker compose -f docker-compose.yaml up --build -d
+            sleep 0.5
             echo 'Deployment complete'
