@@ -85,6 +85,9 @@ jobs:
             POSTGRES_DB=${{secrets.POSTGRES_DB}}
             APP_ENV=${{secrets.APP_ENV}}
             EOF
+            cd src/auth/keys
+            openssl genrsa -out private.pem 3072
+            openssl rsa -in private.pem -pubout -out public.pem
             cd ..
             if [ ! -d "scheduler-proc" ]; then
               echo "Scheduler-proc directory not found"
