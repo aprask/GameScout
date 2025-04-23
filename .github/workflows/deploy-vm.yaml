@@ -88,7 +88,11 @@ jobs:
             cd src/auth/keys
             openssl genrsa -out private.pem 3072
             openssl rsa -in private.pem -pubout -out public.pem
-            cd ..
+            if [ ! -f "private.pem" ] || [ ! -f "public.pem" ]; then
+              echo "Key files were not generated"
+              exit 1
+            fi
+            cd ../../../..
             if [ ! -d "scheduler-proc" ]; then
               echo "Scheduler-proc directory not found"
               exit 1
