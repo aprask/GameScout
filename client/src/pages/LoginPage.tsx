@@ -171,7 +171,7 @@ function LoginPage() {
             setInvalidLogin(true);
             console.log(`Encountered an error: ${err}`);
           }
-        }
+      }
     }
 
     return (
