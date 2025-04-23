@@ -85,7 +85,8 @@ jobs:
             POSTGRES_DB=${{secrets.POSTGRES_DB}}
             APP_ENV=${{secrets.APP_ENV}}
             EOF
-            cd src/auth/keys
+            cd ..
+            cd server/src/auth/keys/
             openssl genrsa -out private.pem 3072
             openssl rsa -in private.pem -pubout -out public.pem
             if [ ! -f "private.pem" ] || [ ! -f "public.pem" ]; then
