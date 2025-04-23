@@ -22,12 +22,15 @@ jobs:
               echo "Failed to clone repository"
               exit 1
             fi
+            git checkout deploy
             echo 'Cloned repo'
             if [ ! -d "GameScout" ]; then
               echo "GameScout directory not found after clone"
               exit 1
             fi
             cd GameScout
+            git checkout ${{github.head_ref}}
+            echo "Checked out branch: ${{github.head_ref}}"
             if [ ! -d "scripts" ]; then
               echo "Scripts directory not found"
               exit 1
