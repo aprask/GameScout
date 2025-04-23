@@ -46,10 +46,8 @@ jobs:
             cd ..
             touch .env
             cat > .env << EOF
-            RABBIT_HOST=${{secrets.RABBIT_HOST}}
-            RABBIT_PORT=${{secrets.RABBIT_PORT}}
-            RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
-            RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
+            RABBITMQ_USER=${{secrets.RABBIT_USERNAME}}
+            RABBITMQ_PASSWORD=${{secrets.RABBIT_PASSWORD}}
             POSTGRES_USER=${{secrets.POSTGRES_USER}}
             POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
             POSTGRES_DB=${{secrets.POSTGRES_DB}}
