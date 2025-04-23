@@ -23,18 +23,41 @@ jobs:
               exit 1
             fi
             echo 'Cloned repo'
+            if [ ! -d "GameScout" ]; then
+              echo "GameScout directory not found after clone"
+              exit 1
+            fi
+            cd GameScout
+            if [ ! -d "scripts" ]; then
+              echo "Scripts directory not found"
+              exit 1
+            fi
             cd scripts
+            if [ ! -f "deploy-init.sh" ]; then
+              echo "deploy-init.sh not found"
+              exit 1
+            fi
             chmod +x deploy-init.sh
             ./deploy-init.sh
             echo 'Downloaded depedencies'
-            cd ../client
+            cd ..
+            if [ ! -d "client" ]; then
+              echo "Client directory not found"
+              exit 1
+            fi
+            cd client
             touch .env
             cat > .env << EOF
             VITE_PROD_URL=${{secrets.VITE_PROD_URL}}
             VITE_APP_ENV=${{secrets.VITE_APP_ENV}}
             VITE_API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
             EOF
-            cd ../server
+            cd ..
+            if [ ! -d "server" ]; then
+              echo "Server directory not found"
+              exit 1
+            fi
+            cd server
             touch .env
             cat > .env << EOF
             API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
@@ -51,7 +74,12 @@ jobs:
             POSTGRES_DB=${{secrets.POSTGRES_DB}}
             APP_ENV=${{secrets.APP_ENV}}
             EOF
-            cd ../scheduler-proc
+            cd ..
+            if [ ! -d "scheduler-proc" ]; then
+              echo "Scheduler-proc directory not found"
+              exit 1
+            fi
+            cd scheduler-proc
             touch .env
             cat > .env << EOF
             IGDB_CLIENT=${{secrets.IGDB_CLIENT}}
