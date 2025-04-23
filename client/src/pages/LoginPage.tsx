@@ -77,31 +77,100 @@ function LoginPage() {
     async function handleSubmit(event: { preventDefault: () => void; }) {
         event.preventDefault();
         if (!validateInputs()) return;
-    
-        try {
-          const res = await axios.post(
-            "http://localhost:3000/api/v1/auth/login",
-            {
-              email: formValues.email,
-              password: formValues.password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let res: any | null = null;
+        if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+          try {
+            res = await axios.post(
+              `${import.meta.env.VITE_PROD_URL}/api/v1/auth/login`,
+              {
+                email: formValues.email,
+                password: formValues.password,
               },
-            }
-          );
-          console.log(res.status);
-          console.log(res.data);
-          if (res.status === 200) {
-            await updateAuthState(res.data);
-            setFormValues({ email: '', password: '' });
-            navigate('/', {replace: true});
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
+            if (res.status === 200) {
+              const loginRespData: loginResp = {
+                token: res.data.token,
+                user_id: res.data.user_id,
+                email: res.data.email,
+                profile_id: res.data.profile_id,
+                isAdmin: false,
+                admin_id: ""
+              };
+              res = await axios.get(
+                `${import.meta.env.VITE_PROD_URL}/api/v1/admin/${res.data.user_id}`,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${res.data.token}`,
+                  }
+                }
+              );
+              if (res.data.isAdmin) {
+                console.log("Admin");
+                loginRespData.isAdmin = true
+                loginRespData.admin_id = res.data.admin_id;
+              } else console.log("Not an admin");
+              await updateAuthState(loginRespData);
+              setFormValues({ email: '', password: '' });
+              navigate('/', {replace: true});
+            }    
+          } catch (err) {
+            setInvalidLogin(true);
+            console.log(`Encountered an error: ${err}`);
           }
-        } catch (err) {
-          setInvalidLogin(true);
-          console.log(`Encountered an error: ${err}`);
+        } else {
+          try {
+            res = await axios.post(
+              `${import.meta.env.VITE_DEV_URL}/api/v1/auth/login`,
+              {
+                email: formValues.email,
+                password: formValues.password,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+                },
+              }
+            );
+            if (res.status === 200) {
+              const loginRespData: loginResp = {
+                token: res.data.token,
+                user_id: res.data.user_id,
+                email: res.data.email,
+                profile_id: res.data.profile_id,
+                isAdmin: false,
+                admin_id: ""
+              };
+              res = await axios.get(
+                `${import.meta.env.VITE_DEV_URL}/api/v1/admin/${res.data.user_id}`,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${res.data.token}`,
+                  }
+                }
+              );
+              if (res.data.isAdmin) {
+                console.log("Admin");
+                loginRespData.isAdmin = true
+                loginRespData.admin_id = res.data.admin_id;
+              } else console.log("Not an admin");
+              await updateAuthState(loginRespData);
+              setFormValues({ email: '', password: '' });
+              navigate('/', {replace: true});
+            }    
+          } catch (err) {
+            setInvalidLogin(true);
+            console.log(`Encountered an error: ${err}`);
+          }
         }
     }
 
@@ -137,3 +206,52 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
+
+// let res: any | null = null;
+// if (`${import.meta.env.VITE_APP_ENV}` === "production") {
+//   try {
+//     res = await axios.post(
+//       `${import.meta.env.VITE_PROD_URL}/api/v1/auth/login`,
+//       {
+//         email: formValues.email,
+//         password: formValues.password,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+//         },
+//       }
+//     );
+//   } catch (err) {
+//     setInvalidLogin(true);
+//     console.log(`Encountered an error: ${err}`);
+//   }
+// } else {
+//   try {
+//     res = await axios.post(
+//       `${import.meta.env.VITE_DEV_URL}/api/v1/auth/login`,
+//       {
+//         email: formValues.email,
+//         password: formValues.password,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+//         },
+//       }
+//     );
+//   } catch (err) {
+//     setInvalidLogin(true);
+//     console.log(`Encountered an error: ${err}`);
+//   }
+// }
+
+
+// if (res.status === 200) {
+//   await updateAuthState(res.data);
+//   setFormValues({ email: '', password: '' });
+//   navigate('/', {replace: true});
+// }
