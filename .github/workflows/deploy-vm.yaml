@@ -93,7 +93,7 @@ jobs:
               echo "Key files were not generated"
               exit 1
             fi
-            cd ../../../..
+            cd ~/deploy/Gamescout
             if [ ! -d "scheduler-proc" ]; then
               echo "Scheduler-proc directory not found"
               exit 1
