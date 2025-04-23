@@ -20,7 +20,7 @@ router.get('/:user_id', asyncHandler(async (req, res) => {
     else res.status(200).json({isAdmin: true, admin_id: admin.admin_id});
 }));
 
-router.get('/:admin_id', asyncHandler (async (req, res) => {
+router.get('/adminId/:admin_id', asyncHandler (async (req, res) => {
     const admin = await adminService.getAdminById(req.params.admin_id);
     res.status(200).json({admin: admin});
 }));
