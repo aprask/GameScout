@@ -40,24 +40,23 @@ describe('Admin Routes', () => {
     assert.ok(Array.isArray(res.body.admins));
   });
 
-  //gettin error "error: value too long for type character varying(24)" from postgres?
+  it('GET /api/v1/admin/adminid/:admin_id should return a specific admin', async () => {
+    const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'admin@GET.com',
+      password: 'securepassword',
+    });
+    assert.strictEqual(userRes.status, 201);
 
-  // it('GET /api/v1/admin/:admin_id should return a specific admin', async () => {
-  //   const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
-  //     email: 'specificadmin@example.com',
-  //     password: 'securepassword',
-  //   });
-  //   assert.strictEqual(userRes.status, 201);
+    const adminRes = await request.post('/api/v1/admin').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: userRes.body.new_user.user_id,
+    });
 
-  //   const adminRes = await request.post('/api/v1/admin').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
-  //     user_id: userRes.body.new_user.user_id,
-  //   });
-  //   assert.strictEqual(adminRes.status, 201);
+    assert.strictEqual(adminRes.status, 201);
 
-  //   const res = await request.get(`/api/v1/admin/${adminRes.body.new_admin.admin_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!).send();
-  //   assert.strictEqual(res.status, 200);
-  //   assert.strictEqual(res.body.admin.admin_id, adminRes.body.new_admin.admin_id);
-  // });
+    const res = await request.get(`/api/v1/admin/adminid/${adminRes.body.new_admin.admin_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!).send();
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.admin.admin_id, adminRes.body.new_admin.admin_id);
+  });
 
   it('DELETE /api/v1/admin/:admin_id should delete an admin', async () => {
     const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
@@ -78,25 +77,23 @@ describe('Admin Routes', () => {
     assert.strictEqual(res.status, 204);
   });
 
-  //gettin error "error: value too long for type character varying(24)" from postgres?
+  it('PUT /api/v1/admin/:admin_id should update an admin key', async () => {
+    const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'admin@PUT.com',
+      password: 'securepassword',
+    });
+    assert.strictEqual(userRes.status, 201);
 
-  // it('PUT /api/v1/admin/:admin_id should update an admin key', async () => {
-  //   const userRes = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
-  //     email: 'updateadminkey@example.com',
-  //     password: 'securepassword',
-  //   });
-  //   assert.strictEqual(userRes.status, 201);
+    const adminRes = await request.post('/api/v1/admin').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: userRes.body.new_user.user_id,
+    });
+    assert.strictEqual(adminRes.status, 201);
 
-  //   const adminRes = await request.post('/api/v1/admin').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
-  //     user_id: userRes.body.new_user.user_id,
-  //   });
-  //   assert.strictEqual(adminRes.status, 201);
-
-  //   const newAdminKey = 'new-admin-key';
-  //   const res = await request.put(`/api/v1/admin/${adminRes.body.new_admin.admin_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
-  //     admin_key: newAdminKey,
-  //   });
-  //   assert.strictEqual(res.status, 200);
-  //   assert.strictEqual(res.body.updated_admin.admin_key, newAdminKey);
-  // });
+    const newAdminKey = 'new-admin-key';
+    const res = await request.put(`/api/v1/admin/${adminRes.body.new_admin.admin_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      admin_key: newAdminKey,
+    });
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.updated_admin.admin_key, newAdminKey);
+  });
 });
