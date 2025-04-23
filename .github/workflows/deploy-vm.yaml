@@ -105,9 +105,10 @@ jobs:
             EOF
             cd ..
             echo 'Starting containers...'
-            docker compose up -d postgres rabbitmq
-            echo "Waiting for PostgreSQL and RabbitMQ to be ready..."
+            docker compose up -d rabbitmq
+            echo "Waiting for RabbitMQ to be ready..."
+            docker compose exec rabbitmq sh -c 'until rabbitmqctl await_startup; do sleep 2; done'
+            echo "Waiting for PostgreSQL to be ready..."
             docker compose exec postgres sh -c 'until pg_isready; do sleep 1; done'
-            docker compose exec rabbitmq sh -c 'until rabbitmq-diagnostics -q ping; do sleep 1; done'
             docker compose up -d --build
             echo 'Deployment complete'
