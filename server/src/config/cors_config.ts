@@ -6,7 +6,8 @@ const WHITE_LIST = [
     'https://64.225.31.139',
     'http://localhost:5173',
     'https://gamescout.xyz',
-    'http://gamescout.xyz'
+    'http://gamescout.xyz',
+    'https://www.gamescout.xyz'
 ];
 export const CORS_OPTIONS = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) {
