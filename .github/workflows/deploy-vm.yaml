@@ -98,7 +98,7 @@ jobs:
             fi
             cd ~/deploy/Gamescout
             if [ ! -d "scheduler-proc" ]; then
-              echo "Scheduler-proc directory not found"
+              echo "scheduler-proc directory not found"
               exit 1
             fi
             cd scheduler-proc
