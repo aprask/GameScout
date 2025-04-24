@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "cross-env APP_ENV=development NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
     "build": "tsc",
-    "testUser": "APP_ENV=test tsx --test ./test/*.test.ts"
+    "testUser": "APP_ENV=test tsx --test ./test/user.test.ts",
+    "testAdmin": "APP_ENV=test tsx --test ./test/admin.test.ts",
+    "testArticles": "APP_ENV=test tsx --test ./test/articles.test.ts",
+    "testHealth": "APP_ENV=test tsx --test ./test/health.test.ts",
+    "testComments":  "APP_ENV=test tsx --test ./test/comments.test.ts"
   },
   "keywords": [],
   "author": "",

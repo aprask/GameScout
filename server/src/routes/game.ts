@@ -39,6 +39,7 @@ router.post('/', asyncHandler(async (req, res) => {
         is_supported,
         summary,
         release_date,
+        cover_id,
     } = req.body;
 
     let admin_id: string = '';
@@ -50,6 +51,7 @@ router.post('/', asyncHandler(async (req, res) => {
         is_supported,
         summary,
         new Date(release_date),
+        cover_id,
         admin_id
     );
 

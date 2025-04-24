@@ -1,10 +1,10 @@
-import React from 'react';
-import { Container, Box, Paper } from '@mui/material';
+import React from "react";
+import { Container, Box, Paper } from "@mui/material";
 
 interface SignUpFormContainerProps {
-    header: React.ReactNode;
-    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-    children: React.ReactNode;
+  header: React.ReactNode;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  children: React.ReactNode;
 }
 
 function SignUpFormContainer(props: SignUpFormContainerProps) {
@@ -13,9 +13,10 @@ function SignUpFormContainer(props: SignUpFormContainerProps) {
       <Box
         sx={{
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          marginBottom: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         {props.header}
@@ -23,17 +24,17 @@ function SignUpFormContainer(props: SignUpFormContainerProps) {
           elevation={3}
           sx={{
             p: 4,
-            width: '40%',
+            width: "40%",
             borderRadius: 2,
-            backgroundColor: 'background.paper',
+            backgroundColor: "background.paper",
           }}
         >
           <Box
             component="form"
             onSubmit={props.onSubmit}
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
+              display: "flex",
+              flexDirection: "column",
               gap: 3,
             }}
           >
@@ -42,7 +43,7 @@ function SignUpFormContainer(props: SignUpFormContainerProps) {
         </Paper>
       </Box>
     </Container>
-  )
+  );
 }
 
 export default SignUpFormContainer;
