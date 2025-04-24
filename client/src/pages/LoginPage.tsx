@@ -32,8 +32,8 @@ function LoginPage() {
     const { setProfileName, setProfilePicture, setWishlist } = useProfile();
     const navigate = useNavigate();
 
-    async function updateProfileState(profName: string, profPicture: string, wishlist: WishListType[]) {
-      console.timeLog(profName);
+    async function updateProfileState(profName: string, profPicture: string | null, wishlist: WishListType[]) {
+      console.log(profName);
       await setProfileName(profName);
       console.log(profPicture);
       await setProfilePicture(profPicture);
@@ -168,11 +168,18 @@ function LoginPage() {
                 Authorization: `Bearer ${loginRespData.token}`,
               }
             });
-            const profileBuffer = res.data.image.image_data.data;
-            const base64String = Buffer.from(profileBuffer).toString('base64');
-            const profileImageUrl = `data:image/jpeg;base64,${base64String}`;
-            await updateAuthState(loginRespData);
-            await updateProfileState(profileName, profileImageUrl, wishlist);
+            console.log("HERE")
+            console.log(res.data);
+            if (res.data.image.image_data !== null) {
+              const profileBuffer = res.data.image.image_data.data;
+              const base64String = Buffer.from(profileBuffer).toString('base64');
+              const profileImageUrl = `data:image/jpeg;base64,${base64String}`; 
+              await updateAuthState(loginRespData);
+              await updateProfileState(profileName, profileImageUrl, wishlist); 
+            } else {
+              await updateAuthState(loginRespData);
+              await updateProfileState(profileName, null, wishlist);
+            }
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }
