@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
+import { ProfileProvider } from "./context/ProfileContext";
 
 const customTheme = createTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
     <>
       <BrowserRouter>
         <AuthProvider>
+          <ProfileProvider>
           <ThemeProvider theme={customTheme}>
             <CssBaseline />
               <NavBar />
@@ -78,6 +80,7 @@ function App() {
               </main>
               <Footer />
           </ThemeProvider>
+          </ProfileProvider>
         </AuthProvider>
       </BrowserRouter>
     </>

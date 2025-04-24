@@ -10,6 +10,7 @@ import CreateSubmitButton from "../components/signup/CreateSubmitButton";
 import { useAuth } from "../context/AuthContext";
 
 import { Box } from "@mui/material";
+import { useProfile, WishListType } from "../context/ProfileContext";
 
 interface loginResp {
   token: string,
@@ -28,7 +29,17 @@ function LoginPage() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
     const [invalidLogin, setInvalidLogin] = useState(false);
     const { login } = useAuth();
+    const { setProfileName, setProfilePicture, setWishlist } = useProfile();
     const navigate = useNavigate();
+
+    async function updateProfileState(profName: string, profPicture: string, wishlist: WishListType[]) {
+      console.timeLog(profName);
+      await setProfileName(profName);
+      console.log(profPicture);
+      await setProfilePicture(profPicture);
+      console.log(wishlist);
+      await setWishlist(wishlist);
+    }
 
     async function updateAuthState(data: loginResp) {
       await login(
@@ -112,12 +123,56 @@ function LoginPage() {
                 }
               }
             );
+            if (res.status !== 200) return;
             if (res.data.isAdmin) {
               console.log("Admin");
               loginRespData.isAdmin = true
               loginRespData.admin_id = res.data.admin_id;
             } else console.log("Not an admin");
+            res = await axios.get(`
+              http://localhost:3000/api/v1/profile/${loginRespData.profile_id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${loginRespData.token}`,
+              }
+            });
+            if (res.status !== 200) return;
+            const profileName = res.data.profile.profile_name;
+            const profileImgId = res.data.profile.profile_img;
+            res = await axios.get(`
+              http://localhost:3000/api/v1/wishlist/userList/${loginRespData.user_id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${loginRespData.token}`,
+              }
+            });
+            const wishlist: WishListType[] = [];
+            console.log(res.data.wishlists);
+            console.log(`Length: ${res.data.wishlists.length}`);
+            for (let i = 0; i < res.data.wishlists.length; ++i) {
+              console.log("test");
+              console.log(`game id: ${res.data.wishlists[i].game_id}`)
+              wishlist[i] = {
+                gameId: res.data.wishlists[i].game_id,
+                wishlistId: res.data.wishlists[i].wishlist_id
+              };
+              console.log(`Wishlist item ${i}:`, wishlist[i]);
+            }
+            res = await axios.get(`
+              http://localhost:3000/api/v1/image/${profileImgId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${loginRespData.token}`,
+              }
+            });
+            const profileBuffer = res.data.image.image_data.data;
+            const base64String = Buffer.from(profileBuffer).toString('base64');
+            const profileImageUrl = `data:image/jpeg;base64,${base64String}`;
             await updateAuthState(loginRespData);
+            await updateProfileState(profileName, profileImageUrl, wishlist);
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }

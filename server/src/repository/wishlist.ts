@@ -11,6 +11,16 @@ export async function getAllWishlists(): Promise<WishlistTable[]> {
     return wishlists;
 }
 
+export async function getWishListsByUserId(user_id: string): Promise<WishlistTable[]> {
+    const wishlists = await db
+        .selectFrom("wishlist")
+        .selectAll()
+        .where('user_id', '=', user_id)
+        .execute();
+    if (wishlists === undefined) throwErrorException(`[repository.wishlist.getAllWishlists] cannot get wishlists`, 'Wishlists is undefined', 404);
+    return wishlists;
+}
+
 export async function getWishlistById(wishlist_id: string): Promise<WishlistTable> {
     const wishlist = await db
         .selectFrom("wishlist")
