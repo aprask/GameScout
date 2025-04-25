@@ -13,13 +13,14 @@ export async function getReviewById(review_id: string): Promise<ReviewTable> {
   return reviewRepo.getReviewById(review_id);
 }
 
-export async function createReview(user_id: string, game_id: string, rating: number, reviewText: string | null): Promise<ReviewTable> {
+export async function createReview(user_id: string, game_id: string, rating: number, reviewText: string | null, review_title: string): Promise<ReviewTable> {
   let errorMessage = '';
   if (!user_id) errorMessage += 'User ID not given';
   if (!validate(user_id)) errorMessage += 'User ID is invalid';
   if (!game_id) errorMessage += 'Game ID not given';
   if (!validate(game_id)) errorMessage += 'Game ID is invalid';
   if (rating === undefined || rating === null) errorMessage += 'Rating not given';
+  if (!review_title) errorMessage += ' Review not titled';
   if (errorMessage) {
     errorMessage.trim();
     throwErrorException(`[service.review.createReview] ${errorMessage}`, 'Cannot create review', 400);
@@ -30,6 +31,7 @@ export async function createReview(user_id: string, game_id: string, rating: num
     review_id: uuidv4(),
     user_id,
     game_id,
+    review_title,
     rating,
     review: reviewText,
     created_at: currentDate,
@@ -39,7 +41,14 @@ export async function createReview(user_id: string, game_id: string, rating: num
   return reviewRepo.createReview(newReview);
 }
 
-export async function updateReview(review_id: string, user_id: string, game_id: string, rating: number, reviewText: string | null): Promise<ReviewTable> {
+export async function updateReview(
+  review_id: string,
+  user_id: string,
+  game_id: string,
+  rating: number,
+  reviewText: string | null,
+  review_title: string,
+): Promise<ReviewTable> {
   let errorMessage = '';
   if (!review_id) errorMessage += 'Review ID not given';
   if (!validate(review_id)) errorMessage += 'Review ID is invalid';
@@ -53,6 +62,7 @@ export async function updateReview(review_id: string, user_id: string, game_id: 
   const updatedReview: Omit<ReviewTable, 'review_id' | 'created_at' | 'updated_at'> = {
     user_id: user_id ?? currentReview.user_id,
     game_id: game_id ?? currentReview.game_id,
+    review_title: review_title,
     rating: rating ?? currentReview.rating,
     review: reviewText ?? currentReview.review,
   };
@@ -80,4 +90,10 @@ export async function getAllReviewsByGameId(gameId: string): Promise<ReviewTable
   }
 
   return reviewRepo.getAllReviewsByGameId(gameId);
+}
+
+export async function getReviewByGameAndUserId(user_id: string, game_id: string): Promise<ReviewTable> {
+  if (!user_id) throwErrorException(`[service.review.hasUserReviewedGame] No user_id provided`, 'user_id', 200);
+  if (!game_id) throwErrorException(`[service.review.hasUserReviewedGame] No game_id provided`, 'game_id', 200);
+  return reviewRepo.getReviewByGameAndUserId(user_id, game_id);
 }

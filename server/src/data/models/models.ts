@@ -41,6 +41,7 @@ export interface ReviewTable {
   review_id: string;
   user_id: string;
   game_id: string;
+  review_title: string;
   rating: number;
   review: string | null;
   created_at: Date;
@@ -62,7 +63,7 @@ export interface ProfileTable {
   banner_img: string;
   profile_name: string;
   created_at: Date;
-  updated_at: Date; 
+  updated_at: Date;
 }
 
 export interface FollowsTable {
