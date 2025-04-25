@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -8,6 +8,8 @@ import {
   CardContent,
   CircularProgress,
   Box,
+  TextField,
+  Button,
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
@@ -24,11 +26,15 @@ interface GameData {
   updated_at: Date;
 }
 
+interface ReviewData {
+  user_id: string;
+  rating: number;
+  review: string;
+}
 function DynamicGame(): JSX.Element {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [game, setGame] = useState<GameData | null>(null);
-  const [gameImage, setGameImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -43,31 +49,6 @@ function DynamicGame(): JSX.Element {
         });
         if (res.status === 200) {
           setGame(res.data.game);
-
-          const image_id = res.data.game.game_art;
-          console.log(image_id);
-          const image_res = await axios.get(
-            `http://localhost:3000/api/v1/image/${image_id}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
-              },
-            }
-          );
-          if (image_res.status === 200) {
-            console.log(image_res.data.image);
-
-            const blob = new Blob([image_res.data.image_data], {
-              type: "image/png",
-            });
-            if (blob) {
-              console.log(blob);
-              const imageURL = URL.createObjectURL(blob);
-              console.log(`url: ${imageURL}`);
-              setGameImage(imageURL);
-            }
-          }
         }
       } catch (error) {
         console.error("Error fetching game details:", error);
@@ -130,12 +111,206 @@ function DynamicGame(): JSX.Element {
           </CardContent>
         </Box>
       </Card>
-      <Card>
+      <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6">Reviews for {game.game_name}</Typography>
         </CardContent>
       </Card>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Box>
+            <ReviewForm gameId={game.game_id} />
+          </Box>
+        </CardContent>
+      </Card>
+      <Card sx={{ mb: 4, mt: 4 }}>
+        <CardContent>
+          <Box>
+            <GameReviews gameId={game.game_id} />
+          </Box>
+        </CardContent>
+      </Card>
     </Container>
+  );
+}
+
+function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
+  const [rating, setRating] = useState<number | "">("");
+  const [reviewText, setReviewText] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>(localStorage.getItem("userId")!);
+  const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
+  const [submittedReview, setSubmittedReview] = useState<ReviewData>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const getReview = async () => {
+        const response = await axios.get(
+          `http://localhost:3000/api/v1/review/game/${gameId}/user/${userId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+            },
+          }
+        );
+        console.log(response.data);
+        if (response.data) {
+          setReviewSubmitted(true);
+          setSubmittedReview(response.data.review);
+        }
+      };
+      getReview();
+    } catch (e) {}
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setError(null);
+
+    if (!rating || rating < 1 || rating > 5) {
+      setError("Rating must be between 1 and 5.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/review",
+        {
+          user_id: userId,
+          game_id: gameId,
+          rating: rating,
+          review_text: reviewText,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setRating("");
+        setReviewText("");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("Failed to submit review. Please try again later.");
+    }
+  };
+
+  if (reviewSubmitted === true)
+    return (
+      <>
+        <Typography variant="h5">Your Review</Typography>
+        <Typography variant="body2">
+          Rating: {submittedReview!.rating}
+        </Typography>
+        <Typography variant="body2">
+          Review: {submittedReview!.review}
+        </Typography>
+      </>
+    );
+  else
+    return (
+      <Box component="form" onSubmit={handleSubmit}>
+        <Typography variant="h6">Write a Review</Typography>
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
+        <TextField
+          label="Rating (1-5)"
+          type="number"
+          value={rating}
+          onChange={(e) => setRating(+e.target.value)}
+          fullWidth
+          required
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          label="Review"
+          multiline
+          rows={4}
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Submit Review
+        </Button>
+      </Box>
+    );
+}
+
+function GameReviews({ gameId }: { gameId: string }): JSX.Element {
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/v1/review/game/${gameId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setReviews(response.data.reviews);
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (gameId) {
+      fetchReviews();
+    }
+  }, [gameId]);
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ mt: 2 }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary">
+        No reviews available for this game.
+      </Typography>
+    );
+  }
+
+  return (
+    <Box>
+      {reviews.map((review, index) => (
+        <Box key={index} sx={{ mb: 2 }}>
+          <Typography variant="body2"></Typography>
+          <Typography variant="body2">Rating: {review.rating}</Typography>
+          <Typography variant="body2">Review: {review.review}</Typography>
+        </Box>
+      ))}
+    </Box>
   );
 }
 
