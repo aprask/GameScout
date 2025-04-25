@@ -1,10 +1,11 @@
-import { before, beforeEach, describe, it } from 'node:test';
+import { after, before, beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import supertest from 'supertest';
 import { app } from '../src/index.js';
 import * as dotenv from 'dotenv';
 import * as utilRepo from '../src/repository/util.js';
 import { migrateToLatest } from '../src/data/migrate.js';
+import { db } from '../src/data/db.js';
 
 dotenv.config();
 const request = supertest(app);
@@ -17,6 +18,11 @@ describe('Articles Routes', () => {
 
   beforeEach(async () => {
     await utilRepo.truncateDb();
+  });
+
+  after(async () => {
+    await utilRepo.truncateDb();
+    await db.destroy();
   });
 
   it('should fetch all articles', async () => {
