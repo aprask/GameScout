@@ -8,6 +8,10 @@ export function getAllImages(): Promise<ImageTable[]> {
     return imageRepo.getAllImages();
 }
 
+export function uploadImage(imgBuffer: Buffer, imgId: string): Promise<void> {
+    return imageRepo.uploadImage(imgBuffer, imgId);
+}
+
 export async function getImageById(image_id: string): Promise<ImageTable> {
     if (!validate(image_id)) throwErrorException(`[service.image.getImageById] Invalid UUID: ${image_id}`, 'Invalid image ID', 400);
     return imageRepo.getImageById(image_id);

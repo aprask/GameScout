@@ -30,6 +30,12 @@ router.put('/:image_id', asyncHandler(async (req, res) => {
     res.status(200).json({updated_image: updatedImage});
 }));
 
+router.put('/uploadImage/:image_id', asyncHandler(async (req, res) => {
+    const imgBuffer = req.body;
+    const savedFile = await imageService.uploadImage(imgBuffer, req.params.image_id);
+    res.status(201).json({uploaded_image: savedFile});
+}));
+
 router.delete('/:image_id', asyncHandler(async (req, res) => {
     const { image_id } = req.params;
     let admin_id: string = "";
