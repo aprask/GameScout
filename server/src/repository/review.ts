@@ -76,7 +76,7 @@ export async function getReviewByGameAndUserId(game_id: string, user_id: string)
     throwErrorException(
       `[repository.review.getReviewByGameandUserId] No reviews found for game ID: ${game_id} and user ID: ${user_id}`,
       'Review not found',
-      404,
+      200,
     );
   }
   return review;

@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import NavBar from "./components/NavBar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DynamicGame from "./pages/DynamicGame";
-import SearchGame from "./components/SearchGame/SearchGame";
+import SearchGame from "./pages/SearchGame";
 import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GameReviews from "./components/GameReviews/GameReviews";
@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
+import GameList from "./pages/GameList";
 
 const customTheme = createTheme({
   palette: {
@@ -24,54 +25,76 @@ const customTheme = createTheme({
     },
     background: {
       default: "#121212",
-      paper: "#121212", 
+      paper: "#121212",
     },
   },
 });
 
 function App() {
-
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
           <ThemeProvider theme={customTheme}>
             <CssBaseline />
-              <NavBar />
-              <main>
-                <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/signup" element={<SignUpPage />} />
-                  <Route path="/" element={
+            <NavBar />
+            <main>
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route
+                  path="/"
+                  element={
                     <ProtectedRoute>
                       <Dashboard />
                     </ProtectedRoute>
-                    } />
-                  <Route path="/search" element={
+                  }
+                />
+                <Route
+                  path="/search"
+                  element={
                     <ProtectedRoute>
                       <SearchGame />
                     </ProtectedRoute>
-                    } />
-                  <Route path="/game" element={
+                  }
+                />
+                <Route
+                  path="/game"
+                  element={
                     <ProtectedRoute>
                       <DynamicGame />
                     </ProtectedRoute>
-                    } />
-                  <Route path="/admin" element={
+                  }
+                />
+                <Route
+                  path="/list"
+                  element={
+                    <ProtectedRoute>
+                      <GameList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
                     <ProtectedRoute>
                       <AdminRoute>
                         <AdminPage />
-                      </AdminRoute>   
+                      </AdminRoute>
                     </ProtectedRoute>
-                    } />
-                  <Route path="/game/reviews/:id" element={
+                  }
+                />
+                <Route
+                  path="/game/reviews/:id"
+                  element={
                     <ProtectedRoute>
                       <GameReviews />
                     </ProtectedRoute>
-                    } />
-                </Routes>
-              </main>
-              <Footer />
+                  }
+                />
+              </Routes>
+            </main>
+            <Footer />
           </ThemeProvider>
         </AuthProvider>
       </BrowserRouter>

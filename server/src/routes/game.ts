@@ -11,12 +11,17 @@ dotenv.config();
 
 router.use(authMiddleware as RequestHandler);
 
-router.get('/', asyncHandler(async (req, res) => {
+router.get(
+  '/',
+  asyncHandler(async (req, res) => {
     const games = await gameService.getAllGames();
     res.status(200).json({ games });
-})); 
+  }),
+);
 
-router.get('/list', asyncHandler(async (req, res) => {
+router.get(
+  '/list',
+  asyncHandler(async (req, res) => {
     let lim: string = '';
     let page: string = '';
     let sort: string = '';
@@ -24,66 +29,49 @@ router.get('/list', asyncHandler(async (req, res) => {
     if (typeof req.query.page === 'string') page = req.query.page;
     if (typeof req.query.sort === 'string') sort = req.query.sort;
     const games = await gameService.getPaginatedGames(lim, page, sort);
-    res.status(200).json({ games });
-}));
+    res.status(200).json({ games: games });
+  }),
+);
 
-router.get('/:game_id', asyncHandler(async (req, res) => {
+router.get(
+  '/:game_id',
+  asyncHandler(async (req, res) => {
     const game = await gameService.getGameById(req.params.game_id);
     res.status(200).json({ game });
-}));
+  }),
+);
 
-router.post('/', asyncHandler(async (req, res) => {
-    const {
-        game_name,
-        game_art,
-        is_supported,
-        summary,
-        release_date,
-        cover_id,
-    } = req.body;
+router.post(
+  '/',
+  asyncHandler(async (req, res) => {
+    const { game_name, game_art, is_supported, summary, release_date, cover_id } = req.body;
 
     let admin_id: string = '';
     if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
 
-    const newGame = await gameService.createGame(
-        game_name,
-        game_art,
-        is_supported,
-        summary,
-        new Date(release_date),
-        cover_id,
-        admin_id
-    );
+    const newGame = await gameService.createGame(game_name, game_art, is_supported, summary, new Date(release_date), cover_id, admin_id);
 
     res.status(201).json({ new_game: newGame });
-}));
+  }),
+);
 
-router.put('/:game_id', asyncHandler(async (req, res) => {
-    const {
-        game_name,
-        game_art,
-        is_supported,
-        summary,
-        release_date,
-    } = req.body;
+router.put(
+  '/:game_id',
+  asyncHandler(async (req, res) => {
+    const { game_name, game_art, is_supported, summary, release_date } = req.body;
 
     let admin_id: string = '';
     if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
 
-    const updatedGame = await gameService.updateGame(
-        req.params.game_id,
-        game_name,
-        game_art,
-        is_supported,
-        summary,
-        new Date(release_date),
-        admin_id
-    );
+    const updatedGame = await gameService.updateGame(req.params.game_id, game_name, game_art, is_supported, summary, new Date(release_date), admin_id);
 
     res.status(200).json({ updated_game: updatedGame });
-}));
+  }),
+);
 
-router.delete('/:game_id', asyncHandler(async (req, res) => {
+router.delete(
+  '/:game_id',
+  asyncHandler(async (req, res) => {
     const { game_id } = req.params;
 
     let admin_id: string = '';
@@ -91,6 +79,7 @@ router.delete('/:game_id', asyncHandler(async (req, res) => {
 
     await gameService.deleteGame(game_id, admin_id);
     res.sendStatus(204);
-}));
+  }),
+);
 
 export default router;

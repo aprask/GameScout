@@ -155,7 +155,6 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
             },
           }
         );
-        console.log(response.data);
         if (response.data) {
           setReviewSubmitted(true);
           setSubmittedReview(response.data.review);
