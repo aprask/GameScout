@@ -12,6 +12,8 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
+import { ProfileProvider } from "./context/ProfileContext";
+import ProfilePage from "./pages/ProfilePage";
 
 const customTheme = createTheme({
   palette: {
@@ -35,6 +37,7 @@ function App() {
     <>
       <BrowserRouter>
         <AuthProvider>
+          <ProfileProvider>
           <ThemeProvider theme={customTheme}>
             <CssBaseline />
               <NavBar />
@@ -57,6 +60,11 @@ function App() {
                       <DynamicGame />
                     </ProtectedRoute>
                     } />
+                  <Route path="/profile/:id" element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                    } />
                   <Route path="/admin" element={
                     <ProtectedRoute>
                       <AdminRoute>
@@ -73,6 +81,7 @@ function App() {
               </main>
               <Footer />
           </ThemeProvider>
+          </ProfileProvider>
         </AuthProvider>
       </BrowserRouter>
     </>

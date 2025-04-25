@@ -1,6 +1,5 @@
-import { GameTable, GameMessage, ImageTable, PaginatedGame } from "../data/models/models.js";
+import { GameTable, GameMessage, PaginatedGame } from "../data/models/models.js";
 import * as gameRepo from "../repository/game.js";
-import * as imgRepo from "../repository/image.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";

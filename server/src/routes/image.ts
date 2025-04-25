@@ -4,6 +4,7 @@ import * as imageService from "../service/image.js";
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import { resourceSharer } from '../middleware/resource.js';
+
 router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);

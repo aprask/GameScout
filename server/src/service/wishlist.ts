@@ -8,20 +8,17 @@ export function getAllWishlists(): Promise<WishlistTable[]> {
     return wishlistRepo.getAllWishlists();
 }
 
+export function getWishListsByUserId(user_id: string): Promise<WishlistTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.wishlist.getWishListsByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    return wishlistRepo.getWishListsByUserId(user_id);
+}
+
 export async function getWishlistById(wishlist_id: string): Promise<WishlistTable> {
     if (!validate(wishlist_id)) throwErrorException(`[service.wishlist.getWishlistById] Invalid UUID: ${wishlist_id}`, 'Invalid wishlist ID', 400);
     return wishlistRepo.getWishlistById(wishlist_id);
 }
 
-export async function createWishlist(user_id: string, game_id: string, owner_id: string): Promise<WishlistTable> {
-    if (!owner_id) {
-        throwErrorException(`[service.wishlist.createWishlist] No valid ID provided`, 'Cannot create wishlist', 403);
-    }
-
-    if (!validate(owner_id)) {
-        throwErrorException(`[service.wishlist.createWishlist] Invalid UUID: ${owner_id}`, 'Invalid owner ID', 400);
-    }
-
+export async function createWishlist(user_id: string, game_id: string): Promise<WishlistTable> {
     let errorMessage = '';
     if (!user_id) errorMessage += "User ID not given. ";
     if (!game_id) errorMessage += "Game ID not given. ";
