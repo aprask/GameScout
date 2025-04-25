@@ -5,6 +5,7 @@ import { app } from '../src/index.js';
 import * as dotenv from 'dotenv';
 import * as utilRepo from '../src/repository/util.js';
 import { migrateToLatest } from '../src/data/migrate.js';
+import { db } from '../src/data/db.js';
 
 dotenv.config();
 const request = supertest(app);
@@ -21,6 +22,7 @@ describe('Article Comments Routes', () => {
 
   after(async () => {
     await utilRepo.truncateDb();
+    await db.destroy();
   });
 
   it('should fetch all comments for an article', async () => {

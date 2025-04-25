@@ -38,6 +38,7 @@ describe('Game Routes', () => {
 
   after(async () => {
     await utilRepo.truncateDb();
+    await db.destroy();
   });
 
   it('should fetch all games', async () => {

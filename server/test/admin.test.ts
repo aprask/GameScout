@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import * as utilRepo from '../src/repository/util.js';
 import { migrateToLatest } from '../src/data/migrate.js';
 import { truncate } from 'node:fs';
+import { db } from '../src/data/db.js';
 
 dotenv.config();
 const request = supertest(app);
@@ -23,6 +24,7 @@ describe('Admin Routes', () => {
 
   after(async () => {
     await utilRepo.truncateDb();
+    await db.destroy();
   });
 
   it('POST /api/v1/admin should create a new admin', async () => {
