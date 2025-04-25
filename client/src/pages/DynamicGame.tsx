@@ -30,6 +30,7 @@ interface ReviewData {
   user_id: string;
   rating: number;
   review: string;
+  review_title: string;
 }
 function DynamicGame(): JSX.Element {
   const [searchParams] = useSearchParams();
@@ -135,13 +136,13 @@ function DynamicGame(): JSX.Element {
 }
 
 function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
+  const [reviewTitle, setReviewTitle] = useState<string>("");
   const [rating, setRating] = useState<number | "">("");
   const [reviewText, setReviewText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>(localStorage.getItem("userId")!);
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
   const [submittedReview, setSubmittedReview] = useState<ReviewData>();
-  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -180,6 +181,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         {
           user_id: userId,
           game_id: gameId,
+          review_title: reviewTitle,
           rating: rating,
           review_text: reviewText,
         },
@@ -223,6 +225,14 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
             {error}
           </Typography>
         )}
+        <TextField
+          label="Title"
+          value={reviewTitle}
+          onChange={(e) => setReviewTitle(e.target.value)}
+          fullWidth
+          required
+          sx={{ mb: 2 }}
+        />
         <TextField
           label="Rating (1-5)"
           type="number"
@@ -303,11 +313,17 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
   return (
     <Box>
       {reviews.map((review, index) => (
-        <Box key={index} sx={{ mb: 2 }}>
-          <Typography variant="body2"></Typography>
-          <Typography variant="body2">Rating: {review.rating}</Typography>
-          <Typography variant="body2">Review: {review.review}</Typography>
-        </Box>
+        <Card key={index} sx={{ mb: 2, p: 2 }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="bold">
+              {review.review_title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Rating: {review.rating} / 5
+            </Typography>
+            <Typography variant="body2">{review.review}</Typography>
+          </CardContent>
+        </Card>
       ))}
     </Box>
   );

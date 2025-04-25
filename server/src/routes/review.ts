@@ -49,8 +49,8 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const { user_id, game_id, rating, review_text } = req.body;
-    const newReview = await reviewService.createReview(user_id, game_id, rating, review_text);
+    const { user_id, game_id, rating, review_text, review_title } = req.body;
+    const newReview = await reviewService.createReview(user_id, game_id, rating, review_text, review_title);
     res.status(201).json({ new_review: newReview });
   }),
 );
@@ -58,8 +58,8 @@ router.post(
 router.put(
   '/:review_id',
   asyncHandler(async (req, res) => {
-    const { user_id, game_id, rating, review_text } = req.body;
-    const updatedReview = await reviewService.updateReview(req.params.review_id, user_id, game_id, rating, review_text);
+    const { user_id, game_id, rating, review_text, review_title } = req.body;
+    const updatedReview = await reviewService.updateReview(req.params.review_id, user_id, game_id, rating, review_text, review_title);
     res.status(200).json({ updated_review: updatedReview });
   }),
 );

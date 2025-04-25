@@ -112,17 +112,36 @@ function SearchGame(): JSX.Element {
             {filteredGames.map((game) => (
               <Grid key={game.game_id}>
                 <Card
-                  sx={{ width: 250, cursor: "pointer" }}
-                  onClick={() => navigate(`/game?id=${game.game_id}`)} // Navigate to DynamicGame page
+                  sx={{
+                    width: 250,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: "100%",
+                  }}
+                  onClick={() => navigate(`/game?id=${game.game_id}`)}
                 >
                   <CardMedia
                     component="img"
-                    height="140"
+                    sx={{
+                      height: "auto",
+                      maxHeight: 140,
+                      objectFit: "cover",
+                    }}
                     src={`https://images.igdb.com/igdb/image/upload/t_720p/${game.cover_id}.jpg`}
                     alt={game.game_name}
                   />
-                  <CardContent>
-                    <Typography variant="h6" textAlign="center">
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography
+                      variant="h6"
+                      textAlign="center"
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {game.game_name}
                     </Typography>
                   </CardContent>
