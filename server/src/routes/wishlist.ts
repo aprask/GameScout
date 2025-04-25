@@ -18,13 +18,14 @@ router.get('/:wishlist_id', asyncHandler(async (req, res) => {
     res.status(200).json({wishlist: wishlist});
 }));
 
+router.get('/userList/:user_id', asyncHandler(async (req, res) => {
+    const wishlist = await wishlistService.getWishListsByUserId(req.params.user_id);
+    res.status(200).json({wishlists: wishlist});
+}));
+
 router.post('/', asyncHandler(async (req, res) => {
-    const { game_id } = req.body;
-    let owner_id: string = "";
-    if (typeof req.query.owner_id === 'string') {
-        owner_id = req.query.owner_id;
-    }
-    const newWishlist = await wishlistService.createWishlist(owner_id, game_id, owner_id);
+    const { game_id, user_id } = req.body;
+    const newWishlist = await wishlistService.createWishlist(user_id, game_id);
     res.status(201).json({ new_wishlist: newWishlist });
 }));
 

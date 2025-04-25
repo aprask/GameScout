@@ -10,6 +10,7 @@ import CreateSubmitButton from "../components/signup/CreateSubmitButton";
 import { useAuth } from "../context/AuthContext";
 
 import { Box } from "@mui/material";
+import { useProfile } from "../context/ProfileContext";
 
 interface loginResp {
   token: string,
@@ -29,6 +30,12 @@ function LoginPage() {
     const [invalidLogin, setInvalidLogin] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const {setProfileName, setProfileImage} = useProfile();
+
+    async function updateProfileState(profName: string, profImg: string) {
+      await setProfileName(profName);
+      await setProfileImage(profImg);
+    }
 
     async function updateAuthState(data: loginResp) {
       await login(
@@ -112,12 +119,25 @@ function LoginPage() {
                 }
               }
             );
+            if (res.status !== 200) return;
             if (res.data.isAdmin) {
               console.log("Admin");
               loginRespData.isAdmin = true
               loginRespData.admin_id = res.data.admin_id;
             } else console.log("Not an admin");
+            res = await axios.get(`
+              http://localhost:3000/api/v1/profile/${loginRespData.profile_id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${loginRespData.token}`,
+              }
+            });
+            if (res.status !== 200) return;
+            const profileName = res.data.profile.profile_name;
+            const profileImg = res.data.profile.profile_img;
             await updateAuthState(loginRespData);
+            await updateProfileState(profileName, profileImg); 
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }

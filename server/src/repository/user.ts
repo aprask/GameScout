@@ -1,5 +1,5 @@
 import { db } from "../data/db.js";
-import { AuthTable, ImageTable, ProfileTable, UserTable } from "../data/models/models.js";
+import { AuthTable, ProfileTable, UserTable } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
 
 export async function getAllUsers(): Promise<UserTable[]> {
@@ -64,7 +64,7 @@ export async function getUserIdByClientSecret(secret: string, user_id: string): 
   return true;
 }
 
-export async function createUser(user: UserTable, profile: ProfileTable, auth: AuthTable, image: ImageTable): Promise<UserTable> {
+export async function createUser(user: UserTable, profile: ProfileTable, auth: AuthTable): Promise<UserTable> {
   console.log("HERE");
   return await db.transaction().execute(async (t) => {
     const newUser = await t
@@ -83,26 +83,14 @@ export async function createUser(user: UserTable, profile: ProfileTable, auth: A
     .returningAll()
     .executeTakeFirst();
     if (!newUser || newUser === undefined) throwErrorException(`[repository.user.createUser] cannot create user`, 'Cannot create user', 500);
-    
-    const newImage = await db
-      .insertInto("images")
-      .values({
-        image_id: image.image_id,
-        image_text: image.image_text,
-        image_data: image.image_data,
-        created_at: image.created_at,
-        updated_at: image.updated_at,
-      })
-      .returningAll()
-      .executeTakeFirst();
-    if (!newImage || newImage === undefined) throwErrorException(`[repository.user.createUser] cannot create image`, 'Cannot create image', 500);
-
+  
     const newProfile = await t
       .insertInto('profile')
       .values({
         profile_id: profile.profile_id,
         user_id: profile.user_id,
         profile_img: profile.profile_img,
+        banner_img: profile.banner_img,
         profile_name: profile.profile_name,
         created_at: profile.created_at,
         updated_at: profile.updated_at,
