@@ -10,7 +10,7 @@ import CreateSubmitButton from "../components/signup/CreateSubmitButton";
 import { useAuth } from "../context/AuthContext";
 
 import { Box } from "@mui/material";
-import { useProfile, WishListType } from "../context/ProfileContext";
+import { useProfile } from "../context/ProfileContext";
 
 interface loginResp {
   token: string,
@@ -29,16 +29,14 @@ function LoginPage() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
     const [invalidLogin, setInvalidLogin] = useState(false);
     const { login } = useAuth();
-    const { setProfileName, setProfilePicture, setWishlist } = useProfile();
+    const { setProfileName, setProfilePicture } = useProfile();
     const navigate = useNavigate();
 
-    async function updateProfileState(profName: string, profPicture: string | null, wishlist: WishListType[]) {
+    async function updateProfileState(profName: string, profPicture: string | null) {
       console.log(profName);
       await setProfileName(profName);
       console.log(profPicture);
       await setProfilePicture(profPicture);
-      console.log(wishlist);
-      await setWishlist(wishlist);
     }
 
     async function updateAuthState(data: loginResp) {
@@ -141,26 +139,6 @@ function LoginPage() {
             const profileName = res.data.profile.profile_name;
             const profileImgId = res.data.profile.profile_img;
             res = await axios.get(`
-              http://localhost:3000/api/v1/wishlist/userList/${loginRespData.user_id}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${loginRespData.token}`,
-              }
-            });
-            const wishlist: WishListType[] = [];
-            console.log(res.data.wishlists);
-            console.log(`Length: ${res.data.wishlists.length}`);
-            for (let i = 0; i < res.data.wishlists.length; ++i) {
-              console.log("test");
-              console.log(`game id: ${res.data.wishlists[i].game_id}`)
-              wishlist[i] = {
-                gameId: res.data.wishlists[i].game_id,
-                wishlistId: res.data.wishlists[i].wishlist_id
-              };
-              console.log(`Wishlist item ${i}:`, wishlist[i]);
-            }
-            res = await axios.get(`
               http://localhost:3000/api/v1/image/${profileImgId}`,
             {
               headers: {
@@ -172,13 +150,16 @@ function LoginPage() {
             console.log(res.data);
             if (res.data.image.image_data !== null) {
               const profileBuffer = res.data.image.image_data.data;
-              const base64String = Buffer.from(profileBuffer).toString('base64');
-              const profileImageUrl = `data:image/jpeg;base64,${base64String}`; 
+              const byteArray = new Uint8Array(profileBuffer); // getting the binary of the json buffer res
+              const binaryString = Array.from(byteArray).map(byte => String.fromCharCode(byte)).join('');
+              // converts into base64
+              const base64String = btoa(binaryString); // ref: https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa
+              const profileImageUrl = `data:image/png;base64,${base64String}`;
               await updateAuthState(loginRespData);
-              await updateProfileState(profileName, profileImageUrl, wishlist); 
+              await updateProfileState(profileName, profileImageUrl); 
             } else {
               await updateAuthState(loginRespData);
-              await updateProfileState(profileName, null, wishlist);
+              await updateProfileState(profileName, null);
             }
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});

@@ -13,6 +13,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
 import { ProfileProvider } from "./context/ProfileContext";
+import ProfilePage from "./pages/ProfilePage";
 
 const customTheme = createTheme({
   palette: {
@@ -57,6 +58,11 @@ function App() {
                   <Route path="/game" element={
                     <ProtectedRoute>
                       <DynamicGame />
+                    </ProtectedRoute>
+                    } />
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <ProfilePage />
                     </ProtectedRoute>
                     } />
                   <Route path="/admin" element={

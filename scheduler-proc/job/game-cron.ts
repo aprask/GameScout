@@ -17,7 +17,7 @@ export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
   const games: Game[] = [];
   cron.schedule(
-    "0 16 13 * * 1",
+    "0 54 10 * * 4",
     async () => {
       console.log("starting job");
       try {

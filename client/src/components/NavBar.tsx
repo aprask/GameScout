@@ -16,11 +16,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
+import { useProfile } from "../context/ProfileContext";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState<string>("/anon.png");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const { isAuthenticated, profileId, token, logout, isAdmin } = useAuth()
+  const { profilePicture } = useProfile();
 
   const handleLogout = () => {
     logout();
@@ -30,33 +32,7 @@ function NavBar() {
   useEffect(() => {
     if (!isAuthenticated) return;
     const fetchProfileImg = async() => {
-      try {
-        let res = await axios.get(
-          `http://localhost:3000/api/v1/profile/${profileId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            }
-          }
-        );
-        res = await axios.get(
-            `http://localhost:3000/api/v1/image/${res.data.profile.profile_img}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              }
-            }
-          );
-          const blob = new Blob([res.data.image.image_data.data], { type: 'image/png' });
-          if (blob) {
-            const imageURL = URL.createObjectURL(blob);
-            setProfileImage(imageURL);
-          }
-      } catch (err) {
-        console.error("Error fetching profile image:", err)
-      }
+      setProfileImage(profilePicture);
     }
     fetchProfileImg();
   }, [])
