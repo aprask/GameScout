@@ -69,3 +69,15 @@ export async function getAllReviewsByGameId(gameId: string): Promise<ReviewTable
 
   return reviews;
 }
+
+export async function getReviewByGameAndUserId(game_id: string, user_id: string): Promise<ReviewTable> {
+  const review = await db.selectFrom('review').selectAll().where('user_id', '=', user_id).where('game_id', '=', game_id).executeTakeFirst();
+  if (!review) {
+    throwErrorException(
+      `[repository.review.getReviewByGameandUserId] No reviews found for game ID: ${game_id} and user ID: ${user_id}`,
+      'Review not found',
+      404,
+    );
+  }
+  return review;
+}

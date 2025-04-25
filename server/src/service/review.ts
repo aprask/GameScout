@@ -81,3 +81,9 @@ export async function getAllReviewsByGameId(gameId: string): Promise<ReviewTable
 
   return reviewRepo.getAllReviewsByGameId(gameId);
 }
+
+export async function getReviewByGameAndUserId(user_id: string, game_id: string): Promise<ReviewTable> {
+  if (!user_id) throwErrorException(`[service.review.hasUserReviewedGame] No user_id provided`, 'user_id', 404);
+  if (!game_id) throwErrorException(`[service.review.hasUserReviewedGame] No game_id provided`, 'game_id', 404);
+  return reviewRepo.getReviewByGameAndUserId(user_id, game_id);
+}

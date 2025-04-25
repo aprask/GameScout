@@ -33,6 +33,19 @@ router.get(
   }),
 );
 
+//get reviews by userid
+
+//get review average by game
+
+//get reviews by userid AND gameid
+router.get(
+  '/game/:game_id/user/:user_id',
+  asyncHandler(async (req, res) => {
+    const review = await reviewService.getReviewByGameAndUserId(req.params.game_id, req.params.user_id);
+    res.status(200).json({ review });
+  }),
+);
+
 router.post(
   '/',
   asyncHandler(async (req, res) => {
