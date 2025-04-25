@@ -1,4 +1,4 @@
-import { before, beforeEach, describe, it } from 'node:test';
+import { after, before, beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import supertest from 'supertest';
 import { app } from '../src/index.js';
@@ -16,6 +16,10 @@ describe('Articles Routes', () => {
   });
 
   beforeEach(async () => {
+    await utilRepo.truncateDb();
+  });
+
+  after(async () => {
     await utilRepo.truncateDb();
   });
 
