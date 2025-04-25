@@ -59,9 +59,10 @@ export interface ProfileTable {
   profile_id: string;
   user_id: string;
   profile_img: string;
+  banner_img: string;
   profile_name: string;
   created_at: Date;
-  updated_at: Date;
+  updated_at: Date; 
 }
 
 export interface FollowsTable {

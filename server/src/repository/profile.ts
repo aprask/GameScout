@@ -38,6 +38,7 @@ export async function createProfile(profile: ProfileTable): Promise<ProfileTable
             profile_id: profile.profile_id,
             user_id: profile.user_id,
             profile_img: profile.profile_img,
+            banner_img: profile.banner_img,
             profile_name: profile.profile_name,
             created_at: profile.created_at,
             updated_at: profile.updated_at,
@@ -48,11 +49,10 @@ export async function createProfile(profile: ProfileTable): Promise<ProfileTable
     return newProfile!;
 }
 
-export async function updateProfile(profile_id: string, profile: Omit<ProfileTable, 'profile_id' | 'created_at' | 'updated_at'>): Promise<ProfileTable> {
+export async function updateProfile(profile_id: string, profile: Omit<ProfileTable, 'profile_id' | 'created_at' | 'updated_at' | 'user_id'>): Promise<ProfileTable> {
     const updatedProfile = await db
         .updateTable("profile")
         .set({
-            user_id: profile.user_id,
             profile_img: profile.profile_img,
             profile_name: profile.profile_name,
             updated_at: new Date()

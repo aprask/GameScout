@@ -12,7 +12,6 @@ import {
   Avatar,
   useTheme,
 } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
@@ -20,9 +19,10 @@ import { useProfile } from "../context/ProfileContext";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const { isAuthenticated, profileId, token, logout, isAdmin } = useAuth()
-  const { profilePicture } = useProfile();
+  const [ profileIcon, setProfileIcon ] = useState<string | null>(null);
+  const { isAuthenticated, logout, isAdmin } = useAuth()
+  const { profileImage } = useProfile();
+  const { profileId } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -32,7 +32,7 @@ function NavBar() {
   useEffect(() => {
     if (!isAuthenticated) return;
     const fetchProfileImg = async() => {
-      setProfileImage(profilePicture);
+      setProfileIcon(profileImage);
     }
     fetchProfileImg();
   }, [])
@@ -66,17 +66,17 @@ function NavBar() {
           </Typography>
           {isAuthenticated && (
             <Box sx={{ width: 100 }}>
-              <NavLink
-                to="/profile"
+            <NavLink
+                to={`/profile/${profileId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
-              >
+            >
                 <Avatar 
-                  alt="Profile Pic" 
-                  src={profileImage}
-                  sx={{ width: 40, height: 40 }}
+                    alt="Profile Pic" 
+                    src={profileImage || undefined}
+                    sx={{ width: 40, height: 40 }}
                 />
-              </NavLink>
-            </Box>
+            </NavLink>            
+          </Box>
           )}
         </Toolbar>
       </AppBar>

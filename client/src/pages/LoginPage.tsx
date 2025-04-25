@@ -29,14 +29,13 @@ function LoginPage() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
     const [invalidLogin, setInvalidLogin] = useState(false);
     const { login } = useAuth();
-    const { setProfileName, setProfilePicture } = useProfile();
+    const { setProfileName, setProfileBannerImage, setProfileImage } = useProfile();
     const navigate = useNavigate();
 
-    async function updateProfileState(profName: string, profPicture: string | null) {
-      console.log(profName);
+    async function updateProfileState(profName: string, profImg: string, profBannerImg: string) {
       await setProfileName(profName);
-      console.log(profPicture);
-      await setProfilePicture(profPicture);
+      await setProfileBannerImage(profBannerImg);
+      await setProfileImage(profImg);
     }
 
     async function updateAuthState(data: loginResp) {
@@ -137,30 +136,10 @@ function LoginPage() {
             });
             if (res.status !== 200) return;
             const profileName = res.data.profile.profile_name;
-            const profileImgId = res.data.profile.profile_img;
-            res = await axios.get(`
-              http://localhost:3000/api/v1/image/${profileImgId}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${loginRespData.token}`,
-              }
-            });
-            console.log("HERE")
-            console.log(res.data);
-            if (res.data.image.image_data !== null) {
-              const profileBuffer = res.data.image.image_data.data;
-              const byteArray = new Uint8Array(profileBuffer); // getting the binary of the json buffer res
-              const binaryString = Array.from(byteArray).map(byte => String.fromCharCode(byte)).join('');
-              // converts into base64
-              const base64String = btoa(binaryString); // ref: https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa
-              const profileImageUrl = `data:image/png;base64,${base64String}`;
-              await updateAuthState(loginRespData);
-              await updateProfileState(profileName, profileImageUrl); 
-            } else {
-              await updateAuthState(loginRespData);
-              await updateProfileState(profileName, null);
-            }
+            const profileImg = res.data.profile.profile_img;
+            const profileBanner = res.data.profile.banner_img;
+            await updateAuthState(loginRespData);
+            await updateProfileState(profileName, profileImg, profileBanner); 
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }

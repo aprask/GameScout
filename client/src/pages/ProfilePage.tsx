@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useProfile } from '../context/ProfileContext';
 import { useAuth } from '../context/AuthContext';
-import axios from "axios";
 import { 
     Container, 
     Box, 
@@ -10,10 +8,12 @@ import {
     IconButton,
     Paper,
     useTheme,
+    TextField,
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 interface WishListType {
     game_img_url: string;
@@ -21,13 +21,65 @@ interface WishListType {
 }
 
 function ProfilePage() {
-    const { token, userId } = useAuth();
-    const { profileName, profilePicture } = useProfile();
-    const [name, setName] = useState(profileName);
-    const [picture, setPicture] = useState(profilePicture);
+    const { id } = useParams();
+    const { token, userId, profileId } = useAuth();
     const [wishlist, setWishlist] = useState<WishListType[]>([]);
+    const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
+    const [profileName, setProfileName] = useState('');
+
+    useEffect(() => {
+        const fetchProfileName = async() => {
+            const response = await axios.get(
+                `http://localhost:3000/api/v1/profile/${id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            );
+            if (response.status === 200) {
+                setProfileName(response.data.profile.profile_name);
+                setIsEditing(false);
+            }
+        };
+        fetchProfileName();
+    }, []);
+    
+    async function updateProfileName(newName: string) {
+        if (profileId !== id) {
+            setIsEditing(false);
+            return;
+        }
+        if (newName.length > 24) {
+            setIsEditing(false); 
+            return;
+        };
+        try {
+            const response = await axios.put(
+                `http://localhost:3000/api/v1/profile/${id}`,
+                {
+                    profile_img: null,
+                    banner_img: null,
+                    profile_name: newName
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            );
+            if (response.status === 200) {
+                setProfileName(newName);                
+                setIsEditing(false);
+            }
+        } catch (err) {
+            console.error('Error updating name:', err);
+        }
+    };
 
 
     useEffect(() => {
@@ -88,26 +140,47 @@ function ProfilePage() {
                     position: 'relative'
                 }}>
                     <Avatar
-                        src={picture || undefined}
+                        src={undefined}
                         alt="Profile"
-                        sx={{ 
+                        sx={{
                             width: 120,
                             height: 120,
                             border: '4px solid white',
-                            boxShadow: 3
+                            boxShadow: 3,
+                            cursor: 'pointer'
                         }}
                     />
-                    <Typography 
-                        variant="h3" 
-                        color="white" 
-                        fontWeight="bold"
-                        sx={{
-                            ml: 60,
-                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
-                        }}
-                    >
-                        {name}
-                    </Typography>
+                    {(id === profileId) && isEditing ? (
+                        <TextField
+                            defaultValue={profileName}
+                            variant="outlined"
+                            sx={{
+                                ml: 60,
+                                input: { color: 'white' }
+                            }}
+                            onBlur={(e) => updateProfileName(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    updateProfileName((e.target as HTMLInputElement).value);
+                                }
+                            }}
+                            autoFocus
+                        />
+                    ) : (
+                        <Typography 
+                            variant="h4" 
+                            color="white" 
+                            fontWeight="bold"
+                            sx={{
+                                ml: 60,
+                                textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => setIsEditing(true)}
+                        >
+                            {profileName}
+                        </Typography>
+                    )}
                 </Box>
             </Paper>
     
@@ -122,7 +195,7 @@ function ProfilePage() {
                         pb: 1
                     }}
                 >
-                    {profileName}'s Wishlist
+                    Wishlist
                 </Typography>
                 <Box sx={{ 
                     position: 'relative',
@@ -219,3 +292,4 @@ function ProfilePage() {
 }
 
 export default ProfilePage;
+

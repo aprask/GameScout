@@ -4,6 +4,7 @@ import * as imageService from "../service/image.js";
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import { resourceSharer } from '../middleware/resource.js';
+
 router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
@@ -28,12 +29,6 @@ router.put('/:image_id', asyncHandler(async (req, res) => {
     const { image_text, image_data } = req.body;
     const updatedImage = await imageService.updateImage(req.params.image_id, image_text, image_data);
     res.status(200).json({updated_image: updatedImage});
-}));
-
-router.put('/uploadImage/:image_id', asyncHandler(async (req, res) => {
-    const imgBuffer = req.body;
-    const savedFile = await imageService.uploadImage(imgBuffer, req.params.image_id);
-    res.status(201).json({uploaded_image: savedFile});
 }));
 
 router.delete('/:image_id', asyncHandler(async (req, res) => {

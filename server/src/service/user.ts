@@ -1,19 +1,13 @@
-import { AuthTable, ImageTable, ProfileTable, UserTable } from '../data/models/models.js';
+import { AuthTable, ProfileTable, UserTable } from '../data/models/models.js';
 import * as userRepo from '../repository/user.js';
 import * as adminRepo from '../repository/admin.js';
 import { throwErrorException } from '../util/error.js';
 import { v4 as uuidv4, validate } from 'uuid';
 import { signJWT } from '../auth/token.js';
 import { hashPassword } from '../auth/password.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-const currDir: string = path.dirname(fileURLToPath(import.meta.url));
-const assetFile: string = path.join(currDir, "assets/def_img.png");
 
 export function getAllUsers(): Promise<UserTable[]> {
   return userRepo.getAllUsers();
@@ -69,7 +63,6 @@ export async function createUser(email: string, password: string, new_user_token
   if (token === undefined) throwErrorException(`[service.user.createUser] Invalid token parameters`, 'Cannot create token', 400);
   const hashedPassword = await hashPassword(password);
   if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
-  const imageData = await fs.readFile(assetFile);
   const newUser: UserTable = {
     user_id: user_id,
     email: email,
@@ -81,18 +74,11 @@ export async function createUser(email: string, password: string, new_user_token
     updated_at: currentDate,
     client_secret: uuidv4(),
   };
-  const image_id = uuidv4();
-  const newImage: ImageTable = {
-    image_id: image_id,
-    image_text: null,
-    image_data: imageData,
-    created_at: currentDate,
-    updated_at: currentDate,
-  };
   const newProfile: ProfileTable = {
     profile_id: uuidv4(),
     user_id: user_id,
-    profile_img: image_id,
+    profile_img: "",
+    banner_img: "",
     profile_name: email,
     created_at: currentDate,
     updated_at: currentDate,
@@ -104,8 +90,7 @@ export async function createUser(email: string, password: string, new_user_token
     created_at: currentDate,
     updated_at: currentDate,
   };
-  console.log('HERE');
-  return userRepo.createUser(newUser, newProfile, authDetails, newImage);
+  return userRepo.createUser(newUser, newProfile, authDetails);
 }
 
 export async function updateUser(

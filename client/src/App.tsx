@@ -60,7 +60,7 @@ function App() {
                       <DynamicGame />
                     </ProtectedRoute>
                     } />
-                  <Route path="/profile" element={
+                  <Route path="/profile/:id" element={
                     <ProtectedRoute>
                       <ProfilePage />
                     </ProtectedRoute>
