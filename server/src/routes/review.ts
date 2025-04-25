@@ -21,7 +21,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const { gameId } = req.params;
     const reviews = await reviewService.getAllReviewsByGameId(gameId);
-    res.status(200).json({ reviews });
+    res.status(200).json({ reviews: reviews });
   }),
 );
 

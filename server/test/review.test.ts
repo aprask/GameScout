@@ -21,7 +21,6 @@ describe('Review Routes', () => {
 
   beforeEach(async () => {
     await utilRepo.truncateDb();
-    console.log('before');
 
     await db
       .insertInto('games')
@@ -36,7 +35,6 @@ describe('Review Routes', () => {
         updated_at: new Date(),
       })
       .execute();
-    console.log('after');
   });
 
   after(async () => {
@@ -45,15 +43,12 @@ describe('Review Routes', () => {
   });
 
   it('POST /api/v1/review should create a review', async () => {
-    console.log('1');
-
     const user = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
       email: 'user@example.com',
       password: 'securepassword',
     });
-    console.log('2');
 
-    const review = await request.post('api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+    const review = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
       user_id: user.body.new_user.user_id,
       game_id: gameId,
       rating: 5,
@@ -64,10 +59,118 @@ describe('Review Routes', () => {
   });
 
   it('GET /api/v1/review should return an array', async () => {
-    console.log('3');
+    const user1 = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user1@example.com',
+      password: 'securepassword',
+    });
 
-    const response = await request.get('/api/v1/game').set('Authorization', process.env.API_MANAGEMENT_KEY!);
+    const review1 = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user1.body.new_user.user_id,
+      game_id: gameId,
+      rating: 5,
+      review_text: 'Good Game',
+    });
+
+    const user2 = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user2@example.com',
+      password: 'securepassword',
+    });
+
+    const review2 = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user2.body.new_user.user_id,
+      game_id: gameId,
+      rating: 2,
+      review_text: 'Bad Game',
+    });
+
+    const response = await request.get('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!);
     assert.equal(response.status, 200);
     assert.ok(Array.isArray(response.body.reviews));
+  });
+
+  it('GET /api/v1/review/game/:gameId should return reviews by game', async () => {
+    const user = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user@example.com',
+      password: 'securepassword',
+    });
+
+    const review = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user.body.new_user.user_id,
+      game_id: gameId,
+      rating: 5,
+      review_text: 'Good Game',
+    });
+
+    const response = await request.get(`/api/v1/review/game/${gameId}`).set('Authorization', process.env.API_MANAGEMENT_KEY!);
+    assert.ok(response);
+    assert.strictEqual(response.body.reviews[0].rating, 5);
+  });
+
+  it('PUT /api/v1/review/:review_id should update a review', async () => {
+    const user = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user@example.com',
+      password: 'securepassword',
+    });
+
+    const review = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user.body.new_user.user_id,
+      game_id: gameId,
+      rating: 5,
+      review_text: 'Good Game',
+    });
+
+    const updatedReview = await request.put(`/api/v1/review/${review.body.new_review.review_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user.body.new_user.user_id,
+      game_id: gameId,
+      rating: 4,
+      review_text: 'Great Game',
+    });
+
+    assert.equal(updatedReview.status, 200);
+    assert.strictEqual(updatedReview.body.updated_review.rating, 4);
+  });
+
+  it('GET /api/v1/review/:review_id should return a review by ID', async () => {
+    const user = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user@example.com',
+      password: 'securepassword',
+    });
+
+    const review = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user.body.new_user.user_id,
+      game_id: gameId,
+      rating: 5,
+      review_text: 'Good Game',
+    });
+
+    const response = await request.get(`/api/v1/review/${review.body.new_review.review_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!);
+
+    assert.equal(response.status, 200);
+    assert.strictEqual(response.body.review.review_id, review.body.new_review.review_id);
+  });
+
+  it('DELETE /api/v1/review/:review_id should delete a review', async () => {
+    const user = await request.post('/api/v1/users').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      email: 'user@example.com',
+      password: 'securepassword',
+    });
+
+    const review = await request.post('/api/v1/review').set('Authorization', process.env.API_MANAGEMENT_KEY!).send({
+      user_id: user.body.new_user.user_id,
+      game_id: gameId,
+      rating: 5,
+      review_text: 'Good Game',
+    });
+
+    const deleteResponse = await request
+      .delete(`/api/v1/review/${review.body.new_review.review_id}`)
+      .set('Authorization', process.env.API_MANAGEMENT_KEY!)
+      .query({ user_id: user.body.new_user.user_id });
+
+    assert.equal(deleteResponse.status, 204);
+
+    const getResponse = await request.get(`/api/v1/review/${review.body.new_review.review_id}`).set('Authorization', process.env.API_MANAGEMENT_KEY!);
+
+    assert.equal(getResponse.status, 404);
   });
 });
