@@ -6,7 +6,14 @@
   "scripts": {
     "dev": "cross-env APP_ENV=development NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
     "build": "tsc",
-    "testUser": "APP_ENV=test tsx --test ./test/*.test.ts"
+    "testUser": "APP_ENV=test tsx --test ./test/user.test.ts",
+    "testAdmin": "APP_ENV=test tsx --test ./test/admin.test.ts",
+    "testArticles": "APP_ENV=test tsx --test ./test/articles.test.ts",
+    "testHealth": "APP_ENV=test tsx --test ./test/health.test.ts",
+    "testComments": "APP_ENV=test tsx --test ./test/comments.test.ts",
+    "testReview": "APP_ENV=test tsx --test ./test/review.test.ts",
+    "testGame": "APP_ENV=test tsx --test  ./test/game.test.ts",
+    "testWishlist": "APP_ENV=test tsx --test  ./test/wishlist.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +43,7 @@
     "@types/uuid": "^10.0.0",
     "@types/verror": "^1.10.11",
     "amqplib": "^0.10.7",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

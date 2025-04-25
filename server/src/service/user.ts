@@ -1,7 +1,7 @@
-import { AuthTable, ImageTable, ProfileTable, UserTable } from "../data/models/models.js";
+import { AuthTable, ImageTable, ProfileTable, UserTable } from '../data/models/models.js';
 import * as userRepo from '../repository/user.js';
-import * as adminRepo from "../repository/admin.js";
-import { throwErrorException } from "../util/error.js";
+import * as adminRepo from '../repository/admin.js';
+import { throwErrorException } from '../util/error.js';
 import { v4 as uuidv4, validate } from 'uuid';
 import { signJWT } from '../auth/token.js';
 import { hashPassword } from '../auth/password.js';
@@ -10,132 +10,139 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export function getAllUsers(): Promise<UserTable[]> {
-    return userRepo.getAllUsers();
+  return userRepo.getAllUsers();
 }
 
 export async function getUserById(user_id: string): Promise<UserTable> {
-    if (!validate(user_id)) throwErrorException(`[service.user.getUserById] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
-    if (!(await userRepo.userExists(user_id))) throwErrorException(`[service.user.getUserById] user with id ${user_id} not found`, 'User not found', 404);
-    return userRepo.getUserById(user_id);
+  if (!validate(user_id)) throwErrorException(`[service.user.getUserById] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+  if (!(await userRepo.userExists(user_id))) throwErrorException(`[service.user.getUserById] user with id ${user_id} not found`, 'User not found', 404);
+  return userRepo.getUserById(user_id);
 }
 
 export async function banUserByEmail(email: string, adminId: string): Promise<void> {
-    let errorMessage = '';
-    if (!email) errorMessage += "Email not provided";
-    if (!adminId) errorMessage += "Admin ID not provided";
-    if (!validate(adminId)) errorMessage += "Admin ID is invalid";
-    if (errorMessage) {
-        errorMessage.trim();
-        throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
-    }
-    const admin = adminRepo.getAdminById(adminId);
-    if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
-    await userRepo.banUserByEmail(email);
+  let errorMessage = '';
+  if (!email) errorMessage += 'Email not provided';
+  if (!adminId) errorMessage += 'Admin ID not provided';
+  if (!validate(adminId)) errorMessage += 'Admin ID is invalid';
+  if (errorMessage) {
+    errorMessage.trim();
+    throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
+  }
+  const admin = adminRepo.getAdminById(adminId);
+  if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
+  await userRepo.banUserByEmail(email);
 }
 
 export async function unbanUserByEmail(email: string, adminId: string): Promise<void> {
-    let errorMessage = '';
-    if (!email) errorMessage += "Email not provided";
-    if (!adminId) errorMessage += "Admin ID not provided";
-    if (!validate(adminId)) errorMessage += "Admin ID is invalid";
-    if (errorMessage) {
-        errorMessage.trim();
-        throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
-    }
-    const admin = adminRepo.getAdminById(adminId);
-    if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
-    await userRepo.unbanUserByEmail(email);
+  let errorMessage = '';
+  if (!email) errorMessage += 'Email not provided';
+  if (!adminId) errorMessage += 'Admin ID not provided';
+  if (!validate(adminId)) errorMessage += 'Admin ID is invalid';
+  if (errorMessage) {
+    errorMessage.trim();
+    throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot ban user', 400);
+  }
+  const admin = adminRepo.getAdminById(adminId);
+  if (!admin) throwErrorException(`[service.user.banUserByEmail] ${errorMessage}`, 'Cannot find admin', 404);
+  await userRepo.unbanUserByEmail(email);
 }
 
 export async function createUser(email: string, password: string, new_user_token: string): Promise<UserTable> {
-    let errorMessage = '';
-    if (!new_user_token || new_user_token !== process.env.API_MANAGEMENT_KEY) errorMessage += "Invalid New User Token"; 
-    if (!email) errorMessage += "Email not given";
-    if (!password) errorMessage += "Password not given";
-    if (await userRepo.checkUserEmail(email)) errorMessage += "Duplicate email";
-    if (errorMessage) {
-        errorMessage.trim();
-        throwErrorException(`[service.user.createUser] ${errorMessage}`, 'Cannot create user', 400);
-    }
-    const currentDate = new Date();
-    const user_id = uuidv4();
-    const token = await signJWT(email);
-    if (token === undefined) throwErrorException(`[service.user.createUser] Invalid token parameters`, 'Cannot create token', 400);
-    const hashedPassword = await hashPassword(password);
-    if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
-    const newUser: UserTable = {
-        user_id: user_id,
-        email: email,
-        password: hashedPassword!,
-        is_active: true,
-        is_banned: false,
-        last_login: currentDate,
-        created_at: currentDate,
-        updated_at: currentDate,
-        client_secret: uuidv4()
-    }
-    const image_id = uuidv4();
-    const newImage: ImageTable = {
-        image_id: image_id,
-        image_text: null,
-        image_data: null,
-        created_at: currentDate,
-        updated_at: currentDate,
-    }
-    const newProfile: ProfileTable = {
-        profile_id: uuidv4(),
-        user_id: user_id,
-        profile_img: image_id,
-        profile_name: email,
-        created_at: currentDate,
-        updated_at: currentDate,
-    }
-    const authDetails: AuthTable = {
-        auth_id: uuidv4(),
-        user_id: user_id,
-        token: token!,
-        created_at: currentDate,
-        updated_at: currentDate,
-    }
-    console.log("HERE");
-    return userRepo.createUser(newUser, newProfile, authDetails, newImage);
+  let errorMessage = '';
+  if (!new_user_token || new_user_token !== process.env.API_MANAGEMENT_KEY) errorMessage += 'Invalid New User Token';
+  if (!email) errorMessage += 'Email not given';
+  if (!password) errorMessage += 'Password not given';
+  if (await userRepo.checkUserEmail(email)) errorMessage += 'Duplicate email';
+  if (errorMessage) {
+    errorMessage.trim();
+    throwErrorException(`[service.user.createUser] ${errorMessage}`, 'Cannot create user', 400);
+  }
+  const currentDate = new Date();
+  const user_id = uuidv4();
+  const token = await signJWT(email);
+  if (token === undefined) throwErrorException(`[service.user.createUser] Invalid token parameters`, 'Cannot create token', 400);
+  const hashedPassword = await hashPassword(password);
+  if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
+  const newUser: UserTable = {
+    user_id: user_id,
+    email: email,
+    password: hashedPassword!,
+    is_active: true,
+    is_banned: false,
+    last_login: currentDate,
+    created_at: currentDate,
+    updated_at: currentDate,
+    client_secret: uuidv4(),
+  };
+  const image_id = uuidv4();
+  const newImage: ImageTable = {
+    image_id: image_id,
+    image_text: null,
+    image_data: null,
+    created_at: currentDate,
+    updated_at: currentDate,
+  };
+  const newProfile: ProfileTable = {
+    profile_id: uuidv4(),
+    user_id: user_id,
+    profile_img: image_id,
+    profile_name: email,
+    created_at: currentDate,
+    updated_at: currentDate,
+  };
+  const authDetails: AuthTable = {
+    auth_id: uuidv4(),
+    user_id: user_id,
+    token: token!,
+    created_at: currentDate,
+    updated_at: currentDate,
+  };
+  console.log('HERE');
+  return userRepo.createUser(newUser, newProfile, authDetails, newImage);
 }
 
-export async function updateUser(user_id: string, email: string, password: string, is_active: boolean, is_banned: boolean, last_login: Date): Promise<UserTable> {
-    let errorMessage = '';
-    if (!user_id) errorMessage += "ID not given";
-    if (!validate(user_id)) errorMessage += "ID is invalid";
-    if (!(await userRepo.userExists(user_id))) errorMessage += "User does not exist";
-    if (errorMessage) {
-        errorMessage.trim();
-        throwErrorException(`[service.user.updateUser] ${errorMessage}`, 'Cannot update tenant', 400);
-    }
-    const currentUser = await userRepo.getUserById(user_id);
-    let hashedPassword: string | undefined = "";
-    if (password) {
-        hashedPassword = await hashPassword(password);
-        if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
-    }
-    const updatedUser: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'client_secret'> = {
-        email: email ?? currentUser.email,
-        password: hashedPassword ?? currentUser.password,
-        is_active: is_active ?? currentUser.is_active,
-        is_banned: is_banned ?? currentUser.is_banned,
-        last_login: last_login ?? currentUser.last_login
-    };
-    return userRepo.updateUser(user_id, updatedUser);
+export async function updateUser(
+  user_id: string,
+  email: string,
+  password: string,
+  is_active: boolean,
+  is_banned: boolean,
+  last_login: Date,
+): Promise<UserTable> {
+  let errorMessage = '';
+  if (!user_id) errorMessage += 'ID not given';
+  if (!validate(user_id)) errorMessage += 'ID is invalid';
+  if (!(await userRepo.userExists(user_id))) errorMessage += 'User does not exist';
+  if (errorMessage) {
+    errorMessage.trim();
+    throwErrorException(`[service.user.updateUser] ${errorMessage}`, 'Cannot update tenant', 400);
+  }
+  const currentUser = await userRepo.getUserById(user_id);
+  let hashedPassword: string | undefined = '';
+  if (password) {
+    hashedPassword = await hashPassword(password);
+    if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
+  }
+  const updatedUser: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'client_secret'> = {
+    email: email ?? currentUser.email,
+    password: hashedPassword ?? currentUser.password,
+    is_active: is_active ?? currentUser.is_active,
+    is_banned: is_banned ?? currentUser.is_banned,
+    last_login: last_login ?? currentUser.last_login,
+  };
+  return userRepo.updateUser(user_id, updatedUser);
 }
 
 export async function deleteUser(user_id: string | null, admin_id: string | null, client_secret: string | null): Promise<void> {
-    if (admin_id && validate(admin_id)) {
-        if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.user.deleteUser] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
-        if (user_id && validate(user_id)) userRepo.deleteUser(user_id);
-    }
-    if (user_id && client_secret) {
-        if (!validate(user_id) && !validate(client_secret)) throwErrorException(`[service.user.deleteUser] Invalid UUID: ${user_id}`, 'Invalid user ID/client secret', 400);
-        if (!(await userRepo.getUserById(user_id))) throwErrorException(`[service.user.deleteUser] User ID invalid: ${user_id}`, 'User ID invalid', 400);
-        if (!(await userRepo.getUserIdByClientSecret(client_secret, user_id))) throwErrorException(`[service.user.deleteUser] Cannot find user`, 'User ID/Secret invalid', 404);
-        else userRepo.deleteUser(user_id);
-    }
-    else throwErrorException(`[service.user.deleteUser] No valid ID provided`, 'Cannot delete user', 403);
+  if (admin_id && validate(admin_id)) {
+    if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.user.deleteUser] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
+    if (user_id && validate(user_id)) userRepo.deleteUser(user_id);
+  } else if (user_id && client_secret) {
+    if (!validate(user_id) && !validate(client_secret))
+      throwErrorException(`[service.user.deleteUser] Invalid UUID: ${user_id}`, 'Invalid user ID/client secret', 400);
+    if (!(await userRepo.getUserById(user_id))) throwErrorException(`[service.user.deleteUser] User ID invalid: ${user_id}`, 'User ID invalid', 400);
+    if (!(await userRepo.getUserIdByClientSecret(client_secret, user_id)))
+      throwErrorException(`[service.user.deleteUser] Cannot find user`, 'User ID/Secret invalid', 404);
+    else userRepo.deleteUser(user_id);
+  } else throwErrorException(`[service.user.deleteUser] No valid ID provided`, 'Cannot delete user', 403);
 }

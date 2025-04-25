@@ -1,7 +1,7 @@
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import NavBar from "./components/NavBar";
 import Dashboard from "./components/Dashboard/Dashboard";
-import DynamicGame from "./components/DynamicGame/DynamicGame";
+import DynamicGame from "./pages/DynamicGame";
 import SearchGame from "./components/SearchGame/SearchGame";
 import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -47,17 +47,12 @@ function App() {
                       <Dashboard />
                     </ProtectedRoute>
                     } />
-                  <Route path="/game" element={
-                    <ProtectedRoute>
-                      <DynamicGame />
-                    </ProtectedRoute>
-                    } />
                   <Route path="/search" element={
                     <ProtectedRoute>
                       <SearchGame />
                     </ProtectedRoute>
                     } />
-                  <Route path="/game/:id" element={
+                  <Route path="/game" element={
                     <ProtectedRoute>
                       <DynamicGame />
                     </ProtectedRoute>
