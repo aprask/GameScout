@@ -19,7 +19,6 @@ import { useProfile } from "../context/ProfileContext";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [ profileIcon, setProfileIcon ] = useState<string | null>(null);
   const { isAuthenticated, logout, isAdmin } = useAuth()
   const { profileImage } = useProfile();
   const { profileId } = useAuth();
@@ -28,15 +27,7 @@ function NavBar() {
     logout();
     toggleDrawer();
   };
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    const fetchProfileImg = async() => {
-      setProfileIcon(profileImage);
-    }
-    fetchProfileImg();
-  }, [])
-
+  
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };

@@ -29,12 +29,11 @@ function LoginPage() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
     const [invalidLogin, setInvalidLogin] = useState(false);
     const { login } = useAuth();
-    const { setProfileName, setProfileBannerImage, setProfileImage } = useProfile();
     const navigate = useNavigate();
+    const {setProfileName, setProfileImage} = useProfile();
 
-    async function updateProfileState(profName: string, profImg: string, profBannerImg: string) {
+    async function updateProfileState(profName: string, profImg: string) {
       await setProfileName(profName);
-      await setProfileBannerImage(profBannerImg);
       await setProfileImage(profImg);
     }
 
@@ -137,9 +136,8 @@ function LoginPage() {
             if (res.status !== 200) return;
             const profileName = res.data.profile.profile_name;
             const profileImg = res.data.profile.profile_img;
-            const profileBanner = res.data.profile.banner_img;
             await updateAuthState(loginRespData);
-            await updateProfileState(profileName, profileImg, profileBanner); 
+            await updateProfileState(profileName, profileImg); 
             setFormValues({ email: '', password: '' });
             navigate('/', {replace: true});
           }

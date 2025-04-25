@@ -22,7 +22,7 @@ interface WishListType {
 
 function ProfilePage() {
     const { id } = useParams();
-    const { token, userId, profileId } = useAuth();
+    const { token, userId, profileId } = useAuth(); 
     const [wishlist, setWishlist] = useState<WishListType[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();

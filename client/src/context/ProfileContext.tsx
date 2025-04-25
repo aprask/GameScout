@@ -3,10 +3,8 @@ import { createContext, useContext, useState, useEffect, JSX } from 'react';
 interface ProfileContextType {
     profileName: string | null;
     profileImage: string | null;
-    profileBannerImage: string | null;
     setProfileName: (name: string | null) => void;
     setProfileImage: (name: string | null) => void;
-    setProfileBannerImage: (name: string | null) => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -14,7 +12,6 @@ const ProfileContext = createContext<ProfileContextType | null>(null);
 export function ProfileProvider({ children }: { children: React.ReactNode }): JSX.Element {
     const [profileName, setProfileName] = useState(() => localStorage.getItem('profileName'));
     const [profileImage, setProfileImage] = useState(() => localStorage.getItem('profileImage'));
-    const [profileBannerImage, setProfileBannerImage] = useState(() => localStorage.getItem('profileBanner'));
 
     useEffect(() => {
         localStorage.setItem('profileName', profileName ?? '');
@@ -24,13 +21,10 @@ export function ProfileProvider({ children }: { children: React.ReactNode }): JS
         localStorage.setItem('profileImage', profileImage ?? '')
     }, [profileImage]);
     
-    useEffect(() => {
-        localStorage.setItem('profileBannerImage', profileBannerImage ?? '')
-    }, [profileBannerImage]);
     
 
     return (
-        <ProfileContext.Provider value={{ profileName, setProfileName, profileImage, setProfileImage, setProfileBannerImage, profileBannerImage}}>
+        <ProfileContext.Provider value={{ profileName, setProfileName, profileImage, setProfileImage}}>
             {children}
         </ProfileContext.Provider>
     );
