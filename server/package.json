@@ -10,7 +10,7 @@
     "testAdmin": "APP_ENV=test tsx --test ./test/admin.test.ts",
     "testArticles": "APP_ENV=test tsx --test ./test/articles.test.ts",
     "testHealth": "APP_ENV=test tsx --test ./test/health.test.ts",
-    "testComments": "APP_ENV=test tsx --test ./test/comments.test.ts"
+    "testComments":  "APP_ENV=test tsx --test ./test/comments.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +41,7 @@
     "@types/uuid": "^10.0.0",
     "@types/verror": "^1.10.11",
     "amqplib": "^0.10.7",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
