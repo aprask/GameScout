@@ -26,7 +26,7 @@ services:
       context: ./server
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
       - ./server:/usr/local/app
       - /usr/local/app/node_modules

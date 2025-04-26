@@ -34,8 +34,13 @@ app.use('/api/v1/auth', authRouter);
 
 app.use(errorMiddleware);
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
+  next();
+});
 
-const PORT = process.env.PORT ?? 3000;
+
+const PORT = process.env.PORT ?? 4000;
 
 if (process.env.APP_ENV !== 'test') {
   const CONSUMER = new Consumer('GAME_DATA');
