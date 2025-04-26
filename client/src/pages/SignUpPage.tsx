@@ -83,7 +83,7 @@ function SignUpPage() {
               },
             }
           );
-    
+          console.log(`Status: ${res.status}`);
           if (res.status === 201) {
             setFormValues({ email: '', password: '', confirmedPassword: '' });
             navigate('/login', {replace: true});
