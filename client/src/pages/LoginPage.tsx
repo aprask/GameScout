@@ -114,11 +114,11 @@ function LoginPage() {
               admin_id: ""
             };
             res = await axios.get(
-              `${baseUrl}/api/v1/admin/${res.data.user_id}`,
+              `${baseUrl}/api/v1/admin/${loginRespData.user_id}`,
               {
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${res.data.token}`,
+                  Authorization: `Bearer ${loginRespData.token}`,
                 }
               }
             );

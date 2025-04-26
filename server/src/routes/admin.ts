@@ -6,8 +6,14 @@ import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import { resourceSharer } from '../middleware/resource.js';
 
-router.use(authMiddleware as RequestHandler);
+router.use((req, res, next) => {
+  console.log("Admin route middleware hit");
+  console.log("Headers:", req.headers);
+  next();
+});
+
 router.use(resourceSharer);
+router.use(authMiddleware as RequestHandler);
 
 router.get(
   '/',
