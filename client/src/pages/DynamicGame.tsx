@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -10,6 +10,8 @@ import {
   Box,
   TextField,
   Button,
+  Rating,
+  Paper,
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
@@ -105,18 +107,14 @@ function DynamicGame(): JSX.Element {
             component="img"
             image={`https://images.igdb.com/igdb/image/upload/t_1080p/${game.cover_id}.jpg`}
             alt={`${game.game_name} cover`}
-            sx={{ maxWidth: { xs: "100%", md: 300 }, margin: "auto" }}
+            sx={{ maxWidth: { xs: "100%", md: 300 } }}
           />
-          <CardContent sx={{ flex: 1, padding: 3 }}>
+          <CardContent sx={{ flex: 1, padding: 3, mt: 3 }}>
             <Typography variant="h4" gutterBottom>
               {game.game_name}
             </Typography>
 
-            {rating && (
-              <Typography gutterBottom>
-                Rating: {(+rating).toFixed(1)}/5
-              </Typography>
-            )}
+            {rating && <Rating name="review-rating" value={+rating} readOnly />}
 
             {game.release_date && (
               <Typography variant="subtitle2" color="text.secondary">
@@ -132,18 +130,17 @@ function DynamicGame(): JSX.Element {
           </CardContent>
         </Box>
       </Card>
-      <Card sx={{ mb: 4 }}>
+      {/* <Card
+        sx={{ mb: 4, backgroundColor: "primary.main", color: "white", p: 1 }}
+      >
         <CardContent>
-          <Typography variant="h6">Reviews for {game.game_name}</Typography>
+          <Typography variant="h4">Reviews for {game.game_name}</Typography>
         </CardContent>
-      </Card>
-      <Card sx={{ mb: 4 }}>
-        <CardContent>
-          <Box>
-            <ReviewForm gameId={game.game_id} />
-          </Box>
-        </CardContent>
-      </Card>
+      </Card> */}
+
+      <ReviewForm gameId={game.game_id} />
+      {/* </CardContent>
+      </Card> */}
       <Card sx={{ mb: 4, mt: 4 }}>
         <CardContent>
           <Box>
@@ -227,54 +224,77 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   if (reviewSubmitted === true)
     return (
       <>
-        <Typography variant="h5">Your Review</Typography>
-        <Typography variant="body2">
-          Rating: {submittedReview!.rating}
-        </Typography>
-        <Typography variant="body2">
-          Review: {submittedReview!.review}
-        </Typography>
+        <Card sx={{ backgroundColor: "primary.main" }}>
+          <CardContent>
+            <Paper elevation={6} sx={{ p: 2, pl: 1, pr: 2 }}>
+              <Container>
+                <Typography variant="h6">
+                  {submittedReview?.review_title}
+                </Typography>
+
+                <Rating
+                  name="review-rating"
+                  value={+submittedReview!.rating}
+                  readOnly
+                />
+                {submittedReview!.review && (
+                  <Typography variant="body2">
+                    {submittedReview!.review}
+                  </Typography>
+                )}
+              </Container>
+            </Paper>
+          </CardContent>
+        </Card>
       </>
     );
   else
     return (
-      <Box component="form" onSubmit={handleSubmit}>
-        <Typography variant="h6">Write a Review</Typography>
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
-        <TextField
-          label="Title"
-          value={reviewTitle}
-          onChange={(e) => setReviewTitle(e.target.value)}
-          fullWidth
-          required
-          sx={{ mb: 2 }}
-        />
-        <TextField
-          label="Rating (1-5)"
-          type="number"
-          value={rating}
-          onChange={(e) => setRating(+e.target.value)}
-          fullWidth
-          required
-          sx={{ mb: 2 }}
-        />
-        <TextField
-          label="Review"
-          multiline
-          rows={4}
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-          fullWidth
-          sx={{ mb: 2 }}
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Submit Review
-        </Button>
-      </Box>
+      <Card>
+        <CardContent>
+          <Box component="form" onSubmit={handleSubmit}>
+            <Typography variant="h6">Write a Review</Typography>
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                {error}
+              </Typography>
+            )}
+            <TextField
+              label="Title"
+              value={reviewTitle}
+              onChange={(e) => setReviewTitle(e.target.value)}
+              fullWidth
+              required
+              sx={{ mb: 1 }}
+            />
+            <Box>
+              <Rating
+                name="star-rating"
+                value={+rating}
+                onChange={(event, newValue) => {
+                  setRating(+newValue!);
+                }}
+              />
+            </Box>
+
+            <TextField
+              label="Review"
+              multiline
+              rows={4}
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}>
+              <Button type="submit" variant="contained" color="primary">
+                Submit Review
+              </Button>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
     );
 }
 
@@ -333,17 +353,13 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
   return (
     <Box>
       {reviews.map((review, index) => (
-        <Card key={index} sx={{ mb: 2, p: 2 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight="bold">
-              {review.review_title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Rating: {review.rating} / 5
-            </Typography>
-            <Typography variant="body2">{review.review}</Typography>
-          </CardContent>
-        </Card>
+        <Paper key={index} sx={{ mb: 2, p: 2 }} elevation={6}>
+          <Typography variant="h6" fontWeight="bold">
+            {review.review_title}
+          </Typography>
+          <Rating name="review-rating" value={+review.rating} readOnly />
+          <Typography variant="body2">{review.review}</Typography>
+        </Paper>
       ))}
     </Box>
   );
