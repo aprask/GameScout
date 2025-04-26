@@ -13,7 +13,7 @@ router.post('/', asyncHandler(async (req, res) => {
     const token = req.headers['authorization'];
     const { email, password } = req.body;
     const newUser = await userService.createUser(email, password, token!);
-    console.log('Created user');
+    console.log(`Created user: ${newUser}`);
     res.status(201).json({new_user: newUser});
 }));
 
