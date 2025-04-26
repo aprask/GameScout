@@ -113,6 +113,9 @@ function LoginPage() {
               isAdmin: false,
               admin_id: ""
             };
+            console.log(`Token: ${loginRespData.token}`);
+            console.log(`User ID: ${loginRespData.user_id}`);
+            console.log(`URL: ${baseUrl}`);
             res = await axios.get(
               `${baseUrl}/api/v1/admin/user/${loginRespData.user_id}`,
               {
