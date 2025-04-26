@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "APP_ENV=development NODE_ENV=development tsx watch --clear-screen=false src/index.ts",
+    "prod": "node dist/index.js",
     "build": "tsc"
   },
   "keywords": [],
