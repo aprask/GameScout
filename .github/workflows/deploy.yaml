@@ -115,9 +115,6 @@ jobs:
             APP_ENV=${{secrets.APP_ENV}}
             EOF
             cd ..
-            mkdir pgdata || { echo "Failed to create pgdata directory"; exit 1; }
-            sudo chown -R 999:999 pgdata
-            sudo chmod 700 pgdata
             echo 'Starting containers...'
             docker compose -f docker-compose.yaml up --build -d
             echo 'Deployment complete'
