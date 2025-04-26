@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cross-env APP_ENV=development NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
     "build": "tsc",
+    "prod": "node dist/index.js",
     "testUser": "APP_ENV=test tsx --test ./test/*.test.ts"
   },
   "keywords": [],
