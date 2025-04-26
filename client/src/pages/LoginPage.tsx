@@ -113,22 +113,22 @@ function LoginPage() {
               isAdmin: false,
               admin_id: ""
             };
-            // res = await axios.get(
-            //   `${baseUrl}/api/v1/admin/user/${loginRespData.user_id}`,
-            //   {
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //       Authorization: `Bearer ${loginRespData.token}`,
-            //     }
-            //   }
-            // );
-            // console.log(`Admin Resp: ${res.data}`);
-            // if (res.status !== 200) return;
-            // if (res.data.isAdmin === 'true') {
-            //   console.log("Admin");
-            //   loginRespData.isAdmin = true
-            //   loginRespData.admin_id = res.data.admin_id;
-            // } else console.log("Not an admin");
+            res = await axios.get(
+              `${baseUrl}/api/v1/admin/user/${loginRespData.user_id}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${loginRespData.token}`,
+                }
+              }
+            );
+            console.log(`Admin Resp: ${res.data}`);
+            if (res.status !== 200) return;
+            if (res.data.isAdmin === 'true') {
+              console.log("Admin");
+              loginRespData.isAdmin = true
+              loginRespData.admin_id = res.data.admin_id;
+            } else console.log("Not an admin");
             res = await axios.get(`
               ${baseUrl}/api/v1/profile/${loginRespData.profile_id}`,
             {
