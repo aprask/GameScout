@@ -12,7 +12,7 @@ import {
   Avatar,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from "../context/ProfileContext";

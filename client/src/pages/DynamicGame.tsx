@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 interface GameData {
   created_at: Date;
@@ -143,7 +144,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   const [rating, setRating] = useState<number | "">("");
   const [reviewText, setReviewText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string>(localStorage.getItem("userId")!);
+  const { userId } = useAuth();
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
   const [submittedReview, setSubmittedReview] = useState<ReviewData>();
   const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
