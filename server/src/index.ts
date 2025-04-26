@@ -19,7 +19,6 @@ import authRouter from './routes/auth.js';
 export const app = express();
 
 app.use(express.json());
-app.use(errorMiddleware);
 
 app.use('/api/v1/health', healthRouter);
 app.use('/api/v1/users', userRouter);
@@ -32,6 +31,8 @@ app.use('/api/v1/community/articles', articlesRouter);
 app.use('/api/v1/wishlist', wishlistRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/auth', authRouter);
+
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT ?? 3000;
 

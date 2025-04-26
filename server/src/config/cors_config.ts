@@ -11,14 +11,20 @@ const WHITE_LIST = [
 ];
 export const CORS_OPTIONS = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) {
-        if (WHITE_LIST.indexOf(origin!) !== -1) {
-            callback(null, true)
+        if (!origin) {
+            callback(null, true);
+            return;
+        }
+        if (WHITE_LIST.some(domain => origin.toLowerCase().includes(domain.toLowerCase()))) {
+            callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'), false)
+            console.error(`Blocked origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'), false);
         }
     },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    optionsSuccessStatus: 200
+    exposedHeaders: ['Authorization'],
+    maxAge: 86400
 };
