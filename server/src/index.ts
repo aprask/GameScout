@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { migrateToLatest } from '../src/data/migrate.js';
+import { migrateToLatest } from './data/migrate.js';
 import { errorMiddleware } from './middleware/error.js';
 import { Consumer } from './config/consumer.js';
 
