@@ -34,6 +34,7 @@ interface ReviewData {
 }
 function DynamicGame(): JSX.Element {
   const [searchParams] = useSearchParams();
+  const [rating, setRating] = useState<Number>();
   const id = searchParams.get("id");
   const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,8 +49,20 @@ function DynamicGame(): JSX.Element {
             Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
           },
         });
+        const review = await axios.get(
+          `http://localhost:3000/api/v1/review/rating/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+            },
+          }
+        );
         if (res.status === 200) {
           setGame(res.data.game);
+        }
+        if (review.status === 200) {
+          setRating(review.data.rating);
         }
       } catch (error) {
         console.error("Error fetching game details:", error);
@@ -98,6 +111,13 @@ function DynamicGame(): JSX.Element {
             <Typography variant="h4" gutterBottom>
               {game.game_name}
             </Typography>
+
+            {rating && (
+              <Typography gutterBottom>
+                Rating: {(+rating).toFixed(1)}/5
+              </Typography>
+            )}
+
             {game.release_date && (
               <Typography variant="subtitle2" color="text.secondary">
                 Release Date: {new Date(game.release_date).toLocaleDateString()}
