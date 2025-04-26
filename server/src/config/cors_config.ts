@@ -1,5 +1,14 @@
-const WHITE_LIST = ['http://localhost:5173'];
-
+const WHITE_LIST = [
+    'http://localhost',
+    'http://client',
+    'http://localhost:80',
+    'http://64.225.31.139',
+    'https://64.225.31.139',
+    'http://localhost:5173',
+    'https://gamescout.xyz',
+    'http://gamescout.xyz',
+    'https://www.gamescout.xyz',
+];
 export const CORS_OPTIONS = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) {
         if (WHITE_LIST.indexOf(origin!) !== -1) {
@@ -12,4 +21,4 @@ export const CORS_OPTIONS = {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     optionsSuccessStatus: 200
-} as const;
+};
