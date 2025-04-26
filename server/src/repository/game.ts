@@ -27,8 +27,8 @@ export async function createGame(game: GameTable): Promise<GameTable> {
         .values({
             game_id: game.game_id,
             game_name: game.game_name,
-            game_art: game.game_art,
             is_supported: game.is_supported,
+            cover_id: game.cover_id,
             summary: game.summary,
             release_date: game.release_date,
             created_at: game.created_at,
@@ -40,12 +40,11 @@ export async function createGame(game: GameTable): Promise<GameTable> {
     return newGame!;
 }
 
-export async function updateGame(game_id: string, game: Omit<GameTable, 'game_id' | 'created_at' | 'updated_at'>): Promise<GameTable> {
+export async function updateGame(game_id: string, game: Omit<GameTable, 'game_id' | 'created_at' | 'updated_at'| 'cover_id'>): Promise<GameTable> {
     const updatedGame = await db
         .updateTable("games")
         .set({
             game_name: game.game_name,
-            game_art: game.game_art,
             is_supported: game.is_supported,
             summary: game.summary,
             release_date: game.release_date,

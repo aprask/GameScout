@@ -1,6 +1,5 @@
-import { GameTable, GameMessage, ImageTable, PaginatedGame } from "../data/models/models.js";
+import { GameTable, GameMessage, PaginatedGame } from "../data/models/models.js";
 import * as gameRepo from "../repository/game.js";
-import * as imgRepo from "../repository/image.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
@@ -99,7 +98,8 @@ export async function createGame(
     is_supported: boolean,
     summary: string,
     release_date: Date,
-    admin_id: string
+    admin_id: string,
+    cover_id: string
 ): Promise<GameTable | undefined> {
     if (admin_id) {
         if (!validate(admin_id)) throwErrorException(`[service.game.createGame] Invalid UUID: ${admin_id}`, 'Invalid admin ID', 400);
@@ -118,9 +118,9 @@ export async function createGame(
         const newGame: GameTable = {
             game_id: uuidv4(),
             game_name,
-            game_art,
             is_supported,
             summary,
+            cover_id,
             release_date,
             created_at: currentDate,
             updated_at: currentDate
@@ -147,9 +147,8 @@ export async function updateGame(
 
         const currentGame = await gameRepo.getGameById(game_id);
 
-        const updatedGame: Omit<GameTable, 'game_id' | 'created_at' | 'updated_at'> = {
+        const updatedGame: Omit<GameTable, 'game_id' | 'created_at' | 'updated_at' | 'cover_id'> = {
             game_name: game_name ?? currentGame.game_name,
-            game_art: game_art ?? currentGame.game_art,
             is_supported: is_supported ?? currentGame.is_supported,
             summary: summary ?? currentGame.summary,
             release_date: release_date ?? currentGame.release_date,
@@ -177,28 +176,18 @@ export async function bulkGameInsert(gameMsg: GameMessage[]): Promise<void> {
         const gameSummary = gameMsg[i].summary;
         const releaseDate = gameMsg[i].release_date;
         const isSupported = gameMsg[i].is_supported;
+        const cover_id = gameMsg[i].cover_id;
         if (await gameRepo.doesGameExist(gameName, gameSummary)) continue;
         if (isNaN(releaseDate)) continue;
         if (gameName === undefined || gameSummary === undefined || releaseDate === undefined || isSupported === undefined) continue;
 
         const currentDate = new Date();
-        const imageData = Buffer.from(gameMsg[i].game_art.data);
-        if (imageData === undefined) continue;
-        const imageId = uuidv4();
-        const imageInstance: ImageTable = {
-            image_id: imageId,
-            image_text: "",
-            image_data: imageData,
-            created_at: currentDate,
-            updated_at: currentDate
-        }
-        await imgRepo.createImage(imageInstance);
         const formattedReleaseDate = new Date(+gameMsg[i].release_date * 1000);
         const gameInstance: GameTable = {
             game_id: uuidv4(),
-            game_art: imageId,
             is_supported: isSupported,
             summary: gameSummary,
+            cover_id: cover_id,
             game_name: gameName,
             release_date: formattedReleaseDate,
             created_at: currentDate,

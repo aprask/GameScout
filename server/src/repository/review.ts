@@ -22,6 +22,7 @@ export async function createReview(review: ReviewTable): Promise<ReviewTable> {
       review_id: review.review_id,
       user_id: review.user_id,
       game_id: review.game_id,
+      review_title: review.review_title,
       rating: review.rating,
       review: review.review,
       created_at: review.created_at,
@@ -39,6 +40,7 @@ export async function updateReview(review_id: string, review: Omit<ReviewTable, 
     .set({
       user_id: review.user_id,
       game_id: review.game_id,
+      review_title: review.review_title,
       rating: review.rating,
       review: review.review,
       updated_at: new Date(),
@@ -68,4 +70,16 @@ export async function getAllReviewsByGameId(gameId: string): Promise<ReviewTable
   }
 
   return reviews;
+}
+
+export async function getReviewByGameAndUserId(game_id: string, user_id: string): Promise<ReviewTable> {
+  const review = await db.selectFrom('review').selectAll().where('user_id', '=', user_id).where('game_id', '=', game_id).executeTakeFirst();
+  if (!review) {
+    throwErrorException(
+      `[repository.review.getReviewByGameandUserId] No reviews found for game ID: ${game_id} and user ID: ${user_id}`,
+      'Review not found',
+      200,
+    );
+  }
+  return review;
 }

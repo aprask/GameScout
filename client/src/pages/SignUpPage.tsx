@@ -66,6 +66,7 @@ function SignUpPage() {
         }
     
         try {
+          console.log(`Key: ${import.meta.env.VITE_API_MANAGEMENT_KEY}`);
           const res = await axios.post(
             "http://localhost:3000/api/v1/users",
             {

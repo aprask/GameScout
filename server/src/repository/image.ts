@@ -11,6 +11,16 @@ export async function getAllImages(): Promise<ImageTable[]> {
     return images;
 }
 
+export async function uploadImage(imgBuffer: Buffer, imageId: string): Promise<void> {
+    await db
+        .updateTable('images')
+        .set({
+            image_data: imgBuffer
+        })
+        .where('image_id', '=', imageId)
+        .executeTakeFirstOrThrow();
+}
+
 export async function getImageById(image_id: string): Promise<ImageTable> {
     const image = await db
         .selectFrom("images")

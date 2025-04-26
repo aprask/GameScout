@@ -29,18 +29,19 @@ export interface ImageTable {
 export interface GameTable {
   game_id: string;
   game_name: string;
-  game_art: string;
   is_supported: boolean;
   summary: string;
   release_date: Date;
   created_at: Date;
   updated_at: Date;
+  cover_id: string;
 }
 
 export interface ReviewTable {
   review_id: string;
   user_id: string;
   game_id: string;
+  review_title: string;
   rating: number;
   review: string | null;
   created_at: Date;
@@ -59,6 +60,7 @@ export interface ProfileTable {
   profile_id: string;
   user_id: string;
   profile_img: string;
+  banner_img: string;
   profile_name: string;
   created_at: Date;
   updated_at: Date;
@@ -102,16 +104,16 @@ export interface AuthTable {
 
 export interface GameMessage {
   game_name: string;
-  game_art: { type: "Buffer"; data: number[] };
   is_supported: boolean;
   summary: string;
   release_date: number;
+  cover_id: string;
 }
 
 export interface PaginatedGame {
-  current_page: number,
-  limit: number,
-  items: number,
-  pages: number,
-  data: GameTable[]
+  current_page: number;
+  limit: number;
+  items: number;
+  pages: number;
+  data: GameTable[];
 }
