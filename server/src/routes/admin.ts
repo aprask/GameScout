@@ -24,7 +24,7 @@ router.get(
 );
 
 router.get(
-  'user/:user_id',
+  '/user/:user_id',
   asyncHandler(async (req, res) => {
     console.log("Entered endpoint");
     const admin = await adminService.getAdminByUserId(req.params.user_id);
