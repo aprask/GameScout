@@ -123,7 +123,7 @@ function LoginPage() {
               }
             );
             if (res.status !== 200) return;
-            if (res.data.isAdmin) {
+            if (res.data.isAdmin === 'true') {
               console.log("Admin");
               loginRespData.isAdmin = true
               loginRespData.admin_id = res.data.admin_id;
