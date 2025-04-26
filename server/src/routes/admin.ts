@@ -5,9 +5,9 @@ import * as adminService from '../service/admin.js';
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import { resourceSharer } from '../middleware/resource.js';
-router.use(resourceSharer);
 
 router.use(authMiddleware as RequestHandler);
+router.use(resourceSharer);
 
 router.get(
   '/',
@@ -20,9 +20,16 @@ router.get(
 router.get(
   '/:user_id',
   asyncHandler(async (req, res) => {
+    console.log("Entered endpoint");
     const admin = await adminService.getAdminByUserId(req.params.user_id);
-    if (admin === undefined) res.status(200).json({ isAdmin: false });
-    else res.status(200).json({ isAdmin: true, admin_id: admin.admin_id });
+    if (admin === undefined) {
+      console.log("Could not find admin");
+      res.status(200).json({ isAdmin: false });
+    }
+    else {
+      console.log("Found admin");
+      res.status(200).json({ isAdmin: true, admin_id: admin.admin_id });
+    }
   }),
 );
 
