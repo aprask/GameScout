@@ -29,13 +29,16 @@ function GameReviews(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [newReview, setNewReview] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+            ? `${import.meta.env.VITE_PROD_URL}`
+            : `${import.meta.env.VITE_DEV_URL}`;
 
   // Fetch reviews for the game
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/reviews/${gameId}`);
+        const response = await axios.get(`${baseUrl}/api/reviews/${gameId}`);
         setReviews(response.data.reviews);
       } catch (err) {
         console.log(err);
@@ -57,7 +60,7 @@ function GameReviews(): JSX.Element {
 
     try {
       setError(null);
-      const response = await axios.post(`/api/reviews`, {
+      const response = await axios.post(`${baseUrl}/api/reviews`, {
         game_id: gameId,
         user_id: "current_user_id", // Replace with actual user ID
         rating,

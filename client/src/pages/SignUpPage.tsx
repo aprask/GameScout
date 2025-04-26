@@ -16,6 +16,9 @@ function SignUpPage() {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [formValues, setFormValues] = useState({ email: '', password: '', confirmedPassword: '' });
     const navigate = useNavigate();
+    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
     
     function signIn() {
@@ -68,7 +71,7 @@ function SignUpPage() {
         try {
           console.log(`Key: ${import.meta.env.VITE_API_MANAGEMENT_KEY}`);
           const res = await axios.post(
-            "http://localhost:3000/api/v1/users",
+            `${baseUrl}/api/v1/users`,
             {
               email: formValues.email,
               password: formValues.password,

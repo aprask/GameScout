@@ -28,11 +28,14 @@ function ProfilePage() {
     const theme = useTheme();
     const navigate = useNavigate();
     const [profileName, setProfileName] = useState('');
+    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
     useEffect(() => {
         const fetchProfileName = async() => {
             const response = await axios.get(
-                `http://localhost:3000/api/v1/profile/${id}`,
+                `${baseUrl}/api/v1/profile/${id}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -59,7 +62,7 @@ function ProfilePage() {
         };
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/v1/profile/${id}`,
+                `${baseUrl}/api/v1/profile/${id}`,
                 {
                     profile_img: null,
                     banner_img: null,
@@ -86,7 +89,7 @@ function ProfilePage() {
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `http://localhost:3000/api/v1/wishlist/userList/${userId}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -101,7 +104,7 @@ function ProfilePage() {
                 const wishListData: WishListType[] = [];
                 for (let i = 0; i < gameIds.length; ++i) {
                     res = await axios.get(
-                        `http://localhost:3000/api/v1/game/${gameIds[i]}`,
+                        `${baseUrl}/api/v1/game/${gameIds[i]}`,
                         {
                             headers: {
                                 "Content-Type": "application/json",

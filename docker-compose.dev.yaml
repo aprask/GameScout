@@ -1,4 +1,48 @@
 services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/usr/local/app
+      - /usr/local/app/node_modules
+    environment:
+      - VITE_APP_ENV=development
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/usr/local/app
+      - /usr/local/app/node_modules
+    environment:
+      - APP_ENV=development
+  scheduler-proc:
+    build:
+      context: ./scheduler-proc
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./scheduler-proc:/usr/local/app
+      - /usr/local/app/node_modules
+    environment:
+      - APP_ENV=development
   db:
     image: postgres:latest
     restart: always
@@ -11,3 +55,11 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
+
+networks:
+  default:
+    driver: bridge

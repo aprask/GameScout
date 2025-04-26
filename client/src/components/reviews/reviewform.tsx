@@ -6,7 +6,10 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   const [rating, setRating] = useState<number | "">("");
   const [reviewText, setReviewText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+  ? `${import.meta.env.VITE_PROD_URL}`
+  : `${import.meta.env.VITE_DEV_URL}`;
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -18,7 +21,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/review",
+        `${baseUrl}/api/v1/review`,
         {
           user_id: "current_user_id",
           game_id: gameId,

@@ -31,6 +31,9 @@ function LoginPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
     const {setProfileName, setProfileImage} = useProfile();
+    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
     async function updateProfileState(profName: string, profImg: string) {
       await setProfileName(profName);
@@ -87,7 +90,7 @@ function LoginPage() {
     
         try {
           let res = await axios.post(
-            "http://localhost:3000/api/v1/auth/login",
+            `${baseUrl}/api/v1/auth/login`,
             {
               email: formValues.email,
               password: formValues.password,
@@ -111,7 +114,7 @@ function LoginPage() {
               admin_id: ""
             };
             res = await axios.get(
-              `http://localhost:3000/api/v1/admin/${res.data.user_id}`,
+              `${baseUrl}/api/v1/admin/${res.data.user_id}`,
               {
                 headers: {
                   "Content-Type": "application/json",
@@ -126,7 +129,7 @@ function LoginPage() {
               loginRespData.admin_id = res.data.admin_id;
             } else console.log("Not an admin");
             res = await axios.get(`
-              http://localhost:3000/api/v1/profile/${loginRespData.profile_id}`,
+              ${baseUrl}/api/v1/profile/${loginRespData.profile_id}`,
             {
               headers: {
                 "Content-Type": "application/json",
