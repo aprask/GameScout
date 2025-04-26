@@ -122,6 +122,7 @@ function LoginPage() {
                 }
               }
             );
+            console.log(`Admin Resp: ${res.data}`);
             if (res.status !== 200) return;
             if (res.data.isAdmin === 'true') {
               console.log("Admin");

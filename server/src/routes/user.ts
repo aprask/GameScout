@@ -9,9 +9,11 @@ router.use(resourceSharer);
 router.use(authMiddleware as RequestHandler);
 
 router.post('/', asyncHandler(async (req, res) => {
+    console.log("Creating user");
     const token = req.headers['authorization'];
     const { email, password } = req.body;
     const newUser = await userService.createUser(email, password, token!);
+    console.log('Created user');
     res.status(201).json({new_user: newUser});
 }));
 
