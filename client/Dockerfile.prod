@@ -26,4 +26,4 @@ RUN chmod +x /wait-for-it.sh
 EXPOSE 80
 
 # "--" in bash means end of options so the "-g" or "nginx" does not get misinterpreted as an option
-CMD ["./wait-for-it.sh", "server:3000", "--", "nginx", "-g", "daemon off;"]
+CMD ["./wait-for-it.sh", "server:4000", "--", "nginx", "-g", "daemon off;"]
