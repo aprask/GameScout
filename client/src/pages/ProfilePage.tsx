@@ -14,6 +14,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useProfile } from '../context/profile/ProfileContext';
 
 interface WishListType {
     game_img_url: string;
@@ -27,29 +28,11 @@ function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
-    const [profileName, setProfileName] = useState('');
+    const {profileImage, profileName, setProfileName} = useProfile();
+    const [pageProfileName, setPageProfileName] = useState(profileName);
     const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
         ? `${import.meta.env.VITE_PROD_URL}`
         : `${import.meta.env.VITE_DEV_URL}`;
-
-    useEffect(() => {
-        const fetchProfileName = async() => {
-            const response = await axios.get(
-                `${baseUrl}/api/v1/profile/${id}`,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                }
-            );
-            if (response.status === 200) {
-                setProfileName(response.data.profile.profile_name);
-                setIsEditing(false);
-            }
-        };
-        fetchProfileName();
-    }, []);
     
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
@@ -76,7 +59,8 @@ function ProfilePage() {
                 }
             );
             if (response.status === 200) {
-                setProfileName(newName);                
+                setProfileName(newName);
+                setPageProfileName(newName);                
                 setIsEditing(false);
             }
         } catch (err) {
@@ -142,7 +126,7 @@ function ProfilePage() {
                     position: 'relative'
                 }}>
                     <Avatar
-                        src={undefined}
+                        src={profileImage || undefined}
                         alt="Profile"
                         sx={{
                             width: 120,
@@ -154,7 +138,7 @@ function ProfilePage() {
                     />
                     {(id === profileId) && isEditing ? (
                         <TextField
-                            defaultValue={profileName}
+                            defaultValue={pageProfileName}
                             variant="outlined"
                             sx={{
                                 ml: 60,
@@ -180,7 +164,7 @@ function ProfilePage() {
                             }}
                             onClick={() => setIsEditing(true)}
                         >
-                            {profileName}
+                            {pageProfileName}
                         </Typography>
                     )}
                 </Box>
