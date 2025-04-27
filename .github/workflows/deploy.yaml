@@ -13,98 +13,98 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           key: ${{secrets.VM_PRIV}}
           username: ${{secrets.VM_USER}}
-          script: |
-            docker compose down
-            rm -rf deploy
-            mkdir deploy
-            cd deploy
-            if ! git clone git@github.com:aprask/GameScout.git; then
-              echo "Failed to clone repository"
-              exit 1
-            fi
-            git checkout deploy
-            echo 'Cloned repo'
-            if [ ! -d "GameScout" ]; then
-              echo "GameScout directory not found after clone"
-              exit 1
-            fi
-            cd GameScout
-            git checkout ${{github.head_ref}}
-            echo "Checked out branch: ${{github.head_ref}}"
-            if [ ! -d "scripts" ]; then
-              echo "Scripts directory not found"
-              exit 1
-            fi
-            cd scripts
-            if [ ! -f "deploy-init.sh" ]; then
-              echo "deploy-init.sh not found"
-              exit 1
-            fi
-            chmod +x deploy-init.sh
-            ./deploy-init.sh
-            echo 'Downloaded depedencies'
-            cd ..
-            touch .env
-            cat > .env << EOF
-            RABBITMQ_USER=${{secrets.RABBIT_USERNAME}}
-            RABBITMQ_PASSWORD=${{secrets.RABBIT_PASSWORD}}
-            POSTGRES_USER=${{secrets.POSTGRES_USER}}
-            POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
-            POSTGRES_DB=${{secrets.POSTGRES_DB}}
-            EOF
-            if [ ! -d "client" ]; then
-              echo "Client directory not found"
-              exit 1
-            fi
-            cd client
-            touch .env
-            cat > .env << EOF
-            VITE_PROD_URL=${{secrets.VITE_PROD_URL}}
-            VITE_APP_ENV=${{secrets.VITE_APP_ENV}}
-            VITE_API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
-            EOF
-            cd ..
-            if [ ! -d "server" ]; then
-              echo "Server directory not found"
-              exit 1
-            fi
-            cd server
-            touch .env
-            cat > .env << EOF
-            API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
-            DEV_HOST=${{secrets.DEV_HOST}}
-            IGDB_CLIENT=${{secrets.IGDB_CLIENT}}
-            IGDB_SECRET=${{secrets.IGDB_SECRET}}
-            ADMIN_SECRET=${{secrets.ADMIN_SECRET}}
-            RABBIT_HOST=${{secrets.RABBIT_HOST}}
-            RABBIT_PORT=${{secrets.RABBIT_PORT}}
-            RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
-            RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
-            POSTGRES_USER=${{secrets.POSTGRES_USER}}
-            POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
-            POSTGRES_DB=${{secrets.POSTGRES_DB}}
-            DB_PORT=${{secrets.DB_PORT}}
-            APP_ENV=${{secrets.APP_ENV}}
-            CLIENT_ID=${{secrets.CLIENT_ID}}
-            CLIENT_SECRET=${{secrets.CLIENT_SECRET}}
-            EOF
-            cd ..
-            if [ ! -d "scheduler-proc" ]; then
-              echo "scheduler-proc directory not found"
-              exit 1
-            fi
-            cd scheduler-proc
-            touch .env
-            cat > .env << EOF
-            IGDB_CLIENT=${{secrets.IGDB_CLIENT}}
-            IGDB_SECRET=${{secrets.IGDB_SECRET}}
-            RABBIT_HOST=${{secrets.RABBIT_HOST}}
-            RABBIT_PORT=${{secrets.RABBIT_PORT}}
-            RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
-            RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
-            APP_ENV=${{secrets.APP_ENV}}
-            EOF
-            cd ..
-            echo 'Starting containers...'
-            docker compose -f docker-compose.yaml up --build -d
-            echo 'Deployment complete'
+          # script: |
+          #   docker compose down
+          #   rm -rf deploy
+          #   mkdir deploy
+          #   cd deploy
+          #   if ! git clone git@github.com:aprask/GameScout.git; then
+          #     echo "Failed to clone repository"
+          #     exit 1
+          #   fi
+          #   git checkout deploy
+          #   echo 'Cloned repo'
+          #   if [ ! -d "GameScout" ]; then
+          #     echo "GameScout directory not found after clone"
+          #     exit 1
+          #   fi
+          #   cd GameScout
+          #   git checkout ${{github.head_ref}}
+          #   echo "Checked out branch: ${{github.head_ref}}"
+          #   if [ ! -d "scripts" ]; then
+          #     echo "Scripts directory not found"
+          #     exit 1
+          #   fi
+          #   cd scripts
+          #   if [ ! -f "deploy-init.sh" ]; then
+          #     echo "deploy-init.sh not found"
+          #     exit 1
+          #   fi
+          #   chmod +x deploy-init.sh
+          #   ./deploy-init.sh
+          #   echo 'Downloaded depedencies'
+          #   cd ..
+          #   touch .env
+          #   cat > .env << EOF
+          #   RABBITMQ_USER=${{secrets.RABBIT_USERNAME}}
+          #   RABBITMQ_PASSWORD=${{secrets.RABBIT_PASSWORD}}
+          #   POSTGRES_USER=${{secrets.POSTGRES_USER}}
+          #   POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
+          #   POSTGRES_DB=${{secrets.POSTGRES_DB}}
+          #   EOF
+          #   if [ ! -d "client" ]; then
+          #     echo "Client directory not found"
+          #     exit 1
+          #   fi
+          #   cd client
+          #   touch .env
+          #   cat > .env << EOF
+          #   VITE_PROD_URL=${{secrets.VITE_PROD_URL}}
+          #   VITE_APP_ENV=${{secrets.VITE_APP_ENV}}
+          #   VITE_API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
+          #   EOF
+          #   cd ..
+          #   if [ ! -d "server" ]; then
+          #     echo "Server directory not found"
+          #     exit 1
+          #   fi
+          #   cd server
+          #   touch .env
+          #   cat > .env << EOF
+          #   API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
+          #   DEV_HOST=${{secrets.DEV_HOST}}
+          #   IGDB_CLIENT=${{secrets.IGDB_CLIENT}}
+          #   IGDB_SECRET=${{secrets.IGDB_SECRET}}
+          #   ADMIN_SECRET=${{secrets.ADMIN_SECRET}}
+          #   RABBIT_HOST=${{secrets.RABBIT_HOST}}
+          #   RABBIT_PORT=${{secrets.RABBIT_PORT}}
+          #   RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
+          #   RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
+          #   POSTGRES_USER=${{secrets.POSTGRES_USER}}
+          #   POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
+          #   POSTGRES_DB=${{secrets.POSTGRES_DB}}
+          #   DB_PORT=${{secrets.DB_PORT}}
+          #   APP_ENV=${{secrets.APP_ENV}}
+          #   CLIENT_ID=${{secrets.CLIENT_ID}}
+          #   CLIENT_SECRET=${{secrets.CLIENT_SECRET}}
+          #   EOF
+          #   cd ..
+          #   if [ ! -d "scheduler-proc" ]; then
+          #     echo "scheduler-proc directory not found"
+          #     exit 1
+          #   fi
+          #   cd scheduler-proc
+          #   touch .env
+          #   cat > .env << EOF
+          #   IGDB_CLIENT=${{secrets.IGDB_CLIENT}}
+          #   IGDB_SECRET=${{secrets.IGDB_SECRET}}
+          #   RABBIT_HOST=${{secrets.RABBIT_HOST}}
+          #   RABBIT_PORT=${{secrets.RABBIT_PORT}}
+          #   RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
+          #   RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
+          #   APP_ENV=${{secrets.APP_ENV}}
+          #   EOF
+          #   cd ..
+          #   echo 'Starting containers...'
+          #   docker compose -f docker-compose.yaml up --build -d
+          #   echo 'Deployment complete'
