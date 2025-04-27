@@ -72,7 +72,7 @@ export default async function gameJob() {
             is_supported: is_supported,
             summary: summary,
             release_date: first_release_date,
-            cover_id: image_id,
+            cover_id: image_id!,
           });
         }
         console.log(games);
