@@ -85,20 +85,10 @@ jobs:
             POSTGRES_DB=${{secrets.POSTGRES_DB}}
             DB_PORT=${{secrets.DB_PORT}}
             APP_ENV=${{secrets.APP_ENV}}
+            CLIENT_ID=${{secrets.CLIENT_ID}}
+            CLIENT_SECRET=${{secrets.CLIENT_SECRET}}
             EOF
             cd ..
-            cd server/src/auth/
-            rm -rf keys
-            mkdir keys
-            cd keys/
-            openssl genrsa -out private.pem 3072
-            openssl rsa -in private.pem -pubout -out public.pem
-            if [ ! -f "private.pem" ] || [ ! -f "public.pem" ]; then
-              echo "Key files were not generated"
-              exit 1
-            fi
-            pwd
-            cd ../../../..
             if [ ! -d "scheduler-proc" ]; then
               echo "scheduler-proc directory not found"
               exit 1
