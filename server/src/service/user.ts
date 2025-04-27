@@ -1,10 +1,8 @@
-import { AuthTable, ProfileTable, UserTable } from '../data/models/models.js';
+import { ProfileTable, UserTable } from '../data/models/models.js';
 import * as userRepo from '../repository/user.js';
 import * as adminRepo from '../repository/admin.js';
 import { throwErrorException } from '../util/error.js';
 import { v4 as uuidv4, validate } from 'uuid';
-import { signJWT } from '../auth/token.js';
-import { hashPassword } from '../auth/password.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -47,56 +45,41 @@ export async function unbanUserByEmail(email: string, adminId: string): Promise<
   await userRepo.unbanUserByEmail(email);
 }
 
-export async function createUser(email: string, password: string, new_user_token: string): Promise<UserTable> {
-  let errorMessage = '';
-  if (!new_user_token || new_user_token !== process.env.API_MANAGEMENT_KEY) errorMessage += 'Invalid New User Token';
-  if (!email) errorMessage += 'Email not given';
-  if (!password) errorMessage += 'Password not given';
-  if (await userRepo.checkUserEmail(email)) errorMessage += 'Duplicate email';
-  if (errorMessage) {
-    errorMessage.trim();
-    throwErrorException(`[service.user.createUser] ${errorMessage}`, 'Cannot create user', 400);
-  }
-  const currentDate = new Date();
-  const user_id = uuidv4();
-  const token = await signJWT(email);
-  if (token === undefined) throwErrorException(`[service.user.createUser] Invalid token parameters`, 'Cannot create token', 400);
-  const hashedPassword = await hashPassword(password);
-  if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
-  const newUser: UserTable = {
-    user_id: user_id,
-    email: email,
-    password: hashedPassword!,
-    is_active: true,
-    is_banned: false,
-    last_login: currentDate,
-    created_at: currentDate,
-    updated_at: currentDate,
-    client_secret: uuidv4(),
-  };
-  const newProfile: ProfileTable = {
-    profile_id: uuidv4(),
-    user_id: user_id,
-    profile_img: "",
-    banner_img: "",
-    profile_name: email,
-    created_at: currentDate,
-    updated_at: currentDate,
-  };
-  const authDetails: AuthTable = {
-    auth_id: uuidv4(),
-    user_id: user_id,
-    token: token!,
-    created_at: currentDate,
-    updated_at: currentDate,
-  };
-  return userRepo.createUser(newUser, newProfile, authDetails);
+export async function createUser(email: string, googleID: string, profilePicture: string): Promise<Omit<UserTable, 'google_token'>> {
+    let errorMessage = '';
+    if (!email) errorMessage += 'Email not given';
+    if (!googleID) errorMessage += 'Google ID not given';
+    if (!profilePicture) errorMessage += 'Profile picture not given';
+    if (errorMessage) {
+      errorMessage.trim();
+      throwErrorException(`[service.user.createUser] ${errorMessage}`, 'Cannot create user', 400);
+    }
+    const currentDate = new Date();
+    const user_id = uuidv4();
+    const newUser: UserTable = {
+      user_id: user_id,
+      email: email,
+      google_token: googleID,
+      is_active: true,
+      last_login: currentDate,
+      created_at: currentDate,
+      updated_at: currentDate,
+      is_banned: false
+    }
+    const newProfile: ProfileTable = {
+      profile_id: uuidv4(),
+      user_id: user_id,
+      profile_img: profilePicture,
+      profile_name: email, // default (we can add change later)
+      created_at: currentDate,
+      updated_at: currentDate,
+    };
+    return userRepo.createUser(newUser, newProfile);
 }
 
 export async function updateUser(
   user_id: string,
   email: string,
-  password: string,
   is_active: boolean,
   is_banned: boolean,
   last_login: Date,
@@ -110,14 +93,9 @@ export async function updateUser(
     throwErrorException(`[service.user.updateUser] ${errorMessage}`, 'Cannot update tenant', 400);
   }
   const currentUser = await userRepo.getUserById(user_id);
-  let hashedPassword: string | undefined = '';
-  if (password) {
-    hashedPassword = await hashPassword(password);
-    if (hashedPassword === undefined) throwErrorException(`[service.user.createUser] Invalid password`, 'Cannot hash password', 400);
-  }
-  const updatedUser: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'client_secret'> = {
+
+  const updatedUser: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'google_token'> = {
     email: email ?? currentUser.email,
-    password: hashedPassword ?? currentUser.password,
     is_active: is_active ?? currentUser.is_active,
     is_banned: is_banned ?? currentUser.is_banned,
     last_login: last_login ?? currentUser.last_login,
@@ -125,16 +103,7 @@ export async function updateUser(
   return userRepo.updateUser(user_id, updatedUser);
 }
 
-export async function deleteUser(user_id: string | null, admin_id: string | null, client_secret: string | null): Promise<void> {
-  if (admin_id && validate(admin_id)) {
-    if (!(await adminRepo.getAdminById(admin_id))) throwErrorException(`[service.user.deleteUser] Admin ID invalid: ${admin_id}`, 'Admin ID invalid', 400);
-    if (user_id && validate(user_id)) userRepo.deleteUser(user_id);
-  } else if (user_id && client_secret) {
-    if (!validate(user_id) && !validate(client_secret))
-      throwErrorException(`[service.user.deleteUser] Invalid UUID: ${user_id}`, 'Invalid user ID/client secret', 400);
-    if (!(await userRepo.getUserById(user_id))) throwErrorException(`[service.user.deleteUser] User ID invalid: ${user_id}`, 'User ID invalid', 400);
-    if (!(await userRepo.getUserIdByClientSecret(client_secret, user_id)))
-      throwErrorException(`[service.user.deleteUser] Cannot find user`, 'User ID/Secret invalid', 404);
-    else userRepo.deleteUser(user_id);
-  } else throwErrorException(`[service.user.deleteUser] No valid ID provided`, 'Cannot delete user', 403);
+export async function deleteUser(user_id: string): Promise<void> {
+  if (!(await userRepo.getUserById(user_id))) throwErrorException(`[service.user.deleteUser] User ID invalid: ${user_id}`, 'User ID invalid', 400);
+  else userRepo.deleteUser(user_id);
 }

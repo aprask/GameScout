@@ -1,5 +1,5 @@
 import { db } from "../data/db.js";
-import { AuthTable, ProfileTable, UserTable } from "../data/models/models.js";
+import { ProfileTable, UserTable } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
 
 export async function getAllUsers(): Promise<UserTable[]> {
@@ -53,18 +53,7 @@ export async function getUserById(id: string): Promise<UserTable> {
   return user!;
 }
 
-export async function getUserIdByClientSecret(secret: string, user_id: string): Promise<boolean> {
-  const userId = await db
-    .selectFrom('user')
-    .select(['user_id'])
-    .where('client_secret', '=', secret)
-    .where('user_id', '=', user_id)
-    .executeTakeFirst();
-  if (!userId) return false;
-  return true;
-}
-
-export async function createUser(user: UserTable, profile: ProfileTable, auth: AuthTable): Promise<UserTable> {
+export async function createUser(user: UserTable, profile: ProfileTable): Promise<UserTable> {
   console.log("HERE");
   return await db.transaction().execute(async (t) => {
     const newUser = await t
@@ -72,13 +61,12 @@ export async function createUser(user: UserTable, profile: ProfileTable, auth: A
     .values({
       user_id: user.user_id,
       email: user.email,
-      password: user.password,
+      google_token: user.google_token,
       is_active: user.is_active,
       is_banned: user.is_banned,
       last_login: user.last_login,
       created_at: user.created_at,
       updated_at: user.updated_at,
-      client_secret: user.client_secret
     })
     .returningAll()
     .executeTakeFirst();
@@ -90,7 +78,6 @@ export async function createUser(user: UserTable, profile: ProfileTable, auth: A
         profile_id: profile.profile_id,
         user_id: profile.user_id,
         profile_img: profile.profile_img,
-        banner_img: profile.banner_img,
         profile_name: profile.profile_name,
         created_at: profile.created_at,
         updated_at: profile.updated_at,
@@ -99,28 +86,14 @@ export async function createUser(user: UserTable, profile: ProfileTable, auth: A
       .executeTakeFirst();
     if (!newProfile || newProfile === undefined) throwErrorException(`[repository.user.createUser] cannot create profile`, 'Cannot create profile', 500);
 
-    const authDetails = await t
-      .insertInto('auth')
-      .values({
-        auth_id: auth.auth_id,
-        user_id: auth.user_id,
-        token: auth.token,
-        created_at: auth.created_at,
-        updated_at: auth.updated_at
-      })
-      .returningAll()
-      .executeTakeFirst();
-      if (!authDetails || authDetails === undefined) throwErrorException(`[repository.user.createUser] could not create token`, 'Cannot create token', 401);
       return newUser!;
   });
 }
 
-export async function updateUser(id: string, user: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'client_secret'>): Promise<UserTable> {
+export async function updateUser(id: string, user: Omit<UserTable, 'user_id' | 'created_at' | 'updated_at' | 'google_token' | 'email'>): Promise<UserTable> {
   const updatedUser = await db
     .updateTable("user")
     .set({
-      email: user.email,
-      password: user.password,
       last_login: user.last_login,
       is_active: user.is_active,
       is_banned: user.is_banned,

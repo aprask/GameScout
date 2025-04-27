@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Alert, Typography } from '@mui/material';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 
 export default function BanUserForm() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const { isAdmin, adminId, token } = useAuth();
+    const { isAdmin, adminId } = useAuth();
     const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
         ? `${import.meta.env.VITE_PROD_URL}`
         : `${import.meta.env.VITE_DEV_URL}`;
@@ -27,9 +27,9 @@ export default function BanUserForm() {
                     "admin_id": adminId
                 },
                 {
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
                     }
                 }
             );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth/AuthContext';
 import { 
     Container, 
     Box, 
@@ -22,7 +22,7 @@ interface WishListType {
 
 function ProfilePage() {
     const { id } = useParams();
-    const { token, userId, profileId } = useAuth(); 
+    const { userId, profileId } = useAuth(); 
     const [wishlist, setWishlist] = useState<WishListType[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
@@ -37,9 +37,9 @@ function ProfilePage() {
             const response = await axios.get(
                 `${baseUrl}/api/v1/profile/${id}`,
                 {
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
                     }
                 }
             );
@@ -69,9 +69,9 @@ function ProfilePage() {
                     profile_name: newName
                 },
                 {
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
                     }
                 }
             );
@@ -91,9 +91,9 @@ function ProfilePage() {
                 let res = await axios.get(
                     `${baseUrl}/api/v1/wishlist/userList/${userId}`,
                     {
+                        withCredentials: true,
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
                         }
                     }
                 );
@@ -108,7 +108,6 @@ function ProfilePage() {
                         {
                             headers: {
                                 "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
                             }
                         }
                     );
@@ -121,8 +120,8 @@ function ProfilePage() {
                 console.error('Error fetching wishlist:', err);    
             }
         };
-        if (token && userId) fetchWishlistData();
-    }, [token, userId]);
+        if (userId) fetchWishlistData();
+    }, []);
 
     return (
         <Container sx={{ py: 8 }}>

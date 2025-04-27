@@ -11,7 +11,7 @@
     "testAdmin": "APP_ENV=test tsx --test ./test/admin.test.ts",
     "testArticles": "APP_ENV=test tsx --test ./test/articles.test.ts",
     "testHealth": "APP_ENV=test tsx --test ./test/health.test.ts",
-    "testComments":  "APP_ENV=test tsx --test ./test/comments.test.ts"
+    "testComments": "APP_ENV=test tsx --test ./test/comments.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
@@ -44,10 +45,12 @@
     "amqplib": "^0.10.7",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
+    "google-auth-library": "^9.15.1",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.27.6",
     "multer": "^1.4.5-lts.2",

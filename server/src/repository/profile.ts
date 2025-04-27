@@ -38,7 +38,6 @@ export async function createProfile(profile: ProfileTable): Promise<ProfileTable
             profile_id: profile.profile_id,
             user_id: profile.user_id,
             profile_img: profile.profile_img,
-            banner_img: profile.banner_img,
             profile_name: profile.profile_name,
             created_at: profile.created_at,
             updated_at: profile.updated_at,
