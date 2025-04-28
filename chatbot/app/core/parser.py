@@ -1,9 +1,10 @@
-import wikipediaapi # type: ignore
+import wikipediaapi  # type: ignore
 import time
 
-wiki_wiki = wikipediaapi.Wikipedia(user_agent='Gamescout', language='en')
+wiki_wiki = wikipediaapi.Wikipedia(user_agent="Gamescout", language="en")
 
-def is_game_page(title):    
+
+def is_game_page(title):
     page = wiki_wiki.page(title)
     if not page.exists():
         return False
@@ -13,11 +14,13 @@ def is_game_page(title):
             return True
     return False
 
+
 def get_page_summary(title):
     page = wiki_wiki.page(title)
     if not page.exists():
         return None
     return page.summary
+
 
 def run(titles):
     summaries = []
