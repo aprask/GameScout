@@ -42,7 +42,7 @@ export default async function gameJob() {
             `fields name, cover, updated_at, involved_companies, summary, first_release_date;
              where first_release_date > ${lastDate};
              sort first_release_date asc;
-             limit 50;`,
+             limit 10;`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
