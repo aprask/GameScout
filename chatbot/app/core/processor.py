@@ -1,3 +1,7 @@
+def persist_plain_text(chunked_data, file_name="chunks.txt"):
+    with open(file_name, "a") as text_file:
+        text_file.write(", ".join(chunked_data).strip())
+
 def chunk_data(dataset_data, lim=10):
     chunked_data = []
     for data in dataset_data:
@@ -20,4 +24,5 @@ def chunk_data(dataset_data, lim=10):
                     chunked_data.append(content[curr:end])
                     prev_chunk = content[curr:end]
                 curr = end
+    persist_plain_text(chunked_data)
     return chunked_data

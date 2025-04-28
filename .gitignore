@@ -33,3 +33,4 @@ app/rag_pb2_grpc.py
 .env.production
 .env.development
 *.faiss
+chunks.txt
