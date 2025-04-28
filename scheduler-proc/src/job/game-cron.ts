@@ -32,7 +32,8 @@ export default async function gameJob() {
         );
         const accessToken = tokenData.access_token;
         let lastDate = 0;
-        const MAX_PULL = 1e6; // 1 mill iterations
+        // const MAX_PULL = 1e6; // 1 mill iterations
+        const MAX_PULL = 10;
         let i = 0;
         while (i < MAX_PULL) { // loop until no more data or safety MAX_PULL limit reached
           const { data: gameData } = await axios.post(
