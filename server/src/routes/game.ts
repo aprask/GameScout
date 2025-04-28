@@ -58,12 +58,12 @@ router.post(
 router.put(
   '/:game_id',
   asyncHandler(async (req, res) => {
-    const { game_name, game_art, is_supported, summary, release_date } = req.body;
+    const { game_name, is_supported, summary, release_date } = req.body;
 
     let admin_id: string = '';
     if (typeof req.query.admin_id === 'string') admin_id = req.query.admin_id;
 
-    const updatedGame = await gameService.updateGame(req.params.game_id, game_name, game_art, is_supported, summary, new Date(release_date), admin_id);
+    const updatedGame = await gameService.updateGame(req.params.game_id, game_name, is_supported, summary, new Date(release_date), admin_id);
 
     res.status(200).json({ updated_game: updatedGame });
   }),
