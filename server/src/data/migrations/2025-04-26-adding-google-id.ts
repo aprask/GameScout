@@ -64,7 +64,7 @@ export async function up(db: Kysely<Schema>): Promise<void> {
         .ifNotExists()
         .addColumn('game_id', 'uuid', (col) => col.primaryKey())
         .addColumn('game_name', 'varchar(255)', (col) => col.notNull())
-        .addColumn('cover_id', 'varchar(64)')
+        .addColumn('cover_id', 'text')
         .addColumn('is_supported', 'boolean', (col) => col.notNull())
         .addColumn('summary', 'text', (col) => col.notNull())
         .addColumn('release_date', 'timestamp', (col) => col.notNull())

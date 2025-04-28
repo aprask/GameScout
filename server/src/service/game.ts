@@ -134,7 +134,6 @@ export async function createGame(
 export async function updateGame(
     game_id: string,
     game_name: string,
-    game_art: string,
     is_supported: boolean,
     summary: string,
     release_date: Date,
@@ -177,12 +176,23 @@ export async function bulkGameInsert(gameMsg: GameMessage[]): Promise<void> {
         const releaseDate = gameMsg[i].release_date;
         const isSupported = gameMsg[i].is_supported;
         const cover_id = gameMsg[i].cover_id;
-        if (await gameRepo.doesGameExist(gameName, gameSummary)) continue;
-        if (isNaN(releaseDate)) continue;
-        if (gameName === undefined || gameSummary === undefined || releaseDate === undefined || isSupported === undefined) continue;
+        if (await gameRepo.doesGameExist(gameName, gameSummary)) {
+            console.log(`${gameName} already exists in db`);
+            continue;
+        }
+        let formattedReleaseDate;
+        if (isNaN(releaseDate)) {
+            formattedReleaseDate = new Date();
+        } else {
+            formattedReleaseDate = new Date(+gameMsg[i].release_date * 1000);
+        }
+        if (gameName === undefined || gameSummary === undefined || releaseDate === undefined || isSupported === undefined) {
+            console.log('something is undefined');   
+            continue;
+        }
 
         const currentDate = new Date();
-        const formattedReleaseDate = new Date(+gameMsg[i].release_date * 1000);
+        
         const gameInstance: GameTable = {
             game_id: uuidv4(),
             is_supported: isSupported,
