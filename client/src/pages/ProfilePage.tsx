@@ -90,6 +90,7 @@ function ProfilePage() {
                     res = await axios.get(
                         `${baseUrl}/api/v1/game/${gameIds[i]}`,
                         {
+                            withCredentials: true,
                             headers: {
                                 "Content-Type": "application/json",
                             }

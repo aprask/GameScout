@@ -59,9 +59,9 @@ function SearchGame(): JSX.Element {
               page: currentPage,
               sort: SORT_TYPE,
             },
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: import.meta.env.VITE_API_MANAGEMENT_KEY,
             },
           }
         );

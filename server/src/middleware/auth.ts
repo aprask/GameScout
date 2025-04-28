@@ -25,12 +25,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         return;
     }
 
-    const authHeader = req.headers['authorization'];
-    if (authHeader === process.env.API_MANAGEMENT_KEY) {
-        next();
-        return;
-    }
-
     const sessionCookie = req.cookies?.session_token;
     console.log(`Cookie: ${sessionCookie}`);
 

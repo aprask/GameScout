@@ -47,9 +47,9 @@ function DynamicGame(): JSX.Element {
       setLoading(true);
       try {
         const res = await axios.get(`${baseUrl}/api/v1/game/${id}`, {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
           },
         });
         if (res.status === 200) {
@@ -158,9 +158,9 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         const response = await axios.get(
           `${baseUrl}/api/v1/review/game/${gameId}/user/${userId}`,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
             },
           }
         );
@@ -281,9 +281,9 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
         const response = await axios.get(
           `${baseUrl}/api/v1/review/game/${gameId}`,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
             },
           }
         );
