@@ -5,8 +5,8 @@ import * as adminService from '../service/admin.js';
 import { authMiddleware } from '../middleware/auth.js';
 import express, { RequestHandler } from 'express';
 import { resourceSharer } from '../middleware/resource.js';
-router.use(resourceSharer);
 
+router.use(resourceSharer);
 router.use(authMiddleware as RequestHandler);
 
 router.get(
@@ -18,12 +18,24 @@ router.get(
 );
 
 router.get(
-  '/:user_id',
+  '/user/:user_id',
   asyncHandler(async (req, res) => {
-    const admin = await adminService.getAdminByUserId(req.params.user_id);
-    if (admin === undefined) res.status(200).json({ isAdmin: false });
-    else res.status(200).json({ isAdmin: true, admin_id: admin.admin_id });
-  }),
+    try {
+      console.log("Entered endpoint");
+      const admin = await adminService.getAdminByUserId(req.params.user_id);
+      if (admin === undefined) {
+        console.log("Could not find admin");
+        res.status(200).json({ isAdmin: false });
+      }
+      else {
+        console.log("Found admin");
+        res.status(200).json({ isAdmin: true, admin_id: admin.admin_id });
+      }
+    } catch (error) {
+      console.error("Error in admin lookup:", error);
+      throw error;
+    }
+  })
 );
 
 router.get(
@@ -62,5 +74,10 @@ router.delete(
     res.sendStatus(204);
   }),
 );
+
+router.use((req, res, next) => {
+  console.log(`Unmatched admin route: ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 export default router;

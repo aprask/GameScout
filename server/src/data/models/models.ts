@@ -1,13 +1,12 @@
 export interface UserTable {
   user_id: string;
   email: string;
-  password: string;
+  google_token: string;
   created_at: Date;
   updated_at: Date;
   last_login: Date;
   is_active: boolean;
   is_banned: boolean;
-  client_secret: string;
 }
 
 export interface AdminTable {
@@ -60,7 +59,6 @@ export interface ProfileTable {
   profile_id: string;
   user_id: string;
   profile_img: string;
-  banner_img: string;
   profile_name: string;
   created_at: Date;
   updated_at: Date;
@@ -97,7 +95,9 @@ export interface ArticleCommentTable {
 export interface AuthTable {
   auth_id: string;
   user_id: string;
-  token: string;
+  session_id: string;
+  exp: Date;
+  valid: boolean;
   created_at: Date;
   updated_at: Date;
 }

@@ -12,10 +12,10 @@ import {
   Avatar,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from '../context/AuthContext';
-import { useProfile } from "../context/ProfileContext";
+import { useAuth } from '../context/auth/AuthContext';
+import { useProfile } from "../context/profile/ProfileContext";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,8 +23,8 @@ function NavBar() {
   const { profileImage } = useProfile();
   const { profileId } = useAuth();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toggleDrawer();
   };
   

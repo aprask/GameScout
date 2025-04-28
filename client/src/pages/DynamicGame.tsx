@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../context/auth/AuthContext";
 
 interface GameData {
   created_at: Date;
@@ -40,15 +41,18 @@ function DynamicGame(): JSX.Element {
   const id = searchParams.get("id");
   const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
   useEffect(() => {
     const fetchGameDetails = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:3000/api/v1/game/${id}`, {
+        const res = await axios.get(`${baseUrl}/api/v1/game/${id}`, {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
           },
         });
         const review = await axios.get(
@@ -157,19 +161,23 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   const [rating, setRating] = useState<number | "">("");
   const [reviewText, setReviewText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string>(localStorage.getItem("userId")!);
+  const { userId } = useAuth();
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
   const [submittedReview, setSubmittedReview] = useState<ReviewData>();
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
+  
 
   useEffect(() => {
     try {
       const getReview = async () => {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/review/game/${gameId}/user/${userId}`,
+          `${baseUrl}/api/v1/review/game/${gameId}/user/${userId}`,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
             },
           }
         );
@@ -179,7 +187,9 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         }
       };
       getReview();
-    } catch (e) {}
+    } catch (e) {
+      console.log("Error: ", e);
+    }
   }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -194,7 +204,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/review",
+        `${baseUrl}/api/v1/review`,
         {
           user_id: userId,
           game_id: gameId,
@@ -301,16 +311,19 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
 function GameReviews({ gameId }: { gameId: string }): JSX.Element {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/review/game/${gameId}`,
+          `${baseUrl}/api/v1/review/game/${gameId}`,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
             },
           }
         );

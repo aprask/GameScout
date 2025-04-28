@@ -19,22 +19,21 @@ router.get('/:profile_id', asyncHandler(async (req, res) => {
 }));
 
 router.post('/', asyncHandler(async (req, res) => {
-    const { user_id, profile_img, profile_name, banner_img } = req.body;
+    const { user_id, profile_img, profile_name } = req.body;
     let admin_id: string = '';
     if (typeof req.query.admin_id === 'string') {
         admin_id = req.query.admin_id;
     }
-    const newProfile = await profileService.createProfile(user_id, profile_img, profile_name, banner_img, admin_id);
+    const newProfile = await profileService.createProfile(user_id, profile_img, profile_name, admin_id);
     res.status(201).json({ new_profile: newProfile });
 }));
 
 router.put('/:profile_id', asyncHandler(async (req, res) => {
-    const { profile_img, profile_name, banner_img } = req.body;
+    const { profile_img, profile_name } = req.body;
     const updatedProfile = await profileService.updateProfile(
         req.params.profile_id,
         profile_img,
         profile_name,
-        banner_img
     );
     res.status(200).json({ updated_profile: updatedProfile });
 }));

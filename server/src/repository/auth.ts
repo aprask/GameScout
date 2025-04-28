@@ -1,36 +1,56 @@
 import { db } from "../data/db.js";
-import { AuthTable } from "../data/models/models.js";
+import { AuthTable, UserTable } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
 
-export async function getTokenByUserId(id: string): Promise<AuthTable> {
-    const authDetails = await db
+ export async function authenticateSession(sessionId: string): Promise<AuthTable | undefined> {
+    const session = await db
         .selectFrom('auth')
         .selectAll()
-        .where('auth.user_id', '=', id)
+        .where('session_id', '=', sessionId)
+        .where('valid', '=', true)
         .executeTakeFirst();
-    if (!authDetails || authDetails === undefined) throwErrorException(`[repository.auth.getTokenByUserId] token not found from user id ${id}`, 'Invalid credentials', 401);
-    return authDetails!;
+    if (!session) return undefined;
+    return session;
 }
 
-export async function saveToken(auth: AuthTable): Promise<AuthTable> {
-    const authDetails = await db
+export async function getUserByGoogleID(googleId: string): Promise<UserTable | undefined> {
+    const user = await db
+        .selectFrom('user')
+        .selectAll()
+        .where('google_token', '=', googleId)
+        .executeTakeFirst();
+    if (!user) return undefined;
+    return user;
+}
+
+export async function createSession(auth: AuthTable): Promise<AuthTable> {
+    const session = await db
         .insertInto('auth')
         .values({
             auth_id: auth.auth_id,
             user_id: auth.user_id,
-            token: auth.token,
+            session_id: auth.session_id,
+            exp: auth.exp,
+            valid: auth.valid,
             created_at: auth.created_at,
             updated_at: auth.updated_at
         })
         .returningAll()
         .executeTakeFirst();
-        if (!authDetails || authDetails === undefined) throwErrorException(`[repository.auth.saveToken] could not create token`, 'Cannot create token', 401);
-        return authDetails!;
+    if (!session) throwErrorException(`[repository.auth.createSession] unable to create session`, 'Failed to create session', 500);
+    return session;
 }
 
-export async function deleteTokenByUserId(id: string): Promise<void> {
-    await db
-        .deleteFrom('auth')
-        .where('auth.user_id', '=', id)
-        .executeTakeFirstOrThrow();
+export async function invalidateSession(user_id: string): Promise<AuthTable> {
+    const session = await db
+        .updateTable('auth')
+        .set({
+            valid: false
+        })
+        .where('auth.user_id', '=', user_id)
+        .where('auth.valid', '=', true)
+        .returningAll()
+        .executeTakeFirst();
+    if (!session) throwErrorException(`[repository.auth.invalidateSession] unable to invalidate session`, 'Failed to invalidate session', 500);
+    return session;
 }

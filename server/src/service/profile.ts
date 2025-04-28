@@ -18,7 +18,7 @@ export async function getProfileById(profile_id: string): Promise<ProfileTable> 
     return profileRepo.getProfileById(profile_id);
 }
 
-export async function createProfile(user_id: string, profile_img: string, profile_name: string, admin_id: string, banner_img: string): Promise<ProfileTable> {
+export async function createProfile(user_id: string, profile_img: string, profile_name: string, admin_id: string): Promise<ProfileTable> {
     if (!admin_id) {
         throwErrorException(`[service.profile.createProfile] No valid ID provided`, 'Cannot create profile', 403);
     }
@@ -46,7 +46,6 @@ export async function createProfile(user_id: string, profile_img: string, profil
         profile_id: uuidv4(),
         user_id,
         profile_img,
-        banner_img,
         profile_name,
         created_at: currentDate,
         updated_at: currentDate
@@ -55,7 +54,7 @@ export async function createProfile(user_id: string, profile_img: string, profil
     return profileRepo.createProfile(newProfile);
 }
 
-export async function updateProfile(profile_id: string, profile_img: string | null, profile_name: string | null, banner_img: string | null): Promise<ProfileTable> {
+export async function updateProfile(profile_id: string, profile_img: string | null, profile_name: string | null): Promise<ProfileTable> {
     let errorMessage = '';
     if (!profile_id) errorMessage += "Profile ID not given";
     if (!validate(profile_id)) errorMessage += "Profile ID is invalid";
@@ -68,7 +67,6 @@ export async function updateProfile(profile_id: string, profile_img: string | nu
     const updatedProfile: Omit<ProfileTable, 'profile_id' | 'created_at' | 'updated_at' | 'user_id'> = {
         profile_img: profile_img ?? currentProfile.profile_img,
         profile_name: profile_name ?? currentProfile.profile_name,
-        banner_img: banner_img ?? currentProfile.banner_img
     };
 
     return profileRepo.updateProfile(profile_id, updatedProfile);

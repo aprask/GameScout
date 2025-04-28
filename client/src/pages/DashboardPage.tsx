@@ -9,10 +9,12 @@ import {
   Typography,
   //useTheme,
 } from "@mui/material";
-import image from "../../assets/image.png";
+import image from "../assets/image.png"
 import { JSX } from "react";
 
-function Dashboard(): JSX.Element {
+
+
+function DashboardPage(): JSX.Element {
   //const theme = useTheme();
 
   const arrOfLen5: number[] = [0, 1, 2, 3, 4];
@@ -74,4 +76,4 @@ function Dashboard(): JSX.Element {
   );
 }
 
-export default Dashboard;
+export default DashboardPage;
