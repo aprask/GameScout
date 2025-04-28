@@ -32,3 +32,4 @@ app/rag_pb2_grpc.py
 .env.local
 .env.production
 .env.development
+*.faiss
