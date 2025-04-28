@@ -68,7 +68,6 @@ export async function up(db: Kysely<Schema>): Promise<void> {
         .addColumn('is_supported', 'boolean', (col) => col.notNull())
         .addColumn('summary', 'text', (col) => col.notNull())
         .addColumn('release_data', 'timestamp', (col) => col.notNull())
-        .addColumn('age_rating', 'varchar(24)', (col) => col.notNull())
         .addColumn('created_at', 'timestamp', (col) => col.notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.notNull())
         .execute();
