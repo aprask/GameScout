@@ -57,9 +57,6 @@ services:
         dockerfile: Dockerfile.prod
       ports:
         - "3002:3002"
-      volumes:
-        - ./scheduler-proc:/usr/local/app
-        - /usr/local/app/node_modules
       environment:
       - APP_ENV=production
 
