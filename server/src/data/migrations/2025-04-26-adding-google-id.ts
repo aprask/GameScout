@@ -64,10 +64,8 @@ export async function up(db: Kysely<Schema>): Promise<void> {
         .ifNotExists()
         .addColumn('game_id', 'uuid', (col) => col.primaryKey())
         .addColumn('game_name', 'varchar(255)', (col) => col.notNull())
-        .addColumn('game_art', 'uuid', (col) => 
-            col.notNull().references('images.image_id').onUpdate('cascade').onDelete('cascade'))
+        .addColumn('cover_id', 'varchar(64)')
         .addColumn('is_supported', 'boolean', (col) => col.notNull())
-        .addColumn('company', 'varchar(255)', (col) => col.notNull())
         .addColumn('summary', 'text', (col) => col.notNull())
         .addColumn('release_data', 'timestamp', (col) => col.notNull())
         .addColumn('age_rating', 'varchar(24)', (col) => col.notNull())

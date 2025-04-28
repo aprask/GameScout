@@ -16,71 +16,74 @@ interface Game {
 export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
   const games: Game[] = [];
+
   cron.schedule(
     "0 8 15 * * 5",
     async () => {
-      console.log("starting job");
+      console.log("Starting game data job...");
+
       try {
-        let response = await axios.post(
+        // Get OAuth token
+        const { data: tokenData } = await axios.post(
           `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
           null
         );
-        const { access_token } = response.data;
-        response = await axios.post(
-          "https://api.igdb.com/v4/games?limit=500&fields=name,cover,updated_at,involved_companies,summary,first_release_date",
-          null,
+        const accessToken = tokenData.access_token;
+
+        // Fetch game data
+        const { data: gameData } = await axios.post(
+          "https://api.igdb.com/v4/games",
+          "fields name, cover, updated_at, involved_companies, summary, first_release_date; limit 500;",
           {
             headers: {
-              Authorization: `Bearer ${access_token}`,
+              Authorization: `Bearer ${accessToken}`,
               "Client-ID": process.env.IGDB_CLIENT,
-              "Content-Type": "application/json",
+              "Content-Type": "text/plain",
             },
           }
         );
-        for (let i = 0; i < response.data.length; i++) {
-          const { cover, first_release_date, name, summary, updated_at } =
-            response.data[i];
 
-          const convert_release_date = new Date(first_release_date * 1000);
-          const convert_recent_date = new Date(updated_at * 1000);
-          const diffDates =
-            convert_recent_date.getTime() - convert_release_date.getTime();
-          const diffDays = Math.floor(diffDates / (1000 * 60 * 60 * 24));
-          let is_supported = false;
-          if (diffDays < 365) is_supported = true;
-          let image_id = null;
+        for (const game of gameData) {
+          const { cover, first_release_date, name, summary, updated_at } = game;
+          if (!cover) continue;
 
-          if (cover == null) {
-            continue;
-          } else {
-            let innerResponse = await axios.post(
-              `https://api.igdb.com/v4/covers`,
-              `fields url, game, height, width, image_id; where id = ${cover};`,
-              {
-                headers: {
-                  Authorization: `Bearer ${access_token}`,
-                  "Client-ID": process.env.IGDB_CLIENT,
-                  "Content-Type": "text/plain",
-                },
-              }
-            );
-            image_id = innerResponse.data[0].image_id;
-          }
+          const releaseDate = new Date(first_release_date * 1000);
+          const updatedDate = new Date(updated_at * 1000);
+          const isSupported = (updatedDate.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24) < 365;
+
+          // Fetch cover image
+          const { data: coverData } = await axios.post(
+            "https://api.igdb.com/v4/covers",
+            `fields image_id; where id = ${cover};`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Client-ID": process.env.IGDB_CLIENT,
+                "Content-Type": "text/plain",
+              },
+            }
+          );
+
+          const imageId = coverData[0]?.image_id;
+          if (!imageId) continue;
 
           games.push({
             game_name: name,
-            is_supported: is_supported,
-            summary: summary,
-            release_date: first_release_date,
-            cover_id: image_id!,
+            is_supported: isSupported,
+            summary,
+            release_date: releaseDate,
+            cover_id: imageId,
           });
         }
-        console.log(games);
+
+        console.log(`Fetched ${games.length} games.`);
+
+        producer.setMessage(JSON.stringify(games));
+        await producer.producerConfig();
+
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during game job:", error);
       }
-      producer.setMessage(JSON.stringify(games));
-      await producer.producerConfig();
     },
     {
       scheduled: true,
