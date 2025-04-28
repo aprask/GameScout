@@ -33,7 +33,7 @@ export default async function gameJob() {
         const accessToken = tokenData.access_token;
         let lastDate = 0;
         // const MAX_PULL = 1e6; // 1 mill iterations
-        const MAX_PULL = 10;
+        const MAX_PULL = 2;
         let i = 0;
         while (i < MAX_PULL) { // loop until no more data or safety MAX_PULL limit reached
           const { data: gameData } = await axios.post(
@@ -86,7 +86,7 @@ export default async function gameJob() {
               release_date: releaseDate,
               cover_id: imageId,
             });
-            await sleep(1000);
+            await sleep(5000);
           }
           let maxDate = 0;
           for (const game of gameData) {
