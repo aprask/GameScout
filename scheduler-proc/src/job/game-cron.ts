@@ -13,6 +13,8 @@ interface Game {
   cover_id: string;
 }
 
+let lastDate = 0;
+
 export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
   const games: Game[] = [];
@@ -22,17 +24,16 @@ export default async function gameJob() {
   }
 
   cron.schedule(
-    "0 08 22 * * 0",
+    "* 0 * * * *",
     async () => {
       console.log("Starting game data job...");
+      console.log(`Last Date: ${lastDate}`);
       try {
         const { data: tokenData } = await axios.post(
           `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
           null
         );
         const accessToken = tokenData.access_token;
-        let lastDate = 0;
-        // const MAX_PULL = 1e6; // 1 mill iterations
         const MAX_PULL = 2;
         let i = 0;
         while (i < MAX_PULL) { // loop until no more data or safety MAX_PULL limit reached
@@ -41,7 +42,7 @@ export default async function gameJob() {
             `fields name, cover, updated_at, involved_companies, summary, first_release_date;
              where first_release_date > ${lastDate};
              sort first_release_date asc;
-             limit 5;`,
+             limit 50;`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
