@@ -82,6 +82,7 @@ export async function up(db: Kysely<Schema>): Promise<void> {
         .addColumn('game_id', 'uuid', (col) => 
             col.notNull().references('games.game_id'))
         .addColumn('rating', 'integer', (col) => col.notNull())
+        .addColumn('review_title', 'varchar(64)', (col) => col.notNull())
         .addColumn('review', 'text')
         .addColumn('created_at', 'timestamp', (col) => col.notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.notNull())
