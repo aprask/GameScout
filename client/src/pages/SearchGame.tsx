@@ -40,6 +40,9 @@ function SearchGame(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
 
   const GAMES_PER_PAGE = 16;
   const SORT_TYPE = "new";
@@ -49,16 +52,16 @@ function SearchGame(): JSX.Element {
       setLoading(true);
       try {
         const response = await axios.get<{ games: PaginatedGameResponse }>(
-          "http://localhost:3000/api/v1/game/list",
+          `${baseUrl}/api/v1/game/list`,
           {
             params: {
               lim: GAMES_PER_PAGE,
               page: currentPage,
               sort: SORT_TYPE,
             },
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: import.meta.env.VITE_API_MANAGEMENT_KEY,
             },
           }
         );

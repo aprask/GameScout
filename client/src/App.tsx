@@ -1,19 +1,19 @@
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import NavBar from "./components/NavBar";
-import Dashboard from "./components/Dashboard/Dashboard";
+import DashboardPage from "./pages/DashboardPage";
 import DynamicGame from "./pages/DynamicGame";
 import SearchGame from "./pages/SearchGame";
 import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GameReviews from "./components/GameReviews/GameReviews";
-import SignUpPage from "./pages/SignUpPage";
 import { ProtectedRoute } from "./components/auth/ProtectedRouter";
-import { AuthProvider } from "./context/AuthContext";
-import LoginPage from "./pages/LoginPage";
+import { AuthProvider } from "./context/auth/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
-import { ProfileProvider } from "./context/ProfileContext";
+import { ProfileProvider } from "./context/profile/ProfileContext";
 import ProfilePage from "./pages/ProfilePage";
+import OAuthCallbackPage from "./pages/OAuthCallbackPage";
+import GoogleAuth from "./pages/GoogleAuth";
 
 const customTheme = createTheme({
   palette: {
@@ -42,13 +42,17 @@ function App() {
               <NavBar />
               <main>
                 <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/signup" element={<SignUpPage />} />
+                  <Route 
+                    path="/login"
+                    element={
+                      <GoogleAuth />
+                    }
+                  />  
                   <Route
                     path="/"
                     element={
                       <ProtectedRoute>
-                        <Dashboard />
+                        <DashboardPage />
                       </ProtectedRoute>
                     }
                   />
@@ -93,6 +97,10 @@ function App() {
                         <GameReviews />
                       </ProtectedRoute>
                     }
+                  />
+                  <Route 
+                    path="/oauth/callback" 
+                    element={<OAuthCallbackPage />} 
                   />
                 </Routes>
               </main>

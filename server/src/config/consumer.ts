@@ -10,7 +10,7 @@ const PASSWORD = process.env.RABBIT_PASSWORD;
 
 export class Consumer {
     private channel!: amqplib.Channel;
-    private connection!: Awaited<ReturnType<typeof amqplib.connect>>; // kinda complicated: basically we want the resolved promise of type connect, we are awaiting until it's resolved
+    private connection!: Awaited<ReturnType<typeof amqplib.connect>>;
     private queue: string;
     private CONNECTION_URL = `amqp://${USERNAME}:${PASSWORD}@${HOST}:${PORT}`;
 

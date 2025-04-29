@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth/AuthContext';
 import { 
     Container, 
     Box, 
@@ -14,6 +14,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useProfile } from '../context/profile/ProfileContext';
 
 interface WishListType {
     game_img_url: string;
@@ -22,31 +23,16 @@ interface WishListType {
 
 function ProfilePage() {
     const { id } = useParams();
-    const { token, userId, profileId } = useAuth(); 
+    const { userId, profileId } = useAuth(); 
     const [wishlist, setWishlist] = useState<WishListType[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
-    const [profileName, setProfileName] = useState('');
-
-    useEffect(() => {
-        const fetchProfileName = async() => {
-            const response = await axios.get(
-                `http://localhost:3000/api/v1/profile/${id}`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    }
-                }
-            );
-            if (response.status === 200) {
-                setProfileName(response.data.profile.profile_name);
-                setIsEditing(false);
-            }
-        };
-        fetchProfileName();
-    }, []);
+    const {profileImage, profileName, setProfileName} = useProfile();
+    const [pageProfileName, setPageProfileName] = useState(profileName);
+    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+        ? `${import.meta.env.VITE_PROD_URL}`
+        : `${import.meta.env.VITE_DEV_URL}`;
     
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
@@ -59,21 +45,22 @@ function ProfilePage() {
         };
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/v1/profile/${id}`,
+                `${baseUrl}/api/v1/profile/${id}`,
                 {
                     profile_img: null,
                     banner_img: null,
                     profile_name: newName
                 },
                 {
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
                     }
                 }
             );
             if (response.status === 200) {
-                setProfileName(newName);                
+                setProfileName(newName);
+                setPageProfileName(newName);                
                 setIsEditing(false);
             }
         } catch (err) {
@@ -86,11 +73,11 @@ function ProfilePage() {
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `http://localhost:3000/api/v1/wishlist/userList/${userId}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
                     {
+                        withCredentials: true,
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
                         }
                     }
                 );
@@ -101,11 +88,11 @@ function ProfilePage() {
                 const wishListData: WishListType[] = [];
                 for (let i = 0; i < gameIds.length; ++i) {
                     res = await axios.get(
-                        `http://localhost:3000/api/v1/game/${gameIds[i]}`,
+                        `${baseUrl}/api/v1/game/${gameIds[i]}`,
                         {
+                            withCredentials: true,
                             headers: {
                                 "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
                             }
                         }
                     );
@@ -118,8 +105,8 @@ function ProfilePage() {
                 console.error('Error fetching wishlist:', err);    
             }
         };
-        if (token && userId) fetchWishlistData();
-    }, [token, userId]);
+        if (userId) fetchWishlistData();
+    }, []);
 
     return (
         <Container sx={{ py: 8 }}>
@@ -140,7 +127,7 @@ function ProfilePage() {
                     position: 'relative'
                 }}>
                     <Avatar
-                        src={undefined}
+                        src={profileImage || undefined}
                         alt="Profile"
                         sx={{
                             width: 120,
@@ -152,7 +139,7 @@ function ProfilePage() {
                     />
                     {(id === profileId) && isEditing ? (
                         <TextField
-                            defaultValue={profileName}
+                            defaultValue={pageProfileName}
                             variant="outlined"
                             sx={{
                                 ml: 60,
@@ -178,7 +165,7 @@ function ProfilePage() {
                             }}
                             onClick={() => setIsEditing(true)}
                         >
-                            {profileName}
+                            {pageProfileName}
                         </Typography>
                     )}
                 </Box>

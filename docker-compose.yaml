@@ -21,17 +21,19 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./pgdata:/var/lib/postgresql/data/pgdata
+      - postgres-data:/var/lib/postgresql/data
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
-      - "3000:3000"
+      - "4000:4000"
+    networks:
+      - default
     volumes:
-      - ./server:/usr/local/app
+      - ./server/src/auth/keys:/usr/local/app/dist/auth/keys:ro
     environment:
-      - NODE_ENV=development
+      - APP_ENV=production
       - DEV_HOST=db
     depends_on:
       - db
@@ -39,25 +41,24 @@ services:
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
-      - "5173:5173"
+      - "80:80"
+      - "443:443"
+    networks:
+      - default
     volumes:
-      - ./client:/usr/local/app
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
-      - NODE_ENV=development
+      - VITE_APP_ENV=production
   scheduler-proc:
-    build:
-      context: ./scheduler-proc
-      dockerfile: Dockerfile
-    container_name: scheduler-proc
-    volumes:
-      - ./scheduler-proc:/usr/local/app
-    depends_on:
-      - server
-      - rabbitmq
-    environment:
-      - NODE_ENV=development
+      build:
+        context: ./scheduler-proc
+        dockerfile: Dockerfile.prod
+      ports:
+        - "3002:3002"
+      environment:
+      - APP_ENV=production
 
 volumes:
   postgres-data:

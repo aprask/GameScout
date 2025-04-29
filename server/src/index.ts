@@ -1,8 +1,9 @@
 import express from 'express';
 
-import { migrateToLatest } from '../src/data/migrate.js';
+import { migrateToLatest } from './data/migrate.js';
 import { errorMiddleware } from './middleware/error.js';
 import { Consumer } from './config/consumer.js';
+import cookieParser from 'cookie-parser';
 
 import healthRouter from './routes/health.js';
 import userRouter from './routes/user.js';
@@ -19,7 +20,11 @@ import authRouter from './routes/auth.js';
 export const app = express();
 
 app.use(express.json());
-app.use(errorMiddleware);
+app.use(cookieParser());
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.url);
+  next();
+});
 
 app.use('/api/v1/health', healthRouter);
 app.use('/api/v1/users', userRouter);
@@ -33,7 +38,18 @@ app.use('/api/v1/wishlist', wishlistRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/auth', authRouter);
 
-const PORT = process.env.PORT ?? 3000;
+app.use('*', (req, res) => {
+  console.log('GLOBAL CATCH-ALL');
+  console.log('req.method:', req.method);
+  console.log('req.path:', req.path);
+  console.log('req.url:', req.url);
+  console.log('req.originalUrl:', req.originalUrl);
+  res.status(404).json({ error: 'Route not found globally' });
+});
+
+app.use(errorMiddleware);
+
+const PORT = process.env.PORT ?? 4000;
 
 if (process.env.APP_ENV !== 'test') {
   const CONSUMER = new Consumer('GAME_DATA');
