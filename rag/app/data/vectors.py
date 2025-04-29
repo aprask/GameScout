@@ -10,6 +10,7 @@ pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 index = os.getenv("INDEX_NAME")
 
+
 def create_pinecone_index(dimension=1536):
     try:
         if index in pc.list_indexes().names():

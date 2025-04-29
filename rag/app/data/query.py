@@ -24,14 +24,13 @@ def make_query_vector(query):
     query_embedding = convert_text_into_embedding(query)
     return normalize_vector_chunk(query_embedding)
 
+
 def ret_k_chunks(
     query, namespaces=["Baseball", "Star Trek", "Computer Space", "Galaxy Game"], k=10
 ):
     try:
         db = pc.Index(index)
-        query_vector = (
-            np.array(query).astype("float32").tolist()
-        )
+        query_vector = np.array(query).astype("float32").tolist()
         all_matches = []
         for namespace in namespaces:
             response = db.query(
@@ -47,7 +46,8 @@ def ret_k_chunks(
     except Exception as e:
         print(f"Error querying Pinecone: {e}")
         return None
-    
+
+
 def llm_proc(query, chunks, model="gpt-3.5-turbo"):
     if not chunks:
         print("No relevant information found for query")
@@ -77,6 +77,7 @@ def llm_proc(query, chunks, model="gpt-3.5-turbo"):
     except Exception as e:
         print(f"Error processing data with LLM: {e}")
         return None
+
 
 def make_query(query):
     vector = make_query_vector(query)

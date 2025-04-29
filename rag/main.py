@@ -8,42 +8,43 @@ import requests
 import os
 from dotenv import load_dotenv  # type: ignore
 import multiprocessing
+
 load_dotenv()
 
 API_TOKEN = os.environ.get("API_MANAGEMENT_KEY")
 APP_ENV = os.environ.get("APP_ENV")
 
+
 def get_game_titles():
     collected_games = []
-    headers = {
-            'Authorization': f'{API_TOKEN}'
-    }
-    if APP_ENV != 'production':
+    headers = {"Authorization": f"{API_TOKEN}"}
+    if APP_ENV != "production":
         response = requests.get("http://localhost:4000/api/v1/game", headers=headers)
         if response.status_code == 200:
             data = response.json()
-            games = data.get('games', {})
+            games = data.get("games", {})
             for game in games:
-                collected_games.append(game.get('game_name'))
+                collected_games.append(game.get("game_name"))
         else:
-            print(f'Failed with status code {response.status_code}')
+            print(f"Failed with status code {response.status_code}")
             print(response.text)
     else:
         response = requests.get("https://gamescout.xyz/api/v1/game", headers=headers)
         if response.status_code == 200:
             data = response.json()
-            games = data.get('games', {})
+            games = data.get("games", {})
             for game in games:
-                collected_games.append(game.get('game_name'))
+                collected_games.append(game.get("game_name"))
         else:
-            print(f'Failed with status code {response.status_code}')
+            print(f"Failed with status code {response.status_code}")
             print(response.text)
     return collected_games
+
 
 def make_db():
     titles = get_game_titles()
     print(titles)
-    titles.append('The Elder Scrolls V: Skyrim')
+    titles.append("The Elder Scrolls V: Skyrim")
     idx = 0
     for title in titles:
         aggregated_games = []
@@ -52,7 +53,7 @@ def make_db():
         if game_summary is None:
             continue
         if len(game_summary) > 4096:
-            chunks = chunk_text(game_summary.split(','))
+            chunks = chunk_text(game_summary.split(","))
             for chunk in chunks:
                 aggregated_games.append({title: chunk})
                 embedded_games = convert_text_into_embedding(chunk)
@@ -61,7 +62,7 @@ def make_db():
                     title=title,
                     embedding=aggregated_chunks[idx][title],
                     chunk=aggregated_games[idx][title],
-                    reset=False
+                    reset=False,
                 )
                 print(idx)
                 idx += 1
@@ -73,13 +74,15 @@ def make_db():
                 title=title,
                 embedding=aggregated_chunks[idx][title],
                 chunk=aggregated_games[idx][title],
-                reset=False
+                reset=False,
             )
-        time.sleep(5) # to prevent 429
+        time.sleep(5)  # to prevent 429
+
 
 def test_query(query="What is Skyrim?"):
     res = make_query(query)
     return res
+
 
 if __name__ == "__main__":
     # make_db()
