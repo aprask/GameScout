@@ -5,3 +5,5 @@ black
 wikipedia-api
 pinecone
 requests
+fastapi
+uvicorn

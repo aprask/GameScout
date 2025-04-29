@@ -25,9 +25,7 @@ def make_query_vector(query):
     return normalize_vector_chunk(query_embedding)
 
 
-def ret_k_chunks(
-    query, namespaces=["Baseball", "Star Trek", "Computer Space", "Galaxy Game"], k=10
-):
+def ret_k_chunks(query, namespaces, k=10):
     try:
         db = pc.Index(index)
         query_vector = np.array(query).astype("float32").tolist()
@@ -79,9 +77,9 @@ def llm_proc(query, chunks, model="gpt-3.5-turbo"):
         return None
 
 
-def make_query(query):
+def make_query(query, namespaces):
     vector = make_query_vector(query)
-    rel_chunks = ret_k_chunks(vector)
+    rel_chunks = ret_k_chunks(vector, namespaces)
     llm_res = llm_proc(query, rel_chunks)
     print(llm_res)
     return llm_res
