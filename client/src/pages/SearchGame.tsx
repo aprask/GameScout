@@ -40,9 +40,10 @@ function SearchGame(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
+  const baseUrl =
+    `${import.meta.env.VITE_APP_ENV}` === "production"
+      ? `${import.meta.env.VITE_PROD_URL}`
+      : `${import.meta.env.VITE_DEV_URL}`;
 
   const GAMES_PER_PAGE = 16;
   const SORT_TYPE = "new";
@@ -65,6 +66,8 @@ function SearchGame(): JSX.Element {
             },
           }
         );
+
+        console.log(response.data.games);
 
         setGames(response.data.games.data);
         setTotalPages(response.data.games.pages);

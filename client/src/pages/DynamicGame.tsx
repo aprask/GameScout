@@ -30,6 +30,7 @@ interface GameData {
 }
 
 interface ReviewData {
+  review_id: string;
   user_id: string;
   rating: number;
   review: string;
@@ -41,9 +42,10 @@ function DynamicGame(): JSX.Element {
   const id = searchParams.get("id");
   const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
+  const baseUrl =
+    `${import.meta.env.VITE_APP_ENV}` === "production"
+      ? `${import.meta.env.VITE_PROD_URL}`
+      : `${import.meta.env.VITE_DEV_URL}`;
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -56,7 +58,7 @@ function DynamicGame(): JSX.Element {
           },
         });
         const review = await axios.get(
-          `http://localhost:3000/api/v1/review/rating/${id}`,
+          `${baseUrl}/api/v1/review/rating/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -164,10 +166,12 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   const { userId } = useAuth();
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
   const [submittedReview, setSubmittedReview] = useState<ReviewData>();
-  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
-  
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const baseUrl =
+    `${import.meta.env.VITE_APP_ENV}` === "production"
+      ? `${import.meta.env.VITE_PROD_URL}`
+      : `${import.meta.env.VITE_DEV_URL}`;
 
   useEffect(() => {
     try {
@@ -181,7 +185,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
             },
           }
         );
-        if (response.data) {
+        if (response.data.review.user_id === userId) {
           setReviewSubmitted(true);
           setSubmittedReview(response.data.review);
         }
@@ -213,9 +217,9 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
           review_text: reviewText,
         },
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
           },
         }
       );
@@ -231,33 +235,130 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
     }
   };
 
-  if (reviewSubmitted === true)
-    return (
-      <>
-        <Card sx={{ backgroundColor: "primary.main" }}>
-          <CardContent>
-            <Paper elevation={6} sx={{ p: 2, pl: 1, pr: 2 }}>
-              <Container>
-                <Typography variant="h6">
-                  {submittedReview?.review_title}
-                </Typography>
+  const handleEdit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-                <Rating
-                  name="review-rating"
-                  value={+submittedReview!.rating}
-                  readOnly
-                />
-                {submittedReview!.review && (
-                  <Typography variant="body2">
-                    {submittedReview!.review}
+    setError(null);
+
+    if (!rating || rating < 1 || rating > 5) {
+      setError("Rating must be between 1 and 5.");
+      return;
+    }
+    console.log("1");
+
+    try {
+      const response = await axios.put(
+        `${baseUrl}/api/v1/review/${submittedReview?.review_id}`,
+        {
+          review_title: reviewTitle,
+          rating: rating,
+          review_text: reviewText,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setRating("");
+        setReviewText("");
+        setIsEditing(false);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("Failed to submit review. Please try again later.");
+    }
+  };
+
+  if (reviewSubmitted)
+    if (isEditing) {
+      return (
+        <>
+          <Card>
+            <CardContent>
+              <Box component="form" onSubmit={handleEdit}>
+                <Typography variant="h6">Write a Review</Typography>
+                {error && (
+                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                    {error}
                   </Typography>
                 )}
-              </Container>
-            </Paper>
-          </CardContent>
-        </Card>
-      </>
-    );
+                <TextField
+                  label="Title"
+                  value={reviewTitle}
+                  onChange={(e) => setReviewTitle(e.target.value)}
+                  fullWidth
+                  required
+                  sx={{ mb: 1 }}
+                />
+                <Box>
+                  <Rating
+                    name="star-rating"
+                    value={+rating}
+                    onChange={(event, newValue) => {
+                      setRating(+newValue!);
+                    }}
+                  />
+                </Box>
+
+                <TextField
+                  label="Review"
+                  multiline
+                  rows={4}
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}
+                >
+                  <Button type="submit" variant="contained" color="primary">
+                    Update Review
+                  </Button>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </>
+      );
+    } else
+      return (
+        <>
+          <Card sx={{ backgroundColor: "primary.main" }}>
+            <CardContent>
+              <Paper elevation={6} sx={{ p: 2, pl: 1, pr: 2 }}>
+                <Container>
+                  <Typography variant="h6">
+                    {submittedReview?.review_title}
+                  </Typography>
+
+                  <Rating
+                    name="review-rating"
+                    value={+submittedReview!.rating}
+                    readOnly
+                  />
+                  {submittedReview!.review && (
+                    <Typography variant="body2">
+                      {submittedReview!.review}
+                    </Typography>
+                  )}
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button onClick={() => setIsEditing(true)} sx={{ mr: 2 }}>
+                      Edit Review
+                    </Button>
+                  </Box>
+                </Container>
+              </Paper>
+            </CardContent>
+          </Card>
+        </>
+      );
   else
     return (
       <Card>
@@ -311,9 +412,10 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
 function GameReviews({ gameId }: { gameId: string }): JSX.Element {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
+  const baseUrl =
+    `${import.meta.env.VITE_APP_ENV}` === "production"
+      ? `${import.meta.env.VITE_PROD_URL}`
+      : `${import.meta.env.VITE_DEV_URL}`;
 
   useEffect(() => {
     const fetchReviews = async () => {
