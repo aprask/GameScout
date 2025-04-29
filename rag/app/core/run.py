@@ -16,26 +16,20 @@ APP_ENV = os.environ.get("APP_ENV")
 def get_game_titles():
     collected_games = []
     headers = {"Authorization": f"{API_TOKEN}"}
-    if APP_ENV != "production":
-        response = requests.get("http://localhost:4000/api/v1/game", headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            games = data.get("games", {})
-            for game in games:
-                collected_games.append(game.get("game_name"))
-        else:
-            print(f"Failed with status code {response.status_code}")
-            print(response.text)
+    url = (
+        "http://localhost:4000/api/v1/game"
+        if APP_ENV != "production"
+        else "https://gamescout.xyz/api/v1/game"
+    )
+    response = requests.get(url=url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        games = data.get("games", {})
+        for game in games:
+            collected_games.append(game.get("game_name"))
     else:
-        response = requests.get("https://gamescout.xyz/api/v1/game", headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            games = data.get("games", {})
-            for game in games:
-                collected_games.append(game.get("game_name"))
-        else:
-            print(f"Failed with status code {response.status_code}")
-            print(response.text)
+        print(f"Failed with status code {response.status_code}")
+        print(response.text)
     return collected_games
 
 
