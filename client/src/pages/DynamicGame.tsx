@@ -73,25 +73,12 @@ function DynamicGame(): JSX.Element {
             },
           }
         );
-        const wishlist = await axios.get(
-          `${baseUrl}/api/v1/wishlist/game/${id}/user/${userId}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+
         if (res.status === 200) {
           setGame(res.data.game);
         }
         if (review.status === 200) {
           setRating(review.data.rating);
-        }
-
-        if (wishlist.data.wishlist.user_id === userId) {
-          setWishlistId(wishlist.data.wishlist.wishlist_id);
-          setIsWishlisted(true);
         }
       } catch (error) {
         console.error("Error fetching game details:", error);
@@ -104,6 +91,31 @@ function DynamicGame(): JSX.Element {
       fetchGameDetails();
     }
   }, [id]);
+
+  useEffect(() => {
+    const fetchWishlistDetails = async () => {
+      try {
+        const wishlist = await axios.get(
+          `${baseUrl}/api/v1/wishlist/game/${id}/user/${userId}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (wishlist.data.wishlist) {
+          if (wishlist.data.wishlist.user_id === userId) {
+            setWishlistId(wishlist.data.wishlist.wishlist_id);
+            setIsWishlisted(true);
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching wishlist: " + e);
+      }
+    };
+    fetchWishlistDetails();
+  }, [isWishlisted]);
 
   const addToWishlist = async () => {
     try {
@@ -382,7 +394,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                   <Rating
                     name="star-rating"
                     value={+rating}
-                    onChange={(event, newValue) => {
+                    onChange={(_event, newValue) => {
                       setRating(+newValue!);
                     }}
                   />
@@ -465,7 +477,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
               <Rating
                 name="star-rating"
                 value={+rating}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   setRating(+newValue!);
                 }}
               />
