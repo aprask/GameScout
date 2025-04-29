@@ -14,12 +14,12 @@ API_MANAGEMENT_KEY = os.environ.get("API_MANAGEMENT_KEY")
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/chatbot")
 def read_root():
     return {"message": "Good"}
 
 
-@router.post("/rebuild")
+@router.post("/chatbot/rebuild")
 async def rebuild_index():
     try:
         db_thread = threading.Thread(target=make_db)
@@ -29,7 +29,7 @@ async def rebuild_index():
         return {"status": f"cannot rebuild db: {e}"}
 
 
-@router.post("/query")
+@router.post("/chatbot/query")
 async def query_index(req: RequestModel):
     data = req.model_dump()
     namespace_list = data["namespaces"]
