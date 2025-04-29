@@ -25,6 +25,7 @@ def create_pinecone_index(dimension=1536):
     except Exception as e:
         print(f"Error making index in Pinecone: {e}")
 
+
 def create_vectors(namespace, data, db, data_embeddings):
     vectors = [(f"{namespace}", data_embeddings, {"chunk": data, "source": namespace})]
     try:
@@ -32,6 +33,7 @@ def create_vectors(namespace, data, db, data_embeddings):
         db.upsert(vectors=vectors, namespace=namespace)
     except Exception as e:
         print(f"Error updating Pinecone index: {e}")
+
 
 def pinecone_init(title, embedding, chunk):
     create_pinecone_index()
