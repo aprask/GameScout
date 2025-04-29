@@ -35,8 +35,9 @@ def create_vectors(namespace, data, db, data_embeddings):
         print(f"Error updating Pinecone index: {e}")
 
 
-def pinecone_init(title, embedding, chunk):
-    create_pinecone_index()
+def pinecone_init(title, embedding, chunk, reset=False):
+    if reset:
+        create_pinecone_index()
     pc_db = pc.Index(index)
     if pc_db is None:
         return

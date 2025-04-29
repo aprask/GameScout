@@ -4,3 +4,4 @@ python-dotenv
 black
 wikipedia-api
 pinecone
+requests
