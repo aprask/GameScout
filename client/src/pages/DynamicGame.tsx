@@ -12,10 +12,13 @@ import {
   Button,
   Rating,
   Paper,
+  IconButton,
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/auth/AuthContext";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import StarIcon from "@mui/icons-material/Star";
 
 interface GameData {
   created_at: Date;
@@ -42,6 +45,10 @@ function DynamicGame(): JSX.Element {
   const id = searchParams.get("id");
   const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const { userId } = useAuth();
+  const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
+  const [wishlistId, setWishlistId] = useState<string | null>(null);
+
   const baseUrl =
     `${import.meta.env.VITE_APP_ENV}` === "production"
       ? `${import.meta.env.VITE_PROD_URL}`
@@ -60,9 +67,18 @@ function DynamicGame(): JSX.Element {
         const review = await axios.get(
           `${baseUrl}/api/v1/review/rating/${id}`,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
+            },
+          }
+        );
+        const wishlist = await axios.get(
+          `${baseUrl}/api/v1/wishlist/game/${id}/user/${userId}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
             },
           }
         );
@@ -71,6 +87,11 @@ function DynamicGame(): JSX.Element {
         }
         if (review.status === 200) {
           setRating(review.data.rating);
+        }
+
+        if (wishlist.data.wishlist.user_id === userId) {
+          setWishlistId(wishlist.data.wishlist.wishlist_id);
+          setIsWishlisted(true);
         }
       } catch (error) {
         console.error("Error fetching game details:", error);
@@ -83,6 +104,50 @@ function DynamicGame(): JSX.Element {
       fetchGameDetails();
     }
   }, [id]);
+
+  const addToWishlist = async () => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/v1/wishlist`,
+        {
+          user_id: userId,
+          game_id: id,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setIsWishlisted(true);
+      }
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+    }
+  };
+
+  const removeFromWishlist = async () => {
+    try {
+      const response = await axios.delete(
+        `${baseUrl}/api/v1/wishlist/${wishlistId}?user_id=${userId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        setIsWishlisted(false);
+      }
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -116,9 +181,35 @@ function DynamicGame(): JSX.Element {
             sx={{ maxWidth: { xs: "100%", md: 300 } }}
           />
           <CardContent sx={{ flex: 1, padding: 3, mt: 3 }}>
-            <Typography variant="h4" gutterBottom>
-              {game.game_name}
-            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h4" gutterBottom>
+                {game.game_name}
+              </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center", mr: 4 }}>
+                {isWishlisted ? (
+                  <>
+                    <IconButton
+                      aria-label="Remove from Wishlist"
+                      onClick={removeFromWishlist}
+                      title="Remove from Wishlist"
+                    >
+                      <StarIcon color="primary" sx={{ fontSize: 40 }} />
+                    </IconButton>
+                  </>
+                ) : (
+                  <>
+                    <IconButton
+                      aria-label="Wishlist"
+                      onClick={addToWishlist}
+                      title="Add to Wishlist"
+                    >
+                      <StarBorderOutlinedIcon sx={{ fontSize: 40 }} />
+                    </IconButton>
+                  </>
+                )}
+              </Box>
+            </Box>
 
             {rating && <Rating name="review-rating" value={+rating} readOnly />}
 
@@ -136,17 +227,9 @@ function DynamicGame(): JSX.Element {
           </CardContent>
         </Box>
       </Card>
-      {/* <Card
-        sx={{ mb: 4, backgroundColor: "primary.main", color: "white", p: 1 }}
-      >
-        <CardContent>
-          <Typography variant="h4">Reviews for {game.game_name}</Typography>
-        </CardContent>
-      </Card> */}
 
       <ReviewForm gameId={game.game_id} />
-      {/* </CardContent>
-      </Card> */}
+
       <Card sx={{ mb: 4, mt: 4 }}>
         <CardContent>
           <Box>
