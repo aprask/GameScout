@@ -1,11 +1,5 @@
 from pydantic import BaseModel
-from typing import List
 
 
-class Namespace(BaseModel):
-    name: str
-
-
-class RequestModel(BaseModel):
+class QueryRequest(BaseModel):
     query: str
-    namespaces: List[Namespace]

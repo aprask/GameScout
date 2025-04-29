@@ -9,13 +9,13 @@ from dotenv import load_dotenv  # type: ignore
 
 load_dotenv()
 
-API_TOKEN = os.environ.get("API_MANAGEMENT_KEY")
+API_MANAGEMENT_KEY = os.environ.get("API_MANAGEMENT_KEY")
 APP_ENV = os.environ.get("APP_ENV")
 
 
 def get_game_titles():
     collected_games = []
-    headers = {"Authorization": f"{API_TOKEN}"}
+    headers = {"Authorization": f"{API_MANAGEMENT_KEY}"}
     url = (
         "http://localhost:4000/api/v1/game"
         if APP_ENV != "production"

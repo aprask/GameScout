@@ -1,15 +1,16 @@
 from fastapi import APIRouter
 from ..core.run import make_db
 from ..core.data.query import make_query
-from app.api.model import RequestModel
+from app.api.model import QueryRequest
 import threading
-
+from ..core.run import get_game_titles
 import os
 from dotenv import load_dotenv  # type: ignore
 
 load_dotenv()
 
 API_MANAGEMENT_KEY = os.environ.get("API_MANAGEMENT_KEY")
+APP_ENV = os.environ.get("APP_ENV")
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ def read_root():
 @router.post("/chatbot/rebuild")
 async def rebuild_index():
     try:
+        # TODO get reset bool
         db_thread = threading.Thread(target=make_db)
         db_thread.start()
         return {"status": "rebuilding db"}
@@ -30,12 +32,9 @@ async def rebuild_index():
 
 
 @router.post("/chatbot/query")
-async def query_index(req: RequestModel):
+async def query_index(req: QueryRequest):
+    namespaces = get_game_titles()
     data = req.model_dump()
-    namespace_list = data["namespaces"]
     query = data["query"]
-    collected_namespaces = []
-    for namespace in namespace_list:
-        collected_namespaces.append(namespace["name"])
-    res = make_query(query, collected_namespaces)
+    res = make_query(query, namespaces)
     return {"response": res}
