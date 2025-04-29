@@ -22,6 +22,7 @@ export async function getGameById(game_id: string): Promise<GameTable> {
 }
 
 export async function createGame(game: GameTable): Promise<GameTable> {
+    console.log('creating game');
     const newGame = await db
         .insertInto("games")
         .values({
