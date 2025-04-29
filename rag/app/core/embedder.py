@@ -20,6 +20,7 @@ def normalize_vector_chunk(vector_chunk):
 def convert_text_into_embedding(chunks, model="text-embedding-ada-002"):
     try:
         res = client.embeddings.create(input=chunks, model=model)
+        time.sleep(1)
         return [normalize_vector_chunk(item.embedding) for item in res.data][0].tolist()
     except Exception as e:
         print(f"Error generating embeddings: {e}")

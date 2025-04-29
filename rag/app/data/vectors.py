@@ -3,12 +3,12 @@ import os
 from dotenv import load_dotenv  # type: ignore
 from pinecone import Pinecone, ServerlessSpec  # type: ignore
 import numpy as np  # type: ignore
+import time
 
 load_dotenv()
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 index = os.getenv("INDEX_NAME")
-
 
 def create_pinecone_index(dimension=1536):
     try:

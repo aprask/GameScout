@@ -15,7 +15,7 @@ def is_game_page(title):
     return False
 
 
-def get_page_summary(title):
+def get_page_text(title):
     page = wiki_wiki.page(title)
     if not page.exists():
         return None
@@ -24,6 +24,6 @@ def get_page_summary(title):
 
 def run(title):
     if is_game_page(title):
-        return get_page_summary(title)
+        return get_page_text(title)
     else:
         return None
