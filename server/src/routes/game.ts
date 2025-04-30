@@ -34,6 +34,17 @@ router.get(
 );
 
 router.get(
+  '/new',
+  asyncHandler(async (req, res) => {
+    let n: number = 0;
+    if (typeof +req.query.n! === 'number') n = +req.query.n!;
+
+    const games = await gameService.getNNewestGames(n);
+    res.status(200).json({ games });
+  }),
+);
+
+router.get(
   '/:game_id',
   asyncHandler(async (req, res) => {
     const game = await gameService.getGameById(req.params.game_id);
