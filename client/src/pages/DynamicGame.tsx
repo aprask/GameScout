@@ -33,6 +33,7 @@ interface GameData {
 }
 
 interface ReviewData {
+  updated_at: Date;
   review_id: string;
   user_id: string;
   rating: number;
@@ -232,7 +233,7 @@ function DynamicGame(): JSX.Element {
             )}
 
             {game.summary && (
-              <Typography variant="body2" sx={{ mt: 2 }}>
+              <Typography variant="body1" sx={{ mt: 2 }}>
                 {game.summary}
               </Typography>
             )}
@@ -438,6 +439,14 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     value={+submittedReview!.rating}
                     readOnly
                   />
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Review Made:
+                    {" " +
+                      new Date(
+                        submittedReview?.updated_at!
+                      ).toLocaleDateString()}
+                  </Typography>
+                  <hr />
                   {submittedReview!.review && (
                     <Typography variant="body2">
                       {submittedReview!.review}
@@ -562,12 +571,19 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
 
   return (
     <Box>
+      <Typography variant="body2">Reviews</Typography>
+
       {reviews.map((review, index) => (
         <Paper key={index} sx={{ mb: 2, p: 2 }} elevation={6}>
           <Typography variant="h6" fontWeight="bold">
             {review.review_title}
           </Typography>
           <Rating name="review-rating" value={+review.rating} readOnly />
+          <Typography variant="subtitle2" color="text.secondary">
+            Posted:
+            {" " + new Date(review.updated_at!).toLocaleDateString()}
+          </Typography>
+          <hr />
           <Typography variant="body2">{review.review}</Typography>
         </Paper>
       ))}
