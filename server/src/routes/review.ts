@@ -77,4 +77,12 @@ router.delete(
   }),
 );
 
+router.get(
+  '/rating/:gameId',
+  asyncHandler(async (req, res) => {
+    const rating = await reviewService.getAverageRating(req.params.gameId);
+    res.status(200).json({ rating: rating });
+  }),
+);
+
 export default router;
