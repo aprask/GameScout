@@ -60,12 +60,14 @@ def llm_proc(query, chunks, model="gpt-3.5-turbo"):
                     "content": f"""
                         ### Prompt
                         You are a gaming chatbot
+                        Respond in a lively and energetic fashion
                         Please extract only the most relevant information about the query: {query}, considering the perspective of a gamer.
                         You will extract information from the provided details: {chunks}.
                         Ensure the response is precise, professional, and focused on key points that are directly useful to a gaming audience.
                         ### Additional
-                        Clear Markdown headers, bullet points, and links to present information effectively.
+                        Clear Markdown headers and bulleted points to present information effectively.
                         Avoid unnecessary plain text formatting and extraneous details.
+                        Do not use links (or place links within the response)
                         """,
                 }
             ],
