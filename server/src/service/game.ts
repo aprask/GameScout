@@ -1,9 +1,13 @@
-import { GameTable, GameMessage, PaginatedGame } from "../data/models/models.js";
+import { GameTable, GameMessage, PaginatedGame, GameTitle } from "../data/models/models.js";
 import * as gameRepo from "../repository/game.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
 import { v4 as uuidv4, validate } from "uuid";
 import { isDigit } from "../util/digit.js";
+
+export async function getAllGameTitles(): Promise<GameTitle[]> {
+    return gameRepo.getAllGameTitles();
+}
 
 function sortGamesByNew(games: GameTable[]): GameTable[] {
     return games.sort((a, b) => {

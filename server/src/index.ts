@@ -16,6 +16,7 @@ import articlesRouter from './routes/articles.js';
 import wishlistRouter from './routes/wishlist.js';
 import profileRouter from './routes/profile.js';
 import authRouter from './routes/auth.js';
+import chatbotRouter from './routes/chatbot.js';
 
 export const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/v1/community/articles', articlesRouter);
 app.use('/api/v1/wishlist', wishlistRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/chatbot', chatbotRouter);
 
 app.use('*', (req, res) => {
   console.log('GLOBAL CATCH-ALL');

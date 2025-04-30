@@ -19,6 +19,7 @@ import axios from "axios";
 import { useAuth } from "../context/auth/AuthContext";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import StarIcon from "@mui/icons-material/Star";
+import Chatbot from "../components/chat/Chatbot";
 
 interface GameData {
   created_at: Date;
@@ -248,6 +249,11 @@ function DynamicGame(): JSX.Element {
           <Box>
             <GameReviews gameId={game.game_id} />
           </Box>
+        </CardContent>
+      </Card>
+      <Card sx={{ m: 5 }}>
+        <CardContent>
+          <Chatbot/>
         </CardContent>
       </Card>
     </Container>

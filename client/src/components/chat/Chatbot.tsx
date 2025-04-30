@@ -1,94 +1,129 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth/AuthContext";
 import { Send } from "@mui/icons-material";
-import { Card, Fab, Box, TextareaAutosize, CircularProgress, Typography } from "@mui/material";
+import {
+  Card,
+  Box,
+  Typography,
+  CircularProgress,
+  useTheme,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 export default function Chatbot() {
-    const [query, setQuery] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [output, setOutput] = useState("");
-    const { isAuthenticated } = useAuth();
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [output, setOutput] = useState("");
+  const { isAuthenticated } = useAuth();
+  const theme = useTheme();
 
-    const baseUrl = import.meta.env.VITE_APP_ENV === "production"
-        ? import.meta.env.VITE_PROD_CHAT_URL
-        : import.meta.env.VITE_DEV_CHAT_URL;
+  const baseUrl =
+    `${import.meta.env.VITE_APP_ENV}` === "production"
+      ? `${import.meta.env.VITE_PROD_URL}`
+      : `${import.meta.env.VITE_DEV_URL}`;
 
-    const makeQuery = async () => {
-        if (!isAuthenticated || !query.trim()) return;
-        setLoading(true);
-        setOutput("");
+  const makeQuery = async () => {
+    if (!isAuthenticated || !query.trim() || loading) return;
+    setLoading(true);
+    setOutput("");
 
-        try {
-            const res = await axios.post(
-                `${baseUrl}/chatbot/query`,
-                { query },
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`,
-                    },
-                }
-            );
-            if (res.status === 200) {
-                setOutput(res.data.response);
-            } else {
-                setOutput("Sorry, we couldn't process your query.");
-            }
-        } catch (err) {
-            console.error("Error:", err);
-            setOutput("Sorry, we couldn't process your query.");
-        } finally {
-            setLoading(false);
+    try {
+      const res = await axios.post(
+        `${baseUrl}/api/v1/chatbot`,
+        { query },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-    };
+      );
+      setOutput(res.status === 200 ? res.data.response : "Sorry, we couldn't process your query.");
+    } catch (err) {
+      console.error("Error:", err);
+      setOutput("Sorry, we couldn't process your query.");
+    } finally {
+      setLoading(false);
+      setQuery("");
+    }
+  };
 
-    return (
-        <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
-            <Typography>Chatbot</Typography>
-            <Box sx={{ mb: 3 }}>
-                {loading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                        <CircularProgress />
-                    </Box>
-                ) : output && (
-                    <Card elevation={3} sx={{ p: 2, whiteSpace: "pre-line" }}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {output}
-                        </ReactMarkdown>
-                    </Card>
-                )}
-            </Box>
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      makeQuery();
+    }
+  };
 
-            <Box sx={{ position: 'relative', mt: 2 }}>
-                <TextareaAutosize
-                    minRows={4}
-                    maxRows={10}
-                    placeholder="Ask me a question..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        fontSize: "1rem",
-                        borderRadius: "8px",
-                        border: "1px solid #ccc",
-                        resize: "vertical",
-                        boxSizing: "border-box",
-                    }}
-                />
-                <Fab
-                    color="primary"
-                    size="medium"
-                    onClick={makeQuery}
-                    sx={{ position: 'absolute', bottom: 16, right: 16 }}
-                >
-                    <Send />
-                </Fab>
-            </Box>
+  return (
+    <Box sx={{ maxWidth: 800, mx: "auto", p: 3 }}>
+        <Box display="flex" justifyContent="center">
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+                Chatbot
+            </Typography>
         </Box>
-    );
+      <Box sx={{ mb: 3 }}>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : output ? (
+          <Card elevation={3} sx={{ p: 3, backgroundColor: theme.palette.background.paper }}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{output}</ReactMarkdown>
+          </Card>
+        ) : null}
+      </Box>
+
+      <Card elevation={2} sx={{ p: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 1,
+          }}
+        >
+          <Box
+            component="textarea"
+            placeholder="Ask me a question about this game..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
+            rows={3}
+            style={{
+              flex: 1,
+              border: "none",
+              outline: "none",
+              fontSize: "1rem",
+              resize: "none",
+              padding: "12px",
+              borderRadius: "8px",
+              fontFamily: "inherit",
+              backgroundColor: loading
+                ? theme.palette.action.disabledBackground
+                : theme.palette.background.default,
+              color: theme.palette.text.primary,
+              opacity: loading ? 0.6 : 1,
+            }}
+          />
+          <Tooltip title="Send" arrow>
+            <span>
+              <IconButton
+                color="primary"
+                onClick={makeQuery}
+                disabled={loading || !query.trim()}
+                sx={{ mb: "4px" }}
+              >
+                <Send />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
+      </Card>
+    </Box>
+  );
 }

@@ -1,6 +1,15 @@
 import { db } from "../data/db.js";
-import { GameTable } from "../data/models/models.js";
+import { GameTable, GameTitle } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
+
+export async function getAllGameTitles(): Promise<GameTitle[]> {
+    const gameTitles = await db
+        .selectFrom('games')
+        .select(['game_name'])
+        .execute();
+    if (gameTitles === undefined) throwErrorException(`[repository.game.getAllGameTitles] cannot get game titles`, 'No titles found', 404);
+    return gameTitles;
+}
 
 export async function getAllGames(): Promise<GameTable[]> {
     const games = await db
