@@ -46,7 +46,7 @@ def ret_k_chunks(query, namespaces, k=10):
         return None
 
 
-def llm_proc(query, chunks, game, model="gpt-3.5-turbo"):
+def llm_proc(query, chunks, game, summary, model="gpt-3.5-turbo"):
     if not chunks:
         print("No relevant information found for query")
         return None
@@ -62,6 +62,7 @@ def llm_proc(query, chunks, game, model="gpt-3.5-turbo"):
                         You are a gaming chatbot
                         You are only to give information about the following video game: {game}
                         Do not give information about any video games not called: {game}
+                        This is a brief summary about this game: {summary}
                         Respond in a lively and energetic fashion
                         Please extract only the most relevant information about the query: {query}, considering the perspective of a gamer.
                         You will extract information from the provided details: {chunks}.
@@ -80,9 +81,9 @@ def llm_proc(query, chunks, game, model="gpt-3.5-turbo"):
         return None
 
 
-def make_query(query, namespaces, game):
+def make_query(query, namespaces, game, summary):
     vector = make_query_vector(query)
     rel_chunks = ret_k_chunks(vector, namespaces)
-    llm_res = llm_proc(query, rel_chunks, game)
+    llm_res = llm_proc(query, rel_chunks, game, summary)
     print(llm_res)
     return llm_res

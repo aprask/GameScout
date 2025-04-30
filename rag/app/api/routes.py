@@ -36,6 +36,7 @@ async def query_index(req: QueryRequestModel):
     namespace_list = data["namespaces"]
     query = data["query"]
     game = data["game"]
+    summary = data["summary"]
     in_list = False
     for name in namespace_list:
         if name["name"].lower() == game.lower():
@@ -45,6 +46,6 @@ async def query_index(req: QueryRequestModel):
     collected_namespaces = []
     for namespace in namespace_list:
         collected_namespaces.append(namespace["name"])
-    query = f"Information related to {game} only:" + query
-    res = make_query(query, collected_namespaces, game)
+    query = f"Information related to {game} only. Here is a brief summary: {summary}. Do not confuse this with other games" + query
+    res = make_query(query, collected_namespaces, game, summary)
     return {"response": res}

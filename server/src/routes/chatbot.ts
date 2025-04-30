@@ -22,14 +22,15 @@ router.post('/', asyncHandler(async (req, res) => {
 
     for (const name of gameTitles) formattedGames.push({name: name.game_name}); // formatting for Fast API model (w/o this we get a 422)
 
-    const { query, game } = req.body;
+    const { query, game, summary } = req.body;
     
     const chatbotQuery = await axios.post(
         `http://chat:5000/query`,
         {
             query: query,
             namespaces: formattedGames,
-            game: game
+            game: game,
+            summary: summary
         },
         {
             withCredentials: true,

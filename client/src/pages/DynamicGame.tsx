@@ -253,7 +253,7 @@ function DynamicGame(): JSX.Element {
       </Card>
       <Card sx={{ m: 5 }}>
         <CardContent>
-          <Chatbot game={game.game_name || undefined}/>
+          <Chatbot game={game.game_name || undefined} summary={game.summary || undefined}/>
         </CardContent>
       </Card>
     </Container>
