@@ -9,7 +9,7 @@ def is_game_page(title):
         return False
     categories_list = page.categories.keys()
     for category in categories_list:
-        if "game" in category.lower():
+        if "video game" in category.lower():
             return True
     return False
 
