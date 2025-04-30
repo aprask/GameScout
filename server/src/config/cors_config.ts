@@ -9,6 +9,7 @@ const WHITE_LIST = [
     'https://gamescout.xyz',
     'http://gamescout.xyz',
     'https://www.gamescout.xyz',
+    'http://localhost:5000'
 ];
 
 export const CORS_OPTIONS = {
@@ -20,7 +21,7 @@ export const CORS_OPTIONS = {
         if (WHITE_LIST.indexOf(origin!) !== -1) {
             callback(null, true)
         } else {
-            callback(new Error('Not allowed by CORS'), false)
+            callback(new Error(`${origin}, Not allowed by CORS`), false)
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

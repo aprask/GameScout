@@ -14,6 +14,7 @@ import { ProfileProvider } from "./context/profile/ProfileContext";
 import ProfilePage from "./pages/ProfilePage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import GoogleAuth from "./pages/GoogleAuth";
+import { UnprotectedRoute } from "./components/auth/UnprotectedRoute";
 
 const customTheme = createTheme({
   palette: {
@@ -45,7 +46,9 @@ function App() {
                   <Route 
                     path="/login"
                     element={
-                      <GoogleAuth />
+                      <UnprotectedRoute>
+                        <GoogleAuth />
+                      </UnprotectedRoute>
                     }
                   />  
                   <Route

@@ -10,12 +10,24 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+  chat:
+    build:
+      context: ./rag
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    networks:
+      - default
+    environment:
+      - APP_ENV=development
   client:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
     ports:
       - "5173:5173"
+    networks:
+      - default
     volumes:
       - ./client:/usr/local/app
       - /usr/local/app/node_modules
@@ -27,6 +39,8 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
+    networks:
+      - default
     volumes:
       - ./server:/usr/local/app
       - /usr/local/app/node_modules
@@ -38,6 +52,8 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "3002:3002"
+    networks:
+      - default
     volumes:
       - ./scheduler-proc:/usr/local/app
       - /usr/local/app/node_modules

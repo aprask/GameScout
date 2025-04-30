@@ -117,3 +117,11 @@ export interface PaginatedGame {
   pages: number;
   data: GameTable[];
 }
+
+export interface GameTitle {
+  game_name: string;
+}
+
+export interface Namespace {
+  name: string;
+}
