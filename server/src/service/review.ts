@@ -93,7 +93,15 @@ export async function getAllReviewsByGameId(gameId: string): Promise<ReviewTable
 }
 
 export async function getReviewByGameAndUserId(user_id: string, game_id: string): Promise<ReviewTable> {
-  if (!user_id) throwErrorException(`[service.review.hasUserReviewedGame] No user_id provided`, 'user_id', 200);
-  if (!game_id) throwErrorException(`[service.review.hasUserReviewedGame] No game_id provided`, 'game_id', 200);
+  if (!user_id) throwErrorException(`[service.review.getReviewByGameAndUserId] No user_id provided`, 'user_id', 404);
+  if (!game_id) throwErrorException(`[service.review.getReviewByGameAndUserId] No game_id provided`, 'game_id', 404);
   return reviewRepo.getReviewByGameAndUserId(user_id, game_id);
+}
+
+export async function getAverageRating(game_id: string): Promise<Number> {
+  if (!game_id) throwErrorException(`[service.review.getAverageRating] No game_id provided`, 'game_id', 404);
+  const reviews = await reviewRepo.getAllReviewsByGameId(game_id);
+  let sum = 0;
+  reviews.forEach((review) => (sum += review.rating));
+  return sum / reviews.length;
 }
