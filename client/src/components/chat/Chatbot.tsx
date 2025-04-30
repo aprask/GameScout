@@ -14,7 +14,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function Chatbot() {
+export default function Chatbot({game}) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
@@ -34,7 +34,9 @@ export default function Chatbot() {
     try {
       const res = await axios.post(
         `${baseUrl}/api/v1/chatbot`,
-        { query },
+        { query: query,
+          game: game
+        },
         {
           withCredentials: true,
           headers: {

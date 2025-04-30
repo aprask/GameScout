@@ -9,3 +9,4 @@ class Namespace(BaseModel):
 class QueryRequestModel(BaseModel):
     query: str
     namespaces: List[Namespace]
+    game: str

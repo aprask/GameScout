@@ -35,8 +35,16 @@ async def query_index(req: QueryRequestModel):
     data = req.model_dump()
     namespace_list = data["namespaces"]
     query = data["query"]
+    game = data["game"]
+    in_list = False
+    for name in namespace_list:
+        if name["name"].lower() == game.lower():
+            in_list = True
+    if not in_list:
+        return {"response": "Game does not exist in dataset"}
     collected_namespaces = []
     for namespace in namespace_list:
         collected_namespaces.append(namespace["name"])
+    query = f"Information related to ${game} only:" + query
     res = make_query(query, collected_namespaces)
     return {"response": res}
