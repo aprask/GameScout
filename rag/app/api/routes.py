@@ -45,6 +45,6 @@ async def query_index(req: QueryRequestModel):
     collected_namespaces = []
     for namespace in namespace_list:
         collected_namespaces.append(namespace["name"])
-    query = f"Information related to ${game} only:" + query
+    query = f"Information related to {game} only:" + query
     res = make_query(query, collected_namespaces, game)
     return {"response": res}
