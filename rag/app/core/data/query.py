@@ -60,8 +60,8 @@ def llm_proc(query, chunks, game, model="gpt-3.5-turbo"):
                     "content": f"""
                         ### Prompt
                         You are a gaming chatbot
-                        You are only to give information about the following video game: ${game}
-                        Do not give information about any video games not called: ${game}
+                        You are only to give information about the following video game: {game}
+                        Do not give information about any video games not called: {game}
                         Respond in a lively and energetic fashion
                         Please extract only the most relevant information about the query: {query}, considering the perspective of a gamer.
                         You will extract information from the provided details: {chunks}.
