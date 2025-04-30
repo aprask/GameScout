@@ -115,6 +115,7 @@ jobs:
             API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
             APP_ENV=""
             EOF
+            cd ..
             echo 'Starting containers...'
             docker compose -f docker-compose.yaml up --build -d
             echo 'Deployment complete'
