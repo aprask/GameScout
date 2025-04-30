@@ -40,7 +40,7 @@ router.get(
     if (typeof +req.query.n! === 'number') n = +req.query.n!;
 
     const games = await gameService.getNNewestGames(n);
-    res.status(200).json({ games });
+    res.status(200).json({ games: games });
   }),
 );
 
