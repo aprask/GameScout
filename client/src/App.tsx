@@ -16,6 +16,7 @@ import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import GoogleAuth from "./pages/GoogleAuth";
 import CommunityPage from "./pages/CommunityPage";
 import DynamicArticle from "./pages/DynamicArticle";
+import { UnprotectedRoute } from "./components/auth/UnprotectedRoute";
 
 const customTheme = createTheme({
   palette: {

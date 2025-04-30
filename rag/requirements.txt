@@ -1,0 +1,9 @@
+openai
+numpy
+python-dotenv
+black
+wikipedia-api
+pinecone
+requests
+fastapi
+uvicorn

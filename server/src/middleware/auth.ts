@@ -5,8 +5,6 @@ import * as authService from "../service/auth.js";
 dotenv.config();
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
-    console.log('HERE IN AUTH, PATH:', req.path);
-
     const publicPaths = [
         '/google-auth',
         '/oauth',

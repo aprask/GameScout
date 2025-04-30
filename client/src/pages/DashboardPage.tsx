@@ -12,11 +12,7 @@ import {
 import image from "../assets/image.png"
 import { JSX } from "react";
 
-
-
 function DashboardPage(): JSX.Element {
-  //const theme = useTheme();
-
   const arrOfLen5: number[] = [0, 1, 2, 3, 4];
 
   return (

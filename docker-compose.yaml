@@ -22,6 +22,16 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres-data:/var/lib/postgresql/data
+  chat:
+    build:
+      context: ./rag
+      dockerfile: Dockerfile.prod
+    ports:
+      - "5000:5000"
+    networks:
+      - default
+    environment:
+      - APP_ENV=production
   server:
     build:
       context: ./server
