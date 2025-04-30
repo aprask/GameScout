@@ -1,5 +1,4 @@
 import wikipediaapi  # type: ignore
-import time
 
 wiki_wiki = wikipediaapi.Wikipedia(user_agent="Gamescout", language="en")
 

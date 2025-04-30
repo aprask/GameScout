@@ -11,12 +11,10 @@ import {
 } from "@mui/material";
 import image from "../assets/image.png"
 import { JSX } from "react";
-
+import Chatbot from "../components/chat/Chatbot";
 
 
 function DashboardPage(): JSX.Element {
-  //const theme = useTheme();
-
   const arrOfLen5: number[] = [0, 1, 2, 3, 4];
 
   return (
@@ -68,6 +66,11 @@ function DashboardPage(): JSX.Element {
           <Card sx={{ m: 5 }}>
             <CardContent>
               <Typography variant="h5">About Us</Typography>
+            </CardContent>
+          </Card>
+          <Card sx={{ m: 5 }}>
+            <CardContent>
+              <Chatbot/>
             </CardContent>
           </Card>
         </Box>
