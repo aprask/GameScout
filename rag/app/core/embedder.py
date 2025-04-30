@@ -8,6 +8,14 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+print(f"KEY: {os.getenv("OPENAI_API_KEY")}")
+
 
 def normalize_vector_chunk(vector_chunk):
     vector = np.array(vector_chunk)
