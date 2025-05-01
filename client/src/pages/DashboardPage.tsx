@@ -6,6 +6,7 @@ import {
   CssBaseline,
   ImageList,
   ImageListItem,
+  Paper,
   Typography,
 } from "@mui/material";
 import { JSX, useEffect, useState } from "react";
@@ -24,8 +25,18 @@ interface GameData {
   updated_at: Date;
 }
 
+interface ArticleData {
+  article_id: string;
+  article_title: string;
+  article_owner: string;
+  article_content: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
 function DashboardPage(): JSX.Element {
   const [newGames, setNewGames] = useState<GameData[] | null>();
+  const [newArticles, setNewArticles] = useState<ArticleData[] | null>();
   const navigate = useNavigate();
 
   const baseUrl =
@@ -42,9 +53,21 @@ function DashboardPage(): JSX.Element {
             "Content-Type": "application/json",
           },
         });
+        const articleResponse = await axios.get(
+          `${baseUrl}/api/v1/community/articles/new?n=3`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (gameResponse.status === 200) {
           setNewGames(gameResponse.data.games);
+        }
+        if (articleResponse.status === 200) {
+          setNewArticles(articleResponse.data.articles);
         }
       } catch (error) {
         console.error("Error fetching details:", error);
@@ -98,11 +121,25 @@ function DashboardPage(): JSX.Element {
               </CardContent>
             </Card>
           </Box>
-          <Card sx={{ m: 5, mt: 0 }}>
-            <CardContent>
-              <Typography variant="h5">Articles</Typography>
-            </CardContent>
-          </Card>
+          {newArticles && (
+            <Card sx={{ m: 5, mt: 0 }}>
+              <CardContent>
+                <Typography variant="h5">Newest Articles</Typography>
+
+                {newArticles!.map((article) => (
+                  <Paper
+                    elevation={3}
+                    sx={{ m: 1, p: 1 }}
+                    onClick={() =>
+                      navigate(`/community/article?id=${article.article_id}`)
+                    }
+                  >
+                    <Typography>{article.article_title}</Typography>
+                  </Paper>
+                ))}
+              </CardContent>
+            </Card>
+          )}
           <Card sx={{ m: 5 }}>
             <CardContent>
               <Typography variant="h5">About Us</Typography>
