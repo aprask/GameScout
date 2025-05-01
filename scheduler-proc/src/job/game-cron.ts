@@ -45,7 +45,7 @@ async function previousDateInDB(): Promise<void> {
 
 
 export default async function gameJob() {
-  sleep(20000); // to prevent calling api prior to startup
+  await sleep(20000); // to prevent calling api prior to startup
   const producer = new Producer("GAME_DATA", "");
 
   await previousDateInDB();
