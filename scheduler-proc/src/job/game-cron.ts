@@ -39,20 +39,20 @@ async function previousDateInDB(): Promise<void> {
     const msDate = new Date(dateString).getTime();
     if (msDate > currDate) currDate = msDate;
   }
-  lastDate = currDate;
+  lastDate = Math.floor(new Date(currDate).getTime() / 1000);
 
 }
 
 
 export default async function gameJob() {
-  await sleep(20000); // to prevent calling api prior to startup
   const producer = new Producer("GAME_DATA", "");
+  await sleep(20000); // to prevent calling api prior to startup
 
   await previousDateInDB();
   console.log(`Last saved date was ${lastDate}ms since Unix epoch`);
 
   cron.schedule(
-    "0 30 * * * *", // every 30 mins
+    "0 43 * * * *", // every 30 mins
     async () => {
       const games: Game[] = [];
       console.log("Starting game data job...");
