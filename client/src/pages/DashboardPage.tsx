@@ -7,9 +7,7 @@ import {
   ImageList,
   ImageListItem,
   Typography,
-  //useTheme,
 } from "@mui/material";
-import image from "../assets/image.png";
 import { JSX, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
