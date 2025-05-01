@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import { JSX } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -6,6 +6,8 @@ import axios from "axios";
 import { Box, CircularProgress, Container } from "@mui/material";
 import DisplayComments from "../components/article/DisplayComments";
 import CommentForm from "../components/article/CommentForm";
+import { useAuth } from "../context/auth/AuthContext";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 interface Article {
   article_id: string;
@@ -22,6 +24,7 @@ function DynamicArticle(): JSX.Element {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { userId } = useAuth();
 
   const baseUrl =
     `${import.meta.env.VITE_APP_ENV}` === "production"
@@ -53,6 +56,23 @@ function DynamicArticle(): JSX.Element {
       fetchArticle();
     }
   }, [id]);
+
+  const deleteArticle = async () => {
+    try {
+      await axios.delete(
+        `${baseUrl}/api/v1/community/articles/${article?.article_id}?article_owner=${userId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      window.location.href = "/community";
+    } catch (error) {
+      console.error("Error deleting article:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -89,9 +109,19 @@ function DynamicArticle(): JSX.Element {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
-        {article.article_title}
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4" gutterBottom>
+          {article.article_title}
+        </Typography>
+        {article.article_owner === userId && (
+          <IconButton
+            sx={{ display: "flex", flexDirection: "row" }}
+            onClick={deleteArticle}
+          >
+            <DeleteOutlineIcon />
+          </IconButton>
+        )}
+      </Box>
       <Typography variant="subtitle2" color="text.secondary">
         Posted on: {new Date(article.created_at).toLocaleDateString()}
       </Typography>
@@ -100,6 +130,7 @@ function DynamicArticle(): JSX.Element {
       <Typography variant="body1" gutterBottom sx={{ whiteSpace: "pre-wrap" }}>
         {article.article_content}
       </Typography>
+
       <CommentForm articleId={article.article_id} />
       <DisplayComments articleId={article.article_id} />
     </Container>
