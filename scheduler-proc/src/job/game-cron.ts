@@ -5,6 +5,10 @@ import { Producer } from "../config/producer.js";
 
 dotenv.config();
 
+const apiUrl = process.env.API_URL;
+
+const API_MANAGEMENT_KEY = process.env.API_MANAGEMENT_KEY;
+
 interface Game {
   game_name: string;
   is_supported: boolean;
@@ -15,8 +19,32 @@ interface Game {
 
 let lastDate = 0;
 
+async function previousDateInDB(): Promise<void> {
+  const res = await axios.get(
+    `${apiUrl}/game`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${API_MANAGEMENT_KEY}`
+      }
+    }
+  );
+  let currDate = 0;
+  for (let i = 0; i < res.data.games.length; ++i)  {
+    const dateString = res.data.games[i].release_date;
+    const msDate = new Date(dateString).getTime();
+    if (msDate > currDate) currDate = msDate;
+  }
+  lastDate = currDate;
+
+}
+
+
 export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
+
+  await previousDateInDB();
+  console.log(`Last saved date was ${lastDate}ms since Unix epoch`);
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,7 +67,7 @@ export default async function gameJob() {
           `fields name, cover, updated_at, involved_companies, summary, first_release_date;
            where first_release_date > ${lastDate};
            sort first_release_date asc;
-           limit 10;`,
+           limit 100;`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
