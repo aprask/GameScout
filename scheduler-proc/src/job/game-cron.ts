@@ -77,6 +77,7 @@ export default async function gameJob() {
             },
           }
         );
+        await sleep(5000);
         
         for (const game of gameData) {
           console.log('Pulling game');
@@ -98,6 +99,7 @@ export default async function gameJob() {
               },
             }
           );
+          await sleep(5000);
 
           const imageId = coverData[0]?.image_id;
           if (!imageId) continue;
@@ -117,7 +119,6 @@ export default async function gameJob() {
             }
           }
           lastDate = maxDate; // this tells us where we need to begin in the next batch
-          sleep(3000);
         
         } 
         } catch (error) {
