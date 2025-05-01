@@ -19,6 +19,10 @@ interface Game {
 
 let lastDate = 0;
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function previousDateInDB(): Promise<void> {
   const res = await axios.get(
     `${apiUrl}/game`,
@@ -41,14 +45,11 @@ async function previousDateInDB(): Promise<void> {
 
 
 export default async function gameJob() {
+  sleep(20000); // to prevent calling api prior to startup
   const producer = new Producer("GAME_DATA", "");
 
   await previousDateInDB();
   console.log(`Last saved date was ${lastDate}ms since Unix epoch`);
-
-  function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   cron.schedule(
     "0 30 * * * *", // every 30 mins
