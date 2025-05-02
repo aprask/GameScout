@@ -184,8 +184,11 @@ function DashboardPage(): JSX.Element {
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
                     <Typography variant="h5">Andrew Praskala</Typography>
                     <Typography variant="body1">
-                      Andrew Praskala, a senior undergraduate computer science student at UNC Charlotte.
-                      Andrew’s prior experience included internships with Astro AI Trading and Wells Fargo, as well as independent systems-level projects such as a Chip8 emulator and the UNCC Faculty Chatbot.
+                      Andrew Praskala, a senior undergraduate computer science
+                      student at UNC Charlotte. Andrew’s prior experience
+                      included internships with Astro AI Trading and Wells
+                      Fargo, as well as independent systems-level projects such
+                      as a Chip8 emulator and the UNCC Faculty Chatbot.
                     </Typography>
                     <Box
                       sx={{
@@ -232,15 +235,11 @@ function DashboardPage(): JSX.Element {
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
                     <Typography variant="h5">Caleb Filip</Typography>
                     <Typography variant="body1">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec bibendum orci non leo venenatis rutrum. Suspendisse
-                      iaculis, massa at suscipit convallis, eros nisi tristique
-                      tortor, ac bibendum nisi sapien at lorem. Quisque lacinia
-                      lectus vel suscipit laoreet. Quisque dignissim ex quis
-                      nulla malesuada, feugiat mattis enim convallis. In sed
-                      lectus imperdiet, aliquet ex vitae, sagittis erat. Cras
-                      ullamcorper sit amet augue at egestas. Duis pellentesque
-                      felis vitae tristique congue.
+                      An undergraduate computer science student at UNC
+                      Charlotte. Caleb has experience with data mining &
+                      visualization, machine learning, and web development. His
+                      projects include a machine learning image classifier and a
+                      web application named RadiUS.
                     </Typography>
                     <Box
                       sx={{
