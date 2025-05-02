@@ -103,6 +103,8 @@ jobs:
             RABBIT_USERNAME=${{secrets.RABBIT_USERNAME}}
             RABBIT_PASSWORD=${{secrets.RABBIT_PASSWORD}}
             APP_ENV=${{secrets.APP_ENV}}
+            API_MANAGEMENT_KEY=${{secrets.VITE_API_MANAGEMENT_KEY}}
+            API_URL=${{secrets.API_URL}}
             EOF
             cd ..
             cd rag

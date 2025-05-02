@@ -5,6 +5,10 @@ import { Producer } from "../config/producer.js";
 
 dotenv.config();
 
+const apiUrl = process.env.API_URL;
+
+const API_MANAGEMENT_KEY = process.env.API_MANAGEMENT_KEY;
+
 interface Game {
   game_name: string;
   is_supported: boolean;
@@ -15,15 +19,40 @@ interface Game {
 
 let lastDate = 0;
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function previousDateInDB(): Promise<void> {
+  const res = await axios.get(
+    `${apiUrl}/game`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${API_MANAGEMENT_KEY}`
+      }
+    }
+  );
+  let currDate = 0;
+  for (let i = 0; i < res.data.games.length; ++i)  {
+    const dateString = res.data.games[i].release_date;
+    const msDate = new Date(dateString).getTime();
+    if (msDate > currDate) currDate = msDate;
+  }
+  lastDate = Math.floor(new Date(currDate).getTime() / 1000);
+
+}
+
+
 export default async function gameJob() {
   const producer = new Producer("GAME_DATA", "");
+  await sleep(20000); // to prevent calling api prior to startup
 
-  function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  await previousDateInDB();
+  console.log(`Last saved date was ${lastDate}ms since Unix epoch`);
 
   cron.schedule(
-    "0 30 * * * *", // every 30 mins
+    "0 43 * * * *", // every 30 mins
     async () => {
       const games: Game[] = [];
       console.log("Starting game data job...");
@@ -39,7 +68,7 @@ export default async function gameJob() {
           `fields name, cover, updated_at, involved_companies, summary, first_release_date;
            where first_release_date > ${lastDate};
            sort first_release_date asc;
-           limit 10;`,
+           limit 100;`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -48,6 +77,7 @@ export default async function gameJob() {
             },
           }
         );
+        await sleep(5000);
         
         for (const game of gameData) {
           console.log('Pulling game');
@@ -69,6 +99,7 @@ export default async function gameJob() {
               },
             }
           );
+          await sleep(5000);
 
           const imageId = coverData[0]?.image_id;
           if (!imageId) continue;
@@ -88,7 +119,6 @@ export default async function gameJob() {
             }
           }
           lastDate = maxDate; // this tells us where we need to begin in the next batch
-          sleep(3000);
         
         } 
         } catch (error) {
