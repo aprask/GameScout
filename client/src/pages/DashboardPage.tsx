@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -13,13 +12,11 @@ import {
 } from "@mui/material";
 import { JSX, useEffect, useState } from "react";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import caleb from "../../public/caleb.jpg";
 import andrew from "../../public/andrew.jpg";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { useProfile } from "../context/profile/ProfileContext";
-import { useAuth } from "../context/auth/AuthContext";
 
 interface GameData {
   created_at: Date;
@@ -45,8 +42,6 @@ interface ArticleData {
 function DashboardPage(): JSX.Element {
   const [newGames, setNewGames] = useState<GameData[] | null>();
   const [newArticles, setNewArticles] = useState<ArticleData[] | null>();
-  const { profileImage } = useProfile();
-  const { profileId } = useAuth();
   const navigate = useNavigate();
 
   const baseUrl =
@@ -63,6 +58,9 @@ function DashboardPage(): JSX.Element {
             "Content-Type": "application/json",
           },
         });
+        if (gameResponse.status === 200) {
+          setNewGames(gameResponse.data.games);
+        }
         const articleResponse = await axios.get(
           `${baseUrl}/api/v1/community/articles/new?n=3`,
           {
@@ -72,10 +70,6 @@ function DashboardPage(): JSX.Element {
             },
           }
         );
-
-        if (gameResponse.status === 200) {
-          setNewGames(gameResponse.data.games);
-        }
         if (articleResponse.status === 200) {
           setNewArticles(articleResponse.data.articles);
         }
@@ -99,11 +93,11 @@ function DashboardPage(): JSX.Element {
         <Box>
           <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
             <Card sx={{ m: 5, mr: 1 }}>
-              {newGames && (
-                <CardContent sx={{ textAlign: "left" }}>
-                  <Typography sx={{ ml: 3, mt: 1 }} variant="h5">
-                    New Games
-                  </Typography>
+              <CardContent sx={{ textAlign: "left" }}>
+                <Typography sx={{ ml: 3, mt: 1 }} variant="h5">
+                  New Games
+                </Typography>
+                {newGames && (
                   <ImageList
                     cols={5}
                     rowHeight={180}
@@ -122,42 +116,41 @@ function DashboardPage(): JSX.Element {
                       </ImageListItem>
                     ))}
                   </ImageList>
-                </CardContent>
-              )}
-            </Card>
-            <Box>
-              <NavLink
-                to={`/profile/${profileId}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <Avatar
-                  alt="Profile Pic"
-                  src={profileImage || undefined}
-                  sx={{ mt: 10, ml: 10, height: "60%", width: "60%" }}
-                />
-              </NavLink>
-            </Box>
-          </Box>
-          {newArticles && (
-            <Card sx={{ m: 5, mt: 0 }}>
-              <CardContent>
-                <Typography variant="h5">Newest Articles</Typography>
-
-                {newArticles!.map((article) => (
-                  <Paper
-                    key={article.article_id}
-                    elevation={3}
-                    sx={{ m: 1, p: 1 }}
-                    onClick={() =>
-                      navigate(`/community/article?id=${article.article_id}`)
-                    }
-                  >
-                    <Typography>{article.article_title}</Typography>
-                  </Paper>
-                ))}
+                )}
+                {!newGames && <Typography>Error Fethcing Games</Typography>}
               </CardContent>
             </Card>
-          )}
+            <Card sx={{ m: 5, ml: 2 }}>
+              <CardContent>
+                <Typography>Friends Activity</Typography>
+              </CardContent>
+            </Card>
+          </Box>
+
+          <Card sx={{ m: 5, mt: 0 }}>
+            <CardContent>
+              <Typography variant="h5">Newest Articles</Typography>
+
+              {newArticles && (
+                <Box>
+                  {newArticles!.map((article) => (
+                    <Paper
+                      key={article.article_id}
+                      elevation={3}
+                      sx={{ m: 1, p: 1 }}
+                      onClick={() =>
+                        navigate(`/community/article?id=${article.article_id}`)
+                      }
+                    >
+                      <Typography>{article.article_title}</Typography>
+                    </Paper>
+                  ))}
+                </Box>
+              )}
+              {!newArticles && <Typography>No articles to display</Typography>}
+            </CardContent>
+          </Card>
+
           <Card sx={{ m: 5 }}>
             <CardContent>
               <Typography variant="h5">About Us</Typography>
