@@ -184,15 +184,8 @@ function DashboardPage(): JSX.Element {
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
                     <Typography variant="h5">Andrew Praskala</Typography>
                     <Typography variant="body1">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec bibendum orci non leo venenatis rutrum. Suspendisse
-                      iaculis, massa at suscipit convallis, eros nisi tristique
-                      tortor, ac bibendum nisi sapien at lorem. Quisque lacinia
-                      lectus vel suscipit laoreet. Quisque dignissim ex quis
-                      nulla malesuada, feugiat mattis enim convallis. In sed
-                      lectus imperdiet, aliquet ex vitae, sagittis erat. Cras
-                      ullamcorper sit amet augue at egestas. Duis pellentesque
-                      felis vitae tristique congue.
+                      Andrew Praskala, a senior undergraduate computer science student at UNC Charlotte.
+                      Andrew’s prior experience included internships with Astro AI Trading and Wells Fargo, as well as independent systems-level projects such as a Chip8 emulator and the UNCC Faculty Chatbot.
                     </Typography>
                     <Box
                       sx={{
