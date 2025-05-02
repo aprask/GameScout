@@ -14,7 +14,8 @@ import { ProfileProvider } from "./context/profile/ProfileContext";
 import ProfilePage from "./pages/ProfilePage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import GoogleAuth from "./pages/GoogleAuth";
-import { UnprotectedRoute } from "./components/auth/UnprotectedRoute";
+import CommunityPage from "./pages/CommunityPage";
+import DynamicArticle from "./pages/DynamicArticle";
 
 const customTheme = createTheme({
   palette: {
@@ -43,14 +44,7 @@ function App() {
               <NavBar />
               <main>
                 <Routes>
-                  <Route 
-                    path="/login"
-                    element={
-                      <UnprotectedRoute>
-                        <GoogleAuth />
-                      </UnprotectedRoute>
-                    }
-                  />  
+                  <Route path="/login" element={<GoogleAuth />} />
                   <Route
                     path="/"
                     element={
@@ -101,9 +95,25 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route 
-                    path="/oauth/callback" 
-                    element={<OAuthCallbackPage />} 
+                  <Route
+                    path="/community"
+                    element={
+                      <ProtectedRoute>
+                        <CommunityPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/article"
+                    element={
+                      <ProtectedRoute>
+                        <DynamicArticle />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/oauth/callback"
+                    element={<OAuthCallbackPage />}
                   />
                 </Routes>
               </main>
