@@ -74,6 +74,6 @@ export async function deleteArticle(article_id: string): Promise<void> {
 export async function getNNewestArticles(n: number): Promise<ArticleTable[]> {
   const newestArticles = await db.selectFrom('articles').selectAll().orderBy('created_at', 'desc').limit(n).execute();
   if (!newestArticles || newestArticles.length === 0)
-    throwErrorException(`[repository.game.getNNewestArticles] cannot find newest articles`, 'No articles found', 404);
+    throwErrorException(`[repository.game.getNNewestArticles] cannot find newest articles`, 'No articles found', 200);
   return newestArticles;
 }
