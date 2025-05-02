@@ -14,12 +14,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from '../context/auth/AuthContext';
+import { useAuth } from "../context/auth/AuthContext";
 import { useProfile } from "../context/profile/ProfileContext";
 
 function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { isAuthenticated, logout, isAdmin } = useAuth()
+  const { isAuthenticated, logout, isAdmin } = useAuth();
   const { profileImage } = useProfile();
   const { profileId } = useAuth();
 
@@ -27,7 +27,7 @@ function NavBar() {
     await logout();
     toggleDrawer();
   };
-  
+
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -57,17 +57,17 @@ function NavBar() {
           </Typography>
           {isAuthenticated && (
             <Box sx={{ width: 100 }}>
-            <NavLink
+              <NavLink
                 to={`/profile/${profileId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
-            >
-                <Avatar 
-                    alt="Profile Pic" 
-                    src={profileImage || undefined}
-                    sx={{ width: 40, height: 40 }}
+              >
+                <Avatar
+                  alt="Profile Pic"
+                  src={profileImage || undefined}
+                  sx={{ width: 40, height: 40 }}
                 />
-            </NavLink>            
-          </Box>
+              </NavLink>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
@@ -85,54 +85,50 @@ function NavBar() {
             },
           }}
         >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            <NavLink
-              to="/"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={toggleDrawer}
-            >
-              <ListItemButton>Dashboard</ListItemButton>
-            </NavLink>
-            <NavLink
-              to="/"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={toggleDrawer}
-            >
-              <ListItemButton>Community</ListItemButton>
-            </NavLink>
-            <NavLink
-              to="/search"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={toggleDrawer}
-            >
-              <ListItemButton>Games</ListItemButton>
-            </NavLink>
-            {isAdmin && <NavLink
-              to="/admin"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={toggleDrawer}
-            >
-              <ListItemButton>Admin</ListItemButton>
-            </NavLink>}
-            <NavLink
-              to="/"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={toggleDrawer}
-            >
-              <ListItemButton>Articles</ListItemButton>
-            </NavLink>
-            <NavLink
-              to="/login"
-              style={{ textDecoration: "none", color: "inherit" }}
-              onClick={handleLogout}
-            >
-              <ListItemButton>Logout</ListItemButton>
-            </NavLink>
-          </List>
-        </Box>
-      </Drawer> )}
+          <Toolbar />
+          <Box sx={{ overflow: "auto" }}>
+            <List>
+              <NavLink
+                to="/"
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={toggleDrawer}
+              >
+                <ListItemButton>Dashboard</ListItemButton>
+              </NavLink>
+              <NavLink
+                to="/community"
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={toggleDrawer}
+              >
+                <ListItemButton>Community</ListItemButton>
+              </NavLink>
+              <NavLink
+                to="/search"
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={toggleDrawer}
+              >
+                <ListItemButton>Games</ListItemButton>
+              </NavLink>
+              {isAdmin && (
+                <NavLink
+                  to="/admin"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                  onClick={toggleDrawer}
+                >
+                  <ListItemButton>Admin</ListItemButton>
+                </NavLink>
+              )}
+              <NavLink
+                to="/login"
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={handleLogout}
+              >
+                <ListItemButton>Logout</ListItemButton>
+              </NavLink>
+            </List>
+          </Box>
+        </Drawer>
+      )}
 
       <Box
         component="main"
