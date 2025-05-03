@@ -67,8 +67,6 @@ function SearchGame(): JSX.Element {
           }
         );
 
-        console.log(response.data.games);
-
         setGames(response.data.games.data);
         setTotalPages(response.data.games.pages);
       } catch (error) {
