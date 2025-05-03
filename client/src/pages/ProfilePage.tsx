@@ -16,6 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useProfile } from '../context/profile/ProfileContext';
 import Following from '../components/follower/Following';
+import Follower from '../components/follower/Follower';
 
 interface WishListType {
     game_img_url: string;
@@ -173,6 +174,8 @@ function ProfilePage() {
             </Paper>
    
             { id && <Following id={id} /> }
+
+            { id && <Follower id={id} /> }
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
