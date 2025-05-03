@@ -29,7 +29,6 @@ export async function createFollow(
     user_id_following: string,
     user_id_follower: string,
     status: string,
-    followed_time: Date
 ): Promise<FollowsTable> {
     let errorMessage = '';
     if (!user_id_following) errorMessage += "Following user ID not given";
@@ -37,7 +36,6 @@ export async function createFollow(
     if (!validate(user_id_following)) errorMessage += "Following user ID is invalid";
     if (!validate(user_id_follower)) errorMessage += "Follower user ID is invalid";
     if (!status) errorMessage += "Follow status not given";
-    if (!followed_time) errorMessage += "Followed time not given";
     if (errorMessage) {
         errorMessage.trim();
         throwErrorException(`[service.follows.createFollow] ${errorMessage}`, 'Cannot create follow', 400);
@@ -46,10 +44,10 @@ export async function createFollow(
     const currentDate = new Date();
     const newFollow: FollowsTable = {
         follow_id: uuidv4(),
-        user_id_following,
-        user_id_follower,
-        status,
-        followed_time,
+        user_id_following: user_id_following,
+        user_id_follower: user_id_follower,
+        status: status,
+        followed_time: currentDate,
         created_at: currentDate,
         updated_at: currentDate
     };
