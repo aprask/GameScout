@@ -20,6 +20,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
             : import.meta.env.VITE_DEV_URL;
 
     useEffect(() => {
+        console.log(`ID: ${id}`);
         const checkFollowing = async () => {
             if (!userId || userId === id) {
                 setIsTarget(true);
@@ -88,15 +89,20 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
 
 
     return (
-        <Button 
-            variant={isFollowing ? "outlined" : "contained"}
-            color="primary"
-            onClick={handleToggleFollow}
-            disabled={loading}
-        >
-            {!isTarget && (loading ? "Processing..." : isFollowing ? "Unfollow" : "Follow")}
-        </Button>
+        <>
+            {!isTarget && (
+                <Button 
+                    variant={isFollowing ? "outlined" : "contained"}
+                    color="primary"
+                    onClick={handleToggleFollow}
+                    disabled={loading}
+                >
+                    {loading ? "Processing..." : isFollowing ? "Unfollow" : "Follow"}
+                </Button>
+            )}
+        </>
     );
+    
 };
 
 export default FollowAction;
