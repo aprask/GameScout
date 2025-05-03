@@ -76,7 +76,7 @@ function ProfilePage() {
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${id}`,
                     {
                         withCredentials: true,
                         headers: {
