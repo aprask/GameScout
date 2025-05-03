@@ -17,6 +17,7 @@ import axios from 'axios';
 import { useProfile } from '../context/profile/ProfileContext';
 import Following from '../components/follower/Following';
 import Follower from '../components/follower/Follower';
+import FollowAction from '../components/follower/FollowAction';
 
 interface WishListType {
     game_img_url: string;
@@ -176,6 +177,8 @@ function ProfilePage() {
             { id && <Following id={id} /> }
 
             { id && <Follower id={id} /> }
+
+            { id && <FollowAction id={id} onToggle={(status) => console.log("Following:", status)} /> }
     
             <Box sx={{ mt: 6 }}>
                 <Typography 

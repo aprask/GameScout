@@ -23,7 +23,12 @@ export async function getAllFollowingUsersByUserId(user_id: string): Promise<Pro
     return followsRepo.getAllFollowingUsersByUserId(user_id);
 }
 
-
+export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {
+    if (!validate(user_id) || !validate(following_user_id)) throwErrorException(`[service.follows.deleteFollowByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    const status = await followsRepo.confirmFollowingStatus(user_id, following_user_id);
+    if (!status) throwErrorException(`[service.follows.deleteFollowByUserId] Non-existing relationship`, 'Following relationship does not exist', 404);
+    return followsRepo.deleteFollowByUserId(user_id, following_user_id);
+}
 
 export async function createFollow(
     user_id_following: string,

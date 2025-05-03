@@ -48,6 +48,12 @@ router.put('/:follow_id', asyncHandler(async (req, res) => {
     res.status(200).json({ updated_follow: updatedFollow });
 }));
 
+router.delete('/following/:followingUserId/follower/:followerUserId', asyncHandler(async (req, res) => {
+    const {followingUserId, followerUserId} = req.params;
+    await followsService.deleteFollowByUserId(followerUserId, followingUserId);
+    res.sendStatus(204);
+}));
+
 router.delete('/:follow_id', asyncHandler(async (req, res) => {
     const { follow_id } = req.params;
 

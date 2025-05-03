@@ -20,6 +20,24 @@ export async function getFollowersByUserId(user_id: string): Promise<ProfileTabl
     return followers;
 }
 
+export async function confirmFollowingStatus(user_id: string, following_user_id: string): Promise<boolean> {
+    const followingStatus = await db
+        .selectFrom('follows')
+        .selectAll()
+        .where('follows.user_id_follower', '=', user_id)
+        .where('follows.user_id_following', '=', following_user_id)
+        .executeTakeFirst();
+    return !!followingStatus;
+}
+
+export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {
+    await db
+        .deleteFrom('follows')
+        .where('follows.user_id_follower', '=', user_id)
+        .where('follows.user_id_following', '=', following_user_id)
+        .executeTakeFirstOrThrow();
+}
+
 export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
     const following_users = await db
         .selectFrom('profile')
