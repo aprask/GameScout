@@ -15,6 +15,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useProfile } from '../context/profile/ProfileContext';
+import Following from '../components/follower/Following';
 
 interface WishListType {
     game_img_url: string;
@@ -170,6 +171,8 @@ function ProfilePage() {
                     )}
                 </Box>
             </Paper>
+   
+            <Following id={id!} />
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
@@ -254,6 +257,7 @@ function ProfilePage() {
                             </Paper>
                         ))}
                     </Box>
+                    
 
                     <IconButton 
                         sx={{ 
