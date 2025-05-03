@@ -1,4 +1,4 @@
-import { FollowsTable } from "../data/models/models.js";
+import { FollowsTable, ProfileTable } from "../data/models/models.js";
 import * as followsRepo from "../repository/follows.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
@@ -12,6 +12,18 @@ export async function getFollowById(follow_id: string): Promise<FollowsTable> {
     if (!validate(follow_id)) throwErrorException(`[service.follows.getFollowById] Invalid UUID: ${follow_id}`, 'Invalid follow ID', 400);
     return followsRepo.getFollowById(follow_id);
 }
+
+export async function getAllFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    return followsRepo.getFollowersByUserId(user_id);
+}
+
+export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowingUsersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    return followsRepo.getAllFollowingUsersByUserId(user_id);
+}
+
+
 
 export async function createFollow(
     user_id_following: string,

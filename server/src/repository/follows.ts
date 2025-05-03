@@ -1,5 +1,5 @@
 import { db } from "../data/db.js";
-import { FollowsTable } from "../data/models/models.js";
+import { FollowsTable, ProfileTable } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
 
 export async function getAllFollows(): Promise<FollowsTable[]> {
@@ -9,6 +9,24 @@ export async function getAllFollows(): Promise<FollowsTable[]> {
         .execute();
     if (follows === undefined) throwErrorException(`[repository.follows.getAllFollows] cannot get follows`, 'Follows is undefined', 404);
     return follows;
+}
+
+export async function getFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
+    const followers = await db
+        .selectFrom('profile')
+        .selectAll()
+        .where('profile.user_id', '=', user_id)
+        .execute();
+    return followers;
+}
+
+export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
+    const following_users = await db
+        .selectFrom('profile')
+        .selectAll()
+        .where('profile.user_id', '=', user_id)
+        .execute();
+    return following_users;
 }
 
 export async function getFollowById(follow_id: string): Promise<FollowsTable> {

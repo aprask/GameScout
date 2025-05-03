@@ -18,6 +18,16 @@ router.get('/:follow_id', asyncHandler(async (req, res) => {
     res.status(200).json({ follow });
 }));
 
+router.get(`/user/followers/:userId`, asyncHandler(async (req, res) => {
+    const followers = await followsService.getAllFollowersByUserId(req.params.user_id);
+    res.status(200).json({followers: followers});
+}));
+
+router.get(`/user/following/:userId`, asyncHandler(async (req, res) => {
+    const following_users = await followsService.getAllFollowingUsersByUserId(req.params.user_id);
+    res.status(200).json({following_users: following_users});
+}));
+
 router.post('/', asyncHandler(async (req, res) => {
     const { user_id_following, user_id_follower, status, followed_time } = req.body;
     const newFollow = await followsService.createFollow(user_id_following, user_id_follower, status, followed_time);
