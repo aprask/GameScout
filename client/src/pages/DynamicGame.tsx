@@ -253,7 +253,10 @@ function DynamicGame(): JSX.Element {
       </Card>
       <Card sx={{ m: 5 }}>
         <CardContent>
-          <Chatbot game={game.game_name || undefined} summary={game.summary || undefined}/>
+          <Chatbot
+            game={game.game_name || undefined}
+            summary={game.summary || undefined}
+          />
         </CardContent>
       </Card>
     </Container>
@@ -287,9 +290,11 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
             },
           }
         );
-        if (response.data.review.user_id === userId) {
-          setReviewSubmitted(true);
-          setSubmittedReview(response.data.review);
+        if (response.data.review) {
+          if (response.data.review.user_id === userId) {
+            setReviewSubmitted(true);
+            setSubmittedReview(response.data.review);
+          }
         }
       };
       getReview();
