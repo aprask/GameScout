@@ -11,3 +11,6 @@ class QueryRequestModel(BaseModel):
     namespaces: List[Namespace]
     game: str
     summary: str
+
+
+
