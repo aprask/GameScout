@@ -19,7 +19,7 @@ type FollowingUser = {
 };
 
 
-export default function Follower({id}) {
+export default function Follower({id, followChanged}: {id: string; followChanged?: boolean}) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
@@ -65,7 +65,7 @@ export default function Follower({id}) {
             }
         };
         fetchFollowers();
-    }, [id]);
+    }, [id, followChanged]);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
