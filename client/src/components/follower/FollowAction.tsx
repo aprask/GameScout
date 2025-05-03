@@ -10,6 +10,7 @@ interface FollowButtonProps {
 
 const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
     const { userId, profileId } = useAuth();
+    const [isTarget, setIsTarget] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -20,7 +21,10 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
 
     useEffect(() => {
         const checkFollowing = async () => {
-            if (!userId || userId === id) return;
+            if (!userId || userId === id) {
+                setIsTarget(true);
+                return;
+            };
             try {
                 const res = await axios.get(
                     `${baseUrl}/api/v1/follow/user/followers/${id}`,
@@ -43,7 +47,10 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
     }, [userId, id]);
 
     const handleToggleFollow = async () => {
-        if (!userId || userId === id) return;
+        if (!userId || userId === id) {
+            setIsTarget(true);
+            return;
+        }
         setLoading(true);
         try {
             if (isFollowing) {
@@ -79,7 +86,6 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
         }
     };
 
-    if (!userId || userId === id) return null;
 
     return (
         <Button 
@@ -88,7 +94,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
             onClick={handleToggleFollow}
             disabled={loading}
         >
-            {loading ? "Processing..." : isFollowing ? "Unfollow" : "Follow"}
+            {!isTarget && (loading ? "Processing..." : isFollowing ? "Unfollow" : "Follow")}
         </Button>
     );
 };
