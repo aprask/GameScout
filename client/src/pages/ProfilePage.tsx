@@ -205,7 +205,12 @@ function ProfilePage() {
 
             { id && <Follower id={id} /> }
 
-            { id && <FollowAction id={pageProfileUserId} onToggle={(status) => console.log("Following:", status)} /> }
+            {pageProfileUserId && (
+                <FollowAction
+                    id={pageProfileUserId}
+                    onToggle={(status) => console.log("Following:", status)}
+                />
+            )}
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
