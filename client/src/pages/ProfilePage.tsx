@@ -31,12 +31,35 @@ function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
-    const {profileImage, profileName, setProfileName} = useProfile();
-    const [pageProfileName, setPageProfileName] = useState(profileName);
+    const {setProfileName} = useProfile();
+    const [profileImage, setProfileImage] = useState('');
+    const [pageProfileName, setPageProfileName] = useState('');
     const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
         ? `${import.meta.env.VITE_PROD_URL}`
         : `${import.meta.env.VITE_DEV_URL}`;
     
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const res = await axios.get(
+                    `${baseUrl}/api/v1/profile/${id}`,
+                    {
+                        withCredentials: true,
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+                if (res.status !== 200) return;
+                setProfileImage(res.data.profile.profile_img);
+                setProfileName(res.data.profile.profile_name);
+            } catch (err) {
+                console.error('Error fetching wishlist:', err);    
+            }
+        };
+        fetchProfileData();
+    }, [id]);    
+
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
             setIsEditing(false);
@@ -70,7 +93,6 @@ function ProfilePage() {
             console.error('Error updating name:', err);
         }
     };
-
 
     useEffect(() => {
         if (profileId !== id) {
