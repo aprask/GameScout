@@ -172,7 +172,7 @@ function ProfilePage() {
                 </Box>
             </Paper>
    
-            <Following id={id!} />
+            { id && <Following id={id} /> }
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
