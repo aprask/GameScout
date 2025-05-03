@@ -20,7 +20,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
 
     useEffect(() => {
         const checkFollowing = async () => {
-            if (!userId || userId === id) return;
+            if (!profileId || profileId === id) return;
             try {
                 const res = await axios.get(
                     `${baseUrl}/api/v1/follow/user/followers/${id}`,
@@ -79,7 +79,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
         }
     };
 
-    if (!userId || userId === id) return null;
+    if (!profileId || profileId === id) return null;
 
     return (
         <Button 
