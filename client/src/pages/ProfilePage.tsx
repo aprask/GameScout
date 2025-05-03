@@ -34,6 +34,7 @@ function ProfilePage() {
     const {setProfileName} = useProfile();
     const [profileImage, setProfileImage] = useState('');
     const [pageProfileName, setPageProfileName] = useState('');
+    const [pageProfileUserId, setPageProfileUserId] = useState('');
     const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
         ? `${import.meta.env.VITE_PROD_URL}`
         : `${import.meta.env.VITE_DEV_URL}`;
@@ -53,6 +54,7 @@ function ProfilePage() {
                 if (res.status !== 200) return;
                 setProfileImage(res.data.profile.profile_img);
                 setPageProfileName(res.data.profile.profile_name);
+                setPageProfileUserId(res.data.profile.user_id);
             } catch (err) {
                 console.error('Error fetching wishlist:', err);    
             }
@@ -203,7 +205,7 @@ function ProfilePage() {
 
             { id && <Follower id={id} /> }
 
-            { id && <FollowAction id={id} onToggle={(status) => console.log("Following:", status)} /> }
+            { id && <FollowAction id={pageProfileUserId} onToggle={(status) => console.log("Following:", status)} /> }
     
             <Box sx={{ mt: 6 }}>
                 <Typography 

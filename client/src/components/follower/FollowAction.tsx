@@ -34,7 +34,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                 for (let i = 0; i < res.data.followers.length; i++) {
                     if (res.data.followers[i].profile_id === profileId) isAFollower = true;
                 }
-                if (isAFollower) setIsFollowing(true);
+                setIsFollowing(isAFollower);
             } catch (err) {
                 console.error("Error checking follow status:", err);
             }
