@@ -52,7 +52,7 @@ function ProfilePage() {
                 );
                 if (res.status !== 200) return;
                 setProfileImage(res.data.profile.profile_img);
-                setProfileName(res.data.profile.profile_name);
+                setPageProfileName(res.data.profile.profile_name);
             } catch (err) {
                 console.error('Error fetching wishlist:', err);    
             }
