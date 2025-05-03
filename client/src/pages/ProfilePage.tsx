@@ -73,10 +73,13 @@ function ProfilePage() {
 
 
     useEffect(() => {
+        if (profileId !== id) {
+            return;
+        }
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `${baseUrl}/api/v1/wishlist/userList/${id}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
                     {
                         withCredentials: true,
                         headers: {
@@ -109,7 +112,7 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    }, []);
+    }, [id, profileId]);
 
     return (
         <Container sx={{ py: 8 }}>
