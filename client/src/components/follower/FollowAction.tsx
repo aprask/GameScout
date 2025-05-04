@@ -50,6 +50,8 @@ const FollowAction = ({ id }: {id: string}) => {
             setIsTarget(true);
             return;
         }
+        console.log(`Follower: ${userId}`);
+        console.log(`Target: ${id}`);
         setLoading(true);
         try {
             if (isFollowing) {
@@ -60,7 +62,7 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                delay(1000);
+                delay(5000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
@@ -84,7 +86,7 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                delay(1000);
+                delay(5000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
