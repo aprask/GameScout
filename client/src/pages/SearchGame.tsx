@@ -37,6 +37,7 @@ function SearchGame(): JSX.Element {
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,18 @@ function SearchGame(): JSX.Element {
 
   const GAMES_PER_PAGE = 16;
   const SORT_TYPE = "new";
+
+  //implements debouncing. Basically only updates searchTerm every 250 ms
+  //this way the api is not called every character.
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 250);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -59,6 +72,7 @@ function SearchGame(): JSX.Element {
               lim: GAMES_PER_PAGE,
               page: currentPage,
               sort: SORT_TYPE,
+              search: searchTerm,
             },
             withCredentials: true,
             headers: {
@@ -77,7 +91,7 @@ function SearchGame(): JSX.Element {
     };
 
     fetchGames();
-  }, [currentPage]);
+  }, [currentPage, debouncedSearchTerm]);
 
   const filteredGames = games.filter((game) =>
     game.game_name.toLowerCase().includes(searchTerm.toLowerCase())
