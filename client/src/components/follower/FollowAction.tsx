@@ -9,6 +9,8 @@ import.meta.env.VITE_APP_ENV === "production"
     ? import.meta.env.VITE_PROD_URL
     : import.meta.env.VITE_DEV_URL;
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 const FollowAction = ({ id }: {id: string}) => {
     const { userId } = useAuth();
     const [isTarget, setIsTarget] = useState(false);
@@ -51,17 +53,26 @@ const FollowAction = ({ id }: {id: string}) => {
         setLoading(true);
         try {
             if (isFollowing) {
-                const res = await axios.delete(
+                let res = await axios.delete(
                     `${baseUrl}/api/v1/follow/following/${id}/follower/${userId}`,
                     {
                         withCredentials: true,
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                console.log(`After deleting, status: ${res.status}`);
-                setIsFollowing(false);
+                delay(3000);
+                res = await axios.get(
+                    `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
+                    {
+                        withCredentials: true,
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+                if (res.status !== 200) return;
+                console.log(`Status: ${res.data.status}`)
+                setIsFollowing(res.data.status);
             } else {
-                const res = await axios.post(
+                let res = await axios.post(
                     `${baseUrl}/api/v1/follow`,
                     {
                         "user_id_following": `${id}`,
@@ -73,8 +84,17 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                console.log(`After posting, status: ${res.status}`);
-                setIsFollowing(true);
+                delay(3000);
+                res = await axios.get(
+                    `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
+                    {
+                        withCredentials: true,
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+                if (res.status !== 200) return;
+                console.log(`Status: ${res.data.status}`)
+                setIsFollowing(res.data.status);
             }
         } catch (err) {
             console.error("Error toggling follow:", err);
