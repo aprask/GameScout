@@ -25,10 +25,13 @@ router.get(
     let lim: string = '';
     let page: string = '';
     let sort: string = '';
+    let search: string = '';
     if (typeof req.query.lim === 'string') lim = req.query.lim;
     if (typeof req.query.page === 'string') page = req.query.page;
     if (typeof req.query.sort === 'string') sort = req.query.sort;
-    const games = await gameService.getPaginatedGames(lim, page, sort);
+    if (typeof req.query.search === 'string') search = req.query.search;
+
+    const games = await gameService.getPaginatedGames(lim, page, sort, search);
     res.status(200).json({ games: games });
   }),
 );
