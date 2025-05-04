@@ -35,7 +35,6 @@ function ProfilePage() {
     const [profileImage, setProfileImage] = useState('');
     const [pageProfileName, setPageProfileName] = useState('');
     const [pageProfileUserId, setPageProfileUserId] = useState('');
-    const [followChanged, setFollowChanged] = useState(false);
     const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
         ? `${import.meta.env.VITE_PROD_URL}`
         : `${import.meta.env.VITE_DEV_URL}`;
@@ -200,18 +199,12 @@ function ProfilePage() {
                 </Box>
             </Paper>
    
-            {id && <Following id={id} followChanged={followChanged} />}
+            {id && <Following id={id} />}
 
-            {id && <Follower id={id} followChanged={followChanged} />}
+            {id && <Follower id={id} />}
 
             {pageProfileUserId && (
-                <FollowAction
-                    id={pageProfileUserId}
-                    onToggle={(status) => {
-                        console.log("Following:", status);
-                        setFollowChanged(prev => !prev);
-                      }}
-                />
+                <FollowAction id={pageProfileUserId} />
             )}
     
             <Box sx={{ mt: 6 }}>

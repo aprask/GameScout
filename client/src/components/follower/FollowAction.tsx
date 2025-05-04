@@ -3,12 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/auth/AuthContext";
 
-interface FollowButtonProps {
-    id: string;
-    onToggle?: (isNowFollowing: boolean) => void;
-}
 
-const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
+const FollowAction = ({ id }: {id: string}) => {
     const { userId, profileId } = useAuth();
     const [isTarget, setIsTarget] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
@@ -28,21 +24,14 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
             };
             try {
                 const res = await axios.get(
-                    `${baseUrl}/api/v1/follow/user/followers/${id}`,
+                    `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
                         withCredentials: true,
                         headers: { "Content-Type": "application/json" },
                     }
                 );
                 if (res.status !== 200) return;
-                let isAFollower = false;
-                console.log(`FollowAction res bod: ${res.data.followers}`);
-                for (let i = 0; i < res.data.followers.length; i++) {
-                    console.log(`${res.data.followers[i].profile_id}`);
-                    console.log(`${profileId}`);
-                    if (res.data.followers[i].profile_id === profileId) isAFollower = true;
-                    console.log(isAFollower);
-                }
+                const isAFollower = res.data.status;
                 console.log(`Is following/a follower: ${isAFollower}`);
                 setIsFollowing(isAFollower);
             } catch (err) {
@@ -69,7 +58,6 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                 );
                 console.log(`After deleting, status: ${res.status}`);
                 setIsFollowing(false);
-                onToggle?.(false);
             } else {
                 const res = await axios.post(
                     `${baseUrl}/api/v1/follow`,
@@ -85,7 +73,6 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                 );
                 console.log(`After posting, status: ${res.status}`);
                 setIsFollowing(true);
-                onToggle?.(true);
             }
         } catch (err) {
             console.error("Error toggling follow:", err);

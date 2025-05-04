@@ -11,6 +11,16 @@ export async function getAllFollows(): Promise<FollowsTable[]> {
     return follows;
 }
 
+export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<boolean> {
+    const followingStatus = await db
+        .selectFrom('follows')
+        .selectAll()
+        .where('follows.user_id_following', '=', following_id)
+        .where('follows.user_id_follower', '=', follower_id)
+        .executeTakeFirst();
+    return !!followingStatus;
+}
+
 export async function getFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
     const followers = await db
         .selectFrom('profile')

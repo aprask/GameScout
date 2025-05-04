@@ -18,6 +18,11 @@ export async function getAllFollowersByUserId(user_id: string): Promise<ProfileT
     return followsRepo.getFollowersByUserId(user_id);
 }
 
+export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<boolean> {
+    if (!validate(following_id) || !validate(follower_id)) throwErrorException(`[service.follows.verifyFollowStatus] Invalid UUID`, 'Invalid following/follower ID', 400);
+    return followsRepo.confirmFollowingStatus(following_id, follower_id);
+}
+
 export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
     if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowingUsersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
     return followsRepo.getAllFollowingUsersByUserId(user_id);
