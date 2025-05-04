@@ -81,13 +81,13 @@ function GoogleAuth() {
                 variant="contained"
                 fullWidth
                 sx={{
+                    mt: 2,
                     fontSize: "1.1rem",
-                    width: "100%",
-                    fontWeight: 600,
+                    fontWeight: 400,
                     backgroundColor: "#9400FF",
                     color: "#fff",
                     boxShadow: "0 0 12px #9400FF88",
-                    borderRadius: "8px",
+                    borderRadius: "10px",
                     textTransform: "none",
                     "&:hover": {
                       backgroundColor: "#7a00cc",
