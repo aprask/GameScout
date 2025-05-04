@@ -204,9 +204,7 @@ function ProfilePage() {
 
             {pageProfileUserId && <Follower id={pageProfileUserId} />}
 
-            {pageProfileUserId && (
-                <FollowAction id={pageProfileUserId} />
-            )}
+            {pageProfileUserId && <FollowAction key={pageProfileUserId} id={pageProfileUserId} />}
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
