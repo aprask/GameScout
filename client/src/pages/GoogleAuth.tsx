@@ -80,29 +80,32 @@ function GoogleAuth() {
                   Failed to initiate Google Login. Please try again.
                 </Typography>
               )}
-              <Button
-                onClick={handleGoogleLogin}
-                variant="contained"
-                fullWidth
-                sx={{
-                    mt: 2,
-                    fontSize: "1.1rem",
-                    fontWeight: 400,
-                    backgroundColor: "#9400FF",
-                    color: "#fff",
-                    boxShadow: "0 0 12px #9400FF88",
-                    borderRadius: "10px",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "#7a00cc",
-                      boxShadow: "0 0 18px #9400FFcc",
-                    },
-                    "&:active": {
-                      transform: "scale(0.98)",
-                      boxShadow: "0 0 5px #9400FF",
-                    },
-                  }}                
-              >
+            <Button
+            onClick={handleGoogleLogin}
+            variant="contained"
+            fullWidth
+            sx={{
+                mt: 2,
+                fontSize: "1.1rem",
+                fontWeight: 400,
+                backgroundColor: "#9400FF",
+                color: "#fff",
+                boxShadow: "0 0 12px #9400FF88",
+                borderRadius: "10px",
+                textTransform: "none",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                "&:hover": {
+                backgroundColor: "#7a00cc",
+                boxShadow: "0 0 18px #9400FFcc",
+                },
+                "&:active": {
+                transform: "scale(0.98)",
+                boxShadow: "0 0 5px #9400FF",
+                },
+            }}
+            >
                 Continue with Google
               </Button>
             </FormContainer>
