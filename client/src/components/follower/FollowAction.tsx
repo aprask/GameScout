@@ -39,10 +39,10 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                 for (let i = 0; i < res.data.followers.length; i++) {
                     if (res.data.followers[i].profile_id === profileId) isAFollower = true;
                 }
-                console.log(`Is following/a folloer: ${isAFollower}`);
+                console.log(`Is following/a follower: ${isAFollower}`);
                 setIsFollowing(isAFollower);
             } catch (err) {
-                console.error("Error checking follow status:", err);
+                console.error(`Error checking follow status: ${err}`);
             }
         };
         checkFollowing();
@@ -56,17 +56,18 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
         setLoading(true);
         try {
             if (isFollowing) {
-                await axios.delete(
+                const res = await axios.delete(
                     `${baseUrl}/api/v1/follow/following/${id}/follower/${userId}`,
                     {
                         withCredentials: true,
                         headers: { "Content-Type": "application/json" },
                     }
                 );
+                console.log(`After deleting, status: ${res.status}`);
                 setIsFollowing(false);
                 onToggle?.(false);
             } else {
-                await axios.post(
+                const res = await axios.post(
                     `${baseUrl}/api/v1/follow`,
                     {
                         "user_id_following": `${id}`,
@@ -78,6 +79,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
+                console.log(`After posting, status: ${res.status}`);
                 setIsFollowing(true);
                 onToggle?.(true);
             }
