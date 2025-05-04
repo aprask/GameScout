@@ -23,14 +23,13 @@ function GoogleAuth() {
                   "Authorization": `${API_KEY}`
                 },
             });
-            if (res.status !== 200) return;
-            console.log(`Status: ${res.status}`);
-            for (let i = 0; i < res.data.games.length; i++) gameCovers.push(res.data.games[i].cover_id);
-            console.log(`Game Covers: ${gameCovers}`);
+            if (res.status === 200 && res.data.games.length > 0) {
+                const randomCover = gameCovers[Math.floor(Math.random() * gameCovers.length)];
+                setBackgroundGameUrl(`https://images.igdb.com/igdb/image/upload/t_1080p/${randomCover}.jpg`);    
+                for (let i = 0; i < res.data.games.length; i++) gameCovers.push(res.data.games[i].cover_id);
+            }
         }
         fetchCoverIds();
-        const randomCover = gameCovers[Math.floor(Math.random() * gameCovers.length)];
-        setBackgroundGameUrl(`https://images.igdb.com/igdb/image/upload/t_1080p/${randomCover}.jpg`);
         }, []);
 
     async function handleGoogleLogin() {
