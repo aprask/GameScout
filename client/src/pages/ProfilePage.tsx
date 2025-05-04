@@ -200,9 +200,9 @@ function ProfilePage() {
                 </Box>
             </Paper>
    
-            {id && <Following id={id} />}
+            {pageProfileUserId && <Following id={pageProfileUserId} />}
 
-            {id && <Follower id={id} />}
+            {pageProfileUserId && <Follower id={pageProfileUserId} />}
 
             {pageProfileUserId && (
                 <FollowAction id={pageProfileUserId} />
