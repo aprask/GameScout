@@ -48,7 +48,7 @@ export default function Following({id, followChanged}: {id: string; followChange
                     const followingUsers: FollowingUser[] = [];
                     for (let i = 0; i < res.data.following_users.length; i++) {
                         followingUsers.push({
-                            id: res.data.following_users[i].user_id,
+                            id: res.data.following_users[i].profile_id,
                             picture: res.data.following_users[i].profile_img,
                             name: res.data.following_users[i].profile_name
                         })
