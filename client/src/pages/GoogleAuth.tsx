@@ -24,9 +24,9 @@ function GoogleAuth() {
                 },
             });
             if (res.status === 200 && res.data.games.length > 0) {
+                for (let i = 0; i < res.data.games.length; i++) gameCovers.push(res.data.games[i].cover_id);
                 const randomCover = gameCovers[Math.floor(Math.random() * gameCovers.length)];
                 setBackgroundGameUrl(`https://images.igdb.com/igdb/image/upload/t_1080p/${randomCover}.jpg`);    
-                for (let i = 0; i < res.data.games.length; i++) gameCovers.push(res.data.games[i].cover_id);
             }
         }
         fetchCoverIds();
@@ -56,15 +56,18 @@ function GoogleAuth() {
 
     return (
         <Box
-          sx={{
+        sx={{
             minHeight: "100vh",
-            backgroundImage: `linear-gradient(rgba(13,13,13,0.8), rgba(13,13,13,0.85)), url(${backgroundGameUrl})`,
+            backgroundImage: backgroundGameUrl
+              ? `linear-gradient(rgba(13,13,13,0.8), rgba(13,13,13,0.85)), url(${backgroundGameUrl})`
+              : "none",
+            backgroundColor: backgroundGameUrl ? "transparent" : "#0d0d0d",
             backgroundSize: "cover",
             backgroundPosition: "center",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            p: 2
+            p: 2,
           }}
         >
           <Container maxWidth="xs">
