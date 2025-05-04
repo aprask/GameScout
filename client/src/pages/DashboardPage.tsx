@@ -326,7 +326,7 @@ function DashboardPage(): JSX.Element {
                   mt: 1,
                   mb: 2
                 }}
-              >About Us</Typography>
+              >Developers</Typography>
               <Box
                 sx={{
                   display: "flex",
