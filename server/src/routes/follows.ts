@@ -20,6 +20,8 @@ router.get('/:follow_id', asyncHandler(async (req, res) => {
 
 router.get('/verify/:following_id/:follower_id', asyncHandler(async (req, res) => {
     const status = await followsService.verifyFollowStatus(req.params.following_id, req.params.follower_id);
+    console.log(`Target User = ${req.params.following_id}`);
+    console.log(`Follower = ${req.params.follower_id}`);
     console.log(`Status: ${status}`);
     res.status(200).json({status: status});
 }));
