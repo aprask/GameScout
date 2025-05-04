@@ -6,19 +6,21 @@ import { Box, Button, Container, Typography } from "@mui/material";
 
 const gameCovers: string[] = [];
 
+const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+? `${import.meta.env.VITE_PROD_URL}`
+: `${import.meta.env.VITE_DEV_URL}`;
+const API_KEY = import.meta.env.VITE_API_MANAGEMENT_KEY
+
 function GoogleAuth() {
     const [invalidLogin, setInvalidLogin] = useState(false);
     const [backgroundGameUrl, setBackgroundGameUrl] = useState("");
-    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
 
     useEffect(() => {
         const fetchCoverIds = async () => {
             const res = await axios.get(`${baseUrl}/api/v1/game`, {
                 headers: {
                   "Content-Type": "application/json",
-                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`
+                  "Authorization": `${API_KEY}`
                 },
             });
             if (res.status !== 200) return;
@@ -76,9 +78,9 @@ function GoogleAuth() {
               )}
               <Button
                 onClick={handleGoogleLogin}
+                variant="contained"
+                fullWidth
                 sx={{
-                    mt: 2,
-                    py: 1.5,
                     fontSize: "1.1rem",
                     width: "100%",
                     fontWeight: 600,
