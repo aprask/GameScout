@@ -2,6 +2,7 @@ import { FollowsTable, ProfileTable } from "../data/models/models.js";
 import * as followsRepo from "../repository/follows.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
+import * as profileRepo from '../repository/profile.js';
 import { v4 as uuidv4, validate } from "uuid";
 
 export function getAllFollows(): Promise<FollowsTable[]> {
@@ -13,19 +14,25 @@ export async function getFollowById(follow_id: string): Promise<FollowsTable> {
     return followsRepo.getFollowById(follow_id);
 }
 
-export async function getAllFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
-    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
-    return followsRepo.getFollowersByUserId(user_id);
-}
-
 export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<FollowsTable | undefined> {
     if (!validate(following_id) || !validate(follower_id)) throwErrorException(`[service.follows.verifyFollowStatus] Invalid UUID`, 'Invalid following/follower ID', 400);
     return followsRepo.verifyFollowStatus(following_id, follower_id);
 }
 
+export async function getAllFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    const followers = await followsRepo.getFollowersByUserId(user_id);
+    const followerProfiles: ProfileTable[] = [];
+    for (let i = 0; i < followers.length; i++) followerProfiles.push(await profileRepo.getProfileByUserId(followers[i].user_id_follower));
+    return followerProfiles;
+}
+
 export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
     if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowingUsersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
-    return followsRepo.getAllFollowingUsersByUserId(user_id);
+    const followingUsers = await followsRepo.getAllFollowingUsersByUserId(user_id);
+    const followingUserProfiles: ProfileTable[] = [];
+    for (let i = 0; i < followingUsers.length; i++) followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_follower));
+    return followingUserProfiles;
 }
 
 export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {

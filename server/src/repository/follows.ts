@@ -1,5 +1,5 @@
 import { db } from "../data/db.js";
-import { FollowsTable, ProfileTable } from "../data/models/models.js";
+import { FollowsTable } from "../data/models/models.js";
 import { throwErrorException } from "../util/error.js";
 
 export async function getAllFollows(): Promise<FollowsTable[]> {
@@ -21,11 +21,11 @@ export async function verifyFollowStatus(following_id: string, follower_id: stri
     return follow;
 }
 
-export async function getFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
+export async function getFollowersByUserId(user_id: string): Promise<FollowsTable[]> {
     const followers = await db
-        .selectFrom('profile')
+        .selectFrom('follows')
         .selectAll()
-        .where('profile.user_id', '=', user_id)
+        .where('follows.user_id_following', '=', user_id)
         .execute();
     return followers;
 }
@@ -38,11 +38,11 @@ export async function deleteFollowByUserId(user_id: string, following_user_id: s
         .executeTakeFirstOrThrow();
 }
 
-export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
+export async function getAllFollowingUsersByUserId(user_id: string): Promise<FollowsTable[]> {
     const following_users = await db
-        .selectFrom('profile')
+        .selectFrom('follows')
         .selectAll()
-        .where('profile.user_id', '=', user_id)
+        .where('follows.user_id_follower', '=', user_id)
         .execute();
     return following_users;
 }
