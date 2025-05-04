@@ -25,7 +25,7 @@ function sortGamesByOld(games: GameTable[]): GameTable[] {
   });
 }
 
-export async function getPaginatedGames(lim: string, page: string, sort: string): Promise<PaginatedGame> {
+export async function getPaginatedGames(lim: string, page: string, sort: string, search: string): Promise<PaginatedGame> {
   const sortTypes: string[] = ['new', 'old'];
   if (!sortTypes.includes(sort)) sort = sortTypes[0];
 
@@ -42,7 +42,10 @@ export async function getPaginatedGames(lim: string, page: string, sort: string)
   else if (+page <= 0) numPage = 1;
   else numPage = +page;
 
-  const games = await getAllGames();
+  let games = await getAllGames();
+
+  games = search ? games.filter((game) => game.game_name.toLowerCase().includes(search.toLowerCase())) : games;
+
   const totalEntries = games.length;
   let sortedGames: GameTable[];
   switch (sort) {
@@ -57,8 +60,10 @@ export async function getPaginatedGames(lim: string, page: string, sort: string)
       break;
   }
 
+  //had to get rid of following line because searchs with less then 16 results made each
+  //result appear on it's own page
   // if the user inputs a limit that is greater than the number of pages
-  if (numLim > totalEntries) numLim = 1;
+  //if (numLim > totalEntries) numLim = 1;
 
   let totalPages = Math.ceil(totalEntries / numLim);
   if (totalPages <= 0) totalPages = 1;
