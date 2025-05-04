@@ -4,21 +4,22 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/auth/AuthContext";
 
 
+const baseUrl =
+import.meta.env.VITE_APP_ENV === "production"
+    ? import.meta.env.VITE_PROD_URL
+    : import.meta.env.VITE_DEV_URL;
+
 const FollowAction = ({ id }: {id: string}) => {
-    const { userId, profileId } = useAuth();
+    const { userId } = useAuth();
     const [isTarget, setIsTarget] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const baseUrl =
-        import.meta.env.VITE_APP_ENV === "production"
-            ? import.meta.env.VITE_PROD_URL
-            : import.meta.env.VITE_DEV_URL;
-
     useEffect(() => {
         console.log(`ID: ${id}`);
+        if (!userId) return;
         const checkFollowing = async () => {
-            if (!userId || userId === id) {
+            if (userId === id) {
                 setIsTarget(true);
                 return;
             };
@@ -31,6 +32,7 @@ const FollowAction = ({ id }: {id: string}) => {
                     }
                 );
                 if (res.status !== 200) return;
+                console.log(`Status: ${res.data.status}`)
                 const isAFollower = res.data.status;
                 console.log(`Is following/a follower: ${isAFollower}`);
                 setIsFollowing(isAFollower);
@@ -39,7 +41,7 @@ const FollowAction = ({ id }: {id: string}) => {
             }
         };
         checkFollowing();
-    }, [userId, id, baseUrl, profileId]);
+    }, [userId, id]);
 
     const handleToggleFollow = async () => {
         if (!userId || userId === id) {

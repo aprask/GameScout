@@ -18,6 +18,10 @@ type FollowingUser = {
     name: string;
 };
 
+const baseUrl =
+import.meta.env.VITE_APP_ENV === "production"
+    ? import.meta.env.VITE_PROD_URL
+    : import.meta.env.VITE_DEV_URL;
 
 export default function Follower({id}: {id: string}) {
     const navigate = useNavigate();
@@ -25,11 +29,6 @@ export default function Follower({id}: {id: string}) {
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [followers, setFollowers] = useState<FollowingUser[]>([]);
-
-    const baseUrl =
-        import.meta.env.VITE_APP_ENV === "production"
-            ? import.meta.env.VITE_PROD_URL
-            : import.meta.env.VITE_DEV_URL;
 
     useEffect(() => {
         const fetchFollowers = async () => {
@@ -66,7 +65,7 @@ export default function Follower({id}: {id: string}) {
             }
         };
         fetchFollowers();
-    }, [id, baseUrl]);
+    }, [id]);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
