@@ -35,7 +35,7 @@ export default function Following({id}: {id: string}) {
             setLoading(true);
             try {
                 const res = await axios.get(
-                    `${baseUrl}/api/v1/follow/user/followers/${id}`,
+                    `${baseUrl}/api/v1/follow/user/following/${id}`,
                     {
                         withCredentials: true,
                         headers: {
