@@ -134,7 +134,7 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    });
+    }, [baseUrl, pageProfileUserId, userId]);
 
     return (
         <Container sx={{ py: 8 }}>
