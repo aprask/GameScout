@@ -38,7 +38,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
                 let isAFollower = false;
                 console.log(`FollowAction res bod: ${res.data.followers}`);
                 for (let i = 0; i < res.data.followers.length; i++) {
-                    console.log(`${res.data.followers[i]}`);
+                    console.log(`${res.data.followers[i].profile_id}`);
                     console.log(`${profileId}`);
                     if (res.data.followers[i].profile_id === profileId) isAFollower = true;
                     console.log(isAFollower);
