@@ -62,7 +62,7 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                delay(5000);
+                await delay(5000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
@@ -86,7 +86,7 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                delay(5000);
+                await delay(5000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
