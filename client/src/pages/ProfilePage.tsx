@@ -41,6 +41,7 @@ function ProfilePage() {
     const [pageProfileUserId, setPageProfileUserId] = useState('');
     
     useEffect(() => {
+        setPageProfileUserId('');
         const fetchProfileData = async () => {
             try {
                 const res = await axios.get(
@@ -200,9 +201,13 @@ function ProfilePage() {
                 </Box>
             </Paper>
    
-            {pageProfileUserId && <Following key={pageProfileUserId} id={pageProfileUserId} />}
-            {pageProfileUserId && <Follower key={pageProfileUserId} id={pageProfileUserId} />}
-            {pageProfileUserId && <FollowAction key={pageProfileUserId} id={pageProfileUserId} />}
+            {pageProfileUserId && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Following key={pageProfileUserId} id={pageProfileUserId} />
+                    <Follower key={pageProfileUserId} id={pageProfileUserId} />
+                    <FollowAction key={pageProfileUserId} id={pageProfileUserId} />
+                </Box>
+            )}
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
