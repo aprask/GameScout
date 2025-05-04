@@ -35,7 +35,7 @@ export async function getAllFollowingUsersByUserId(user_id: string): Promise<Pro
     const followingUsers = await followsRepo.getAllFollowingUsersByUserId(user_id);
     const followingUserProfiles: ProfileTable[] = [];
     for (let i = 0; i < followingUsers.length; i++) {
-        followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_follower));
+        followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_following));
         console.log(`Added User to following Profile List: ${followingUsers[i]}`);
     }
     return followingUserProfiles;
