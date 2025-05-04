@@ -47,6 +47,7 @@ export default function Follower({id}: {id: string}) {
                     const followers: FollowingUser[] = [];
                     console.log(`Followers: ${res.data.followers}`);
                     for (let i = 0; i < res.data.followers.length; i++) {
+                        console.log(`Profile ID of Follower: ${res.data.following_users[i].profile_id}`);
                         followers.push({
                             id: res.data.followers[i].profile_id,
                             picture: res.data.followers[i].profile_img,
