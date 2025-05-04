@@ -83,8 +83,22 @@ function DashboardPage(): JSX.Element {
   return (
     <>
       <CssBaseline />
-      <Container sx={{ textAlign: "center" }}>
-        <Typography variant="h3" gutterBottom>
+      <Container   sx={{
+        textAlign: "center",
+        backgroundColor: "#0d0d0d",
+        minHeight: "100vh",
+        py: 8,
+        border: "2px solid #9400FF33",
+        boxShadow: "0 0 20px #9400FF55",
+      }}>
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{
+            color: "#FFFFFF",
+            textShadow: "0 0 10px #9400FFaa",
+          }}
+        >
           Welcome to Gamescout
         </Typography>
         <Typography variant="body1" gutterBottom>
@@ -92,7 +106,14 @@ function DashboardPage(): JSX.Element {
         </Typography>
         <Box>
           <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
-            <Card sx={{ m: 5, mr: 1 }}>
+            <Card sx={{
+              m: 5,
+              background: "linear-gradient(145deg, #1a1a1a, #121212)",
+              border: "1px solid #9400FF66",
+              borderRadius: "8px",
+              boxShadow: "0 0 12px #9400FF44",
+              color: "#f0f0f0",
+            }}>
               <CardContent sx={{ textAlign: "left" }}>
                 <Typography sx={{ ml: 3, mt: 1 }} variant="h5">
                   New Games
@@ -110,7 +131,13 @@ function DashboardPage(): JSX.Element {
                           title={game.game_name}
                           src={`https://images.igdb.com/igdb/image/upload/t_720p/${game.cover_id}.jpg`}
                           alt={game.game_name}
-                          style={{ borderRadius: "8px", height: "50%" }}
+                          style={{
+                            borderRadius: "6px",
+                            height: "50%",
+                            boxShadow: "0 0 10px #9400FF77",
+                            cursor: "pointer",
+                            transition: "transform 0.3s ease",
+                          }}                      
                           onClick={() => navigate(`/game?id=${game.game_id}`)}
                         />
                       </ImageListItem>
@@ -120,14 +147,28 @@ function DashboardPage(): JSX.Element {
                 {!newGames && <Typography>Error Fethcing Games</Typography>}
               </CardContent>
             </Card>
-            <Card sx={{ m: 5, ml: 2 }}>
+            <Card sx={{
+              m: 5,
+              background: "linear-gradient(145deg, #1a1a1a, #121212)",
+              border: "1px solid #9400FF66",
+              borderRadius: "8px",
+              boxShadow: "0 0 12px #9400FF44",
+              color: "#f0f0f0",
+            }}>
               <CardContent>
                 <Typography>Friends Activity</Typography>
               </CardContent>
             </Card>
           </Box>
 
-          <Card sx={{ m: 5, mt: 0 }}>
+          <Card sx={{
+            m: 5,
+            background: "linear-gradient(145deg, #1a1a1a, #121212)",
+            border: "1px solid #9400FF66",
+            borderRadius: "8px",
+            boxShadow: "0 0 12px #9400FF44",
+            color: "#f0f0f0",
+          }}>
             <CardContent>
               <Typography variant="h5">Newest Articles</Typography>
 
@@ -137,7 +178,19 @@ function DashboardPage(): JSX.Element {
                     <Paper
                       key={article.article_id}
                       elevation={3}
-                      sx={{ m: 1, p: 1 }}
+                      sx={{
+                        m: 1,
+                        p: 2,
+                        background: "#1a1a1a",
+                        border: "1px solid #9400FF55",
+                        boxShadow: "0 0 10px #9400FF33",
+                        color: "#f0f0f0",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#2a2a2a",
+                          boxShadow: "0 0 15px #9400FF88",
+                        },
+                      }}                    
                       onClick={() =>
                         navigate(`/community/article?id=${article.article_id}`)
                       }
@@ -151,16 +204,30 @@ function DashboardPage(): JSX.Element {
             </CardContent>
           </Card>
 
-          <Card sx={{ m: 5 }}>
+          <Card sx={{
+            m: 5,
+            background: "linear-gradient(145deg, #1a1a1a, #121212)",
+            border: "1px solid #9400FF66",
+            borderRadius: "8px",
+            boxShadow: "0 0 12px #9400FF44",
+            color: "#f0f0f0",
+          }}>
             <CardContent>
               <Typography variant="h5">About Us</Typography>
               <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  gap: 2,
-                  mt: 2,
-                }}
+                  sx={{
+                    m: 1,
+                    p: 2,
+                    background: "#1a1a1a",
+                    border: "1px solid #9400FF55",
+                    boxShadow: "0 0 10px #9400FF33",
+                    color: "#f0f0f0",
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "#2a2a2a",
+                      boxShadow: "0 0 15px #9400FF88",
+                    },
+                  }}                
               >
                 <Box
                   sx={{
@@ -179,6 +246,8 @@ function DashboardPage(): JSX.Element {
                       width: "150px",
                       height: "150px",
                       borderRadius: "50%",
+                      border: "2px solid #9400FF",
+                      boxShadow: "0 0 10px #9400FF77",
                     }}
                   />
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
@@ -187,8 +256,9 @@ function DashboardPage(): JSX.Element {
                       Andrew Praskala, a senior undergraduate computer science
                       student at UNC Charlotte. Andrew’s prior experience
                       included internships with Astro AI Trading and Wells
-                      Fargo, as well as independent systems-level projects such
-                      as a Chip8 emulator and the UNCC Faculty Chatbot.
+                      Fargo, as well as projects such as a Chip8 emulator and 
+                      the UNCC Faculty Chatbot. Andrew has also contributed
+                      to UNCC Hice's Edukona project.
                     </Typography>
                     <Box
                       sx={{
@@ -230,6 +300,8 @@ function DashboardPage(): JSX.Element {
                       width: "150px",
                       height: "150px",
                       borderRadius: "50%",
+                      border: "2px solid #9400FF",
+                      boxShadow: "0 0 10px #9400FF77",
                     }}
                   />
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>

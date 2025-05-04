@@ -8,6 +8,7 @@ import {
   Button,
   Modal,
   TextField,
+  Fade,
 } from "@mui/material";
 import axios from "axios";
 import { useAuth } from "../context/auth/AuthContext";
@@ -83,9 +84,26 @@ function CommunityPage(): JSX.Element {
   }
 
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: "#0d0d0d",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 20px #9400FF55",
+        borderRadius: "8px",
+        py: 4,
+        px: 4,
+      }}
+    >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h4" gutterBottom>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          color: "#fff",
+          textShadow: "0 0 10px #9400FFaa",
+          fontWeight: "bold",
+        }}
+        >
           Posts
         </Typography>
         <Box>
@@ -93,7 +111,9 @@ function CommunityPage(): JSX.Element {
         </Box>
       </Box>
       {articles.length === 0 ? (
-        <Typography>No articles available.</Typography>
+        <Typography sx={{ color: "#ccc", fontStyle: "italic", mt: 2 }}>
+          No articles available.
+        </Typography>
       ) : (
         articles.map((article) => (
           <Paper
@@ -102,9 +122,18 @@ function CommunityPage(): JSX.Element {
             sx={{
               p: 2,
               mb: 2,
+              backgroundColor: "#1a1a1a",
+              border: "1px solid #9400FF44",
+              boxShadow: "0 0 10px #9400FF55",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              "&:hover": {
+                transform: "scale(1.01)",
+                boxShadow: "0 0 15px #9400FFaa",
+                cursor: "pointer",
+              },
               display: "flex",
               justifyContent: "space-between",
-            }}
+            }}          
             onClick={() =>
               navigate(`/community/article?id=${article.article_id}`)
             }
@@ -177,7 +206,13 @@ function ArticleForm(): JSX.Element {
       <Button variant="contained" color="primary" onClick={handleOpen}>
         Write an Article
       </Button>
-      <Modal open={open} onClose={handleClose}>
+      <Modal 
+        open={open} 
+        onClose={handleClose}   
+        closeAfterTransition
+        sx={{ backdropFilter: "blur(4px)" }}
+      >
+        <Fade in={open}>
         <Box
           sx={{
             position: "absolute",
@@ -186,7 +221,8 @@ function ArticleForm(): JSX.Element {
             transform: "translate(-50%, -50%)",
             width: 600,
             height: 500,
-            bgcolor: "background.paper",
+            bgcolor: "#121212",
+            border: "1px solid #9400FF88",
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
@@ -206,7 +242,22 @@ function ArticleForm(): JSX.Element {
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
             required
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#1a1a1a",
+                color: "#fff",
+                border: "1px solid #9400FF44",
+              },
+              "& .MuiInputLabel-root": {
+                color: "#ccc",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                "& fieldset": {
+                  borderColor: "#9400FF",
+                },
+              },
+            }}          
           />
           <TextField
             label="Content"
@@ -216,17 +267,56 @@ function ArticleForm(): JSX.Element {
             multiline
             rows={10}
             required
-            sx={{ mb: 2, whiteSpace: "pre-wrap" }}
+            sx={{
+              mb: 2,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#1a1a1a",
+                color: "#fff",
+                border: "1px solid #9400FF44",
+              },
+              "& .MuiInputLabel-root": {
+                color: "#ccc",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                "& fieldset": {
+                  borderColor: "#9400FF",
+                },
+              }
+            }}          
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={handleClose} sx={{ mr: 2 }}>
+            <Button onClick={handleClose}   sx={{
+            backgroundColor: "#9400FF",
+            color: "#fff",
+            boxShadow: "0 0 10px #9400FF99",
+            "&:hover": {
+              backgroundColor: "#7a00cc",
+              boxShadow: "0 0 15px #9400FFcc",
+            },
+          }}
+          >
               Cancel
             </Button>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" onClick={handleSubmit}
+              sx={{
+                backgroundColor: "#9400FF",
+                color: "#fff",
+                boxShadow: "0 0 10px #9400FF99",
+                "&:hover": {
+                  backgroundColor: "#7a00cc",
+                  boxShadow: "0 0 15px #9400FFcc",
+                },
+                "&:active": {
+                  transform: "scale(0.98)",
+                  boxShadow: "0 0 5px #9400FF",
+                },
+              }}
+              >
               Submit
             </Button>
           </Box>
         </Box>
+        </Fade>
       </Modal>
     </>
   );

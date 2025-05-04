@@ -120,17 +120,37 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
       {comments.map((comment) => (
         <Paper
           key={comment.comment_id}
-          sx={{ mb: 2, p: 2, display: "flex", justifyContent: "space-between" }}
+          sx={{
+            mb: 2,
+            p: 2,
+            backgroundColor: "#121212",
+            border: "1px solid #9400FF33",
+            borderRadius: 2,
+            boxShadow: "0 0 10px #9400FF44",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            "&:hover": {
+              transform: "scale(1.01)",
+              boxShadow: "0 0 15px #9400FFaa",
+            },
+            display: "flex",
+            justifyContent: "space-between",
+            color: "#fff",
+          }}        
           elevation={6}
         >
           <Box>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body2" sx={{ color: "#bbb" }}>
               {userEmails[comment.comment_owner] || "Unknown User"}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="caption" sx={{ color: "#777" }}>
               Posted on: {new Date(comment.created_at).toLocaleDateString()}
             </Typography>
-            <Typography variant="body1" sx={{ mt: 1 }}>
+            <Typography variant="body1" sx={{
+              mt: 1,
+              color: "#fff",
+              whiteSpace: "pre-wrap",
+            }}
+            >
               {comment.comment_content}
             </Typography>
           </Box>
@@ -139,6 +159,20 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
               <IconButton
                 aria-label="Remove Comments"
                 onClick={() => deleteComment(comment)}
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#9400FF22",
+                  border: "1px solid #9400FF55",
+                  ml: 2,
+                  "&:hover": {
+                    backgroundColor: "#9400FF44",
+                    boxShadow: "0 0 10px #9400FFaa",
+                  },
+                  "&:active": {
+                    transform: "scale(0.98)",
+                    boxShadow: "0 0 5px #9400FF",
+                  },
+                }}          
               >
                 <DeleteOutlineIcon />
               </IconButton>

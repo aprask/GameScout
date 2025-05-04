@@ -89,8 +89,25 @@ function GameReviews(): JSX.Element {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
+    <Container 
+      maxWidth="md"       
+      sx={{
+        mt: 4,
+        backgroundColor: "#0d0d0d",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 20px #9400FF55",
+        borderRadius: 3,
+        p: 4,
+      }}>
+      <Typography 
+        variant="h5" 
+        gutterBottom
+        sx={{
+          color: "#fff",
+          textShadow: "0 0 8px #9400FF88",
+          fontWeight: "bold",
+        }}
+        >
         Reviews
       </Typography>
       {error && (
@@ -100,7 +117,20 @@ function GameReviews(): JSX.Element {
       )}
       {reviews.length > 0 ? (
         reviews.map((review) => (
-          <Card key={review.review_id} sx={{ mb: 2 }}>
+          <Card key={review.review_id}
+          sx={{
+            mb: 2,
+            backgroundColor: "#1a1a1a",
+            border: "1px solid #9400FF33",
+            boxShadow: "0 0 8px #9400FF66",
+            color: "#fff",
+            "&:hover": {
+              transform: "scale(1.01)",
+              boxShadow: "0 0 12px #9400FF99",
+            },
+            transition: "transform 0.2s, box-shadow 0.2s",
+          }}
+          >
             <CardContent>
               <Typography variant="body1">{review.review}</Typography>
               <Typography variant="subtitle2" color="text.secondary">
@@ -118,7 +148,13 @@ function GameReviews(): JSX.Element {
         </Typography>
       )}
 
-      <Box component="form" sx={{ mt: 4 }}>
+      <Box component="form" 
+        sx={{
+          color: "#fff",
+          fontWeight: 600,
+          textShadow: "0 0 6px #9400FFaa",
+        }}      
+      >
         <Typography variant="h6" gutterBottom>
           Write a Review
         </Typography>
@@ -130,7 +166,26 @@ function GameReviews(): JSX.Element {
           rows={4}
           value={newReview}
           onChange={(e) => setNewReview(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            "& .MuiInputBase-root": {
+              backgroundColor: "#1a1a1a",
+              color: "#fff",
+              border: "1px solid #9400FF44",
+            },
+            "& .MuiInputLabel-root": {
+              color: "#ccc",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+              borderColor: "#9400FF",
+            },
+            "& textarea": {
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+            },
+          }}
         />
         <TextField
           label="Rating (1-5)"
@@ -139,9 +194,39 @@ function GameReviews(): JSX.Element {
           fullWidth
           value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            "& .MuiInputBase-root": {
+              backgroundColor: "#1a1a1a",
+              color: "#fff",
+              border: "1px solid #9400FF44",
+            },
+            "& .MuiInputLabel-root": {
+              color: "#ccc",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+              borderColor: "#9400FF",
+            },
+          }}
         />
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleSubmit}
+          sx={{
+            backgroundColor: "#9400FF",
+            color: "#fff",
+            boxShadow: "0 0 10px #9400FF88",
+            "&:hover": {
+              backgroundColor: "#7a00cc",
+              boxShadow: "0 0 15px #9400FFcc",
+            },
+            "&:active": {
+              transform: "scale(0.98)",
+              boxShadow: "0 0 5px #9400FF",
+            },
+          }}
+          >
           Submit Review
         </Button>
       </Box>

@@ -108,26 +108,68 @@ function DynamicArticle(): JSX.Element {
   }
 
   return (
-    <Container>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h4" gutterBottom>
+    <Container
+      sx={{
+        backgroundColor: "#0d0d0d",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 20px #9400FF55",
+        borderRadius: 2,
+        p: 4,
+        color: "#fff",
+      }}
+    >
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Typography 
+          variant="h4" 
+          gutterBottom
+          sx={{
+            textShadow: "0 0 10px #9400FFaa",
+            fontWeight: "bold",
+          }}
+          >
           {article.article_title}
         </Typography>
         {article.article_owner === userId && (
           <IconButton
-            sx={{ display: "flex", flexDirection: "row" }}
+            sx={{
+              color: "#fff",
+              backgroundColor: "#9400FF33",
+              border: "1px solid #9400FF55",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 0 10px #9400FFaa",
+              },
+              "&:active": {
+                transform: "scale(0.98)",
+                boxShadow: "0 0 5px #9400FF",
+              },
+            }}
             onClick={deleteArticle}
           >
             <DeleteOutlineIcon />
           </IconButton>
         )}
       </Box>
-      <Typography variant="subtitle2" color="text.secondary">
+      <Typography variant="subtitle2" color="text.secondary" sx={{ color: "#ccc", mb: 2, textShadow: "0 0 6px #9400FF33" }}>
         Posted on: {new Date(article.created_at).toLocaleDateString()}
       </Typography>
       <hr />
 
-      <Typography variant="body1" gutterBottom sx={{ whiteSpace: "pre-wrap" }}>
+      <Typography variant="body1" gutterBottom sx={{
+          whiteSpace: "pre-wrap",
+          backgroundColor: "#1a1a1a",
+          p: 2,
+          borderRadius: 2,
+          border: "1px solid #9400FF44",
+          boxShadow: "0 0 8px #9400FF33",
+          mb: 4,
+          "& textarea": {
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+          },
+        }}
+        >
         {article.article_content}
       </Typography>
 

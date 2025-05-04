@@ -48,8 +48,29 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-      <Typography variant="h6">Write a Review</Typography>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        mt: 4,
+        backgroundColor: "#121212",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 15px #9400FF88",
+        borderRadius: 2,
+        p: 3,
+      }}
+    >
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{
+          color: "#fff",
+          textShadow: "0 0 8px #9400FFaa",
+          fontWeight: "bold",
+        }}
+      >
+        Write a Review
+      </Typography>
       {error && (
         <Typography color="error" variant="body2" sx={{ mb: 2 }}>
           {error}
@@ -62,7 +83,20 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         onChange={(e) => setRating(Number(e.target.value))}
         fullWidth
         required
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiInputBase-root": {
+            backgroundColor: "#0d0d0d",
+            color: "#fff",
+            border: "1px solid #9400FF44",
+          },
+          "& .MuiInputLabel-root": {
+            color: "#ccc",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+            borderColor: "#9400FF",
+          },
+        }}
       />
       <TextField
         label="Review"
@@ -71,11 +105,46 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         value={reviewText}
         onChange={(e) => setReviewText(e.target.value)}
         fullWidth
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiInputBase-root": {
+            backgroundColor: "#0d0d0d",
+            color: "#fff",
+            border: "1px solid #9400FF44",
+          },
+          "& .MuiInputLabel-root": {
+            color: "#ccc",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+            borderColor: "#9400FF",
+          },
+          "& textarea": {
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          },
+        }}
       />
-      <Button type="submit" variant="contained" color="primary">
-        Submit Review
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button type="submit" variant="contained"
+          sx={{
+            backgroundColor: "#9400FF",
+            color: "#fff",
+            boxShadow: "0 0 10px #9400FF99",
+            "&:hover": {
+              backgroundColor: "#7a00cc",
+              boxShadow: "0 0 15px #9400FFcc",
+            },
+            "&:active": {
+              transform: "scale(0.98)",
+              boxShadow: "0 0 5px #9400FF",
+            },
+          }}
+        >
+          Submit Review
+        </Button>
+      </Box>
     </Box>
   );
 }

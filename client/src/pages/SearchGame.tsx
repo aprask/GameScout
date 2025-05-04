@@ -33,6 +33,11 @@ type PaginatedGameResponse = {
   data: Game[];
 };
 
+const baseUrl =
+`${import.meta.env.VITE_APP_ENV}` === "production"
+  ? `${import.meta.env.VITE_PROD_URL}`
+  : `${import.meta.env.VITE_DEV_URL}`;
+
 function SearchGame(): JSX.Element {
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
@@ -41,10 +46,6 @@ function SearchGame(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const baseUrl =
-    `${import.meta.env.VITE_APP_ENV}` === "production"
-      ? `${import.meta.env.VITE_PROD_URL}`
-      : `${import.meta.env.VITE_DEV_URL}`;
 
   const GAMES_PER_PAGE = 16;
   const SORT_TYPE = "new";
@@ -102,8 +103,25 @@ function SearchGame(): JSX.Element {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Container
+      sx={{
+        backgroundColor: "#0d0d0d",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 20px #9400FF88",
+        borderRadius: "12px",
+        p: 4,
+        mt: 4,
+      }}
+    >
+      <Typography variant="h4" gutterBottom
+        sx={{
+          color: "#fff",
+          textShadow: "0 0 10px #9400FFaa",
+          fontWeight: "bold",
+          mb: 2,
+          textAlign: "center",
+        }}      
+      >
         Search Games
       </Typography>
 
@@ -117,6 +135,19 @@ function SearchGame(): JSX.Element {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
+          sx={{
+            "& .MuiInputBase-root": {
+              backgroundColor: "#1a1a1a",
+              color: "#fff",
+              border: "1px solid #9400FF44",
+            },
+            "& .MuiInputLabel-root": {
+              color: "#ccc",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+              borderColor: "#9400FF",
+            },
+          }}  
         />
       </Box>
 
@@ -132,12 +163,20 @@ function SearchGame(): JSX.Element {
                 <Card
                   sx={{
                     width: 250,
+                    height: 300,
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    height: "100%",
-                  }}
+                    backgroundColor: "#1a1a1a",
+                    border: "1px solid #9400FF33",
+                    boxShadow: "0 0 10px #9400FF66",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.03)",
+                      boxShadow: "0 0 15px #9400FFaa",
+                    },
+                  }}                  
                   onClick={() => navigate(`/game?id=${game.game_id}`)}
                 >
                   <CardMedia
@@ -155,10 +194,11 @@ function SearchGame(): JSX.Element {
                       variant="h6"
                       textAlign="center"
                       sx={{
+                        color: "#fff",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
-                      }}
+                      }}  
                     >
                       {game.game_name}
                     </Typography>
@@ -174,6 +214,16 @@ function SearchGame(): JSX.Element {
               page={currentPage}
               onChange={handlePageChange}
               color="primary"
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#fff",
+                },
+                "& .Mui-selected": {
+                  backgroundColor: "#9400FF !important",
+                  color: "#fff",
+                  boxShadow: "0 0 10px #9400FFaa",
+                },
+              }}
             />
           </Box>
         </>
