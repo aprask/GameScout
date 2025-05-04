@@ -79,7 +79,26 @@ export default function Following({id}: {id: string}) {
 
     return (
         <>
-            <Button onClick={handleOpen} variant="outlined">
+            <Button 
+                onClick={handleOpen} 
+                variant="outlined"
+                sx={{
+                    borderColor: "#9400FF",
+                    color: "#9400FF",
+                    borderRadius: 0,
+                    px: 3,
+                    py: 1,
+                    fontWeight: "bold",
+                    letterSpacing: 1,
+                    textTransform: "uppercase",
+                    boxShadow: "0 0 6px #9400FF88",
+                    transition: "all 0.3s ease-in-out",
+                    "&:hover": {
+                      backgroundColor: "#9400FF33",
+                      boxShadow: "0 0 12px #9400FF",
+                    },
+                  }}                
+            >
                 View Following
             </Button>
             <Modal open={open} onClose={handleClose}>

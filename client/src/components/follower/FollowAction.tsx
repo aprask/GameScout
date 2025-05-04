@@ -111,6 +111,22 @@ const FollowAction = ({ id }: {id: string}) => {
                     color="primary"
                     onClick={handleToggleFollow}
                     disabled={loading}
+                    sx={{
+                        borderColor: "#9400FF",
+                        color: "#9400FF",
+                        borderRadius: 0,
+                        px: 3,
+                        py: 1,
+                        fontWeight: "bold",
+                        letterSpacing: 1,
+                        textTransform: "uppercase",
+                        boxShadow: "0 0 6px #9400FF88",
+                        transition: "all 0.3s ease-in-out",
+                        "&:hover": {
+                          backgroundColor: "#9400FF33",
+                          boxShadow: "0 0 12px #9400FF",
+                        },
+                      }}                    
                 >
                     {loading ? "Processing..." : isFollowing ? "Unfollow" : "Follow"}
                 </Button>
