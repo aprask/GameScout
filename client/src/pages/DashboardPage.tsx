@@ -81,7 +81,7 @@ function DashboardPage(): JSX.Element {
           setNewArticles(articleResponse.data.articles);
         }
         const featuredCreator = await axios.get(
-          `${baseUrl}/api/v1/users/featured`,
+          `${baseUrl}/api/v1/users/featured/creator`,
           {
             withCredentials: true,
             headers: {

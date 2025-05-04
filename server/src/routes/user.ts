@@ -26,7 +26,7 @@ router.get('/:user_id', asyncHandler(async (req, res) => {
     res.status(200).json({user: user});
 }));
 
-router.get('/featured', asyncHandler(async (req, res) => {
+router.get('/featured/creator', asyncHandler(async (req, res) => {
     const featuredUser = await userService.getFeaturedUser();
     res.status(200).json({user: featuredUser});
 }));
