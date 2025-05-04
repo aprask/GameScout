@@ -46,6 +46,7 @@ export default function Follower({id, followChanged}: {id: string; followChanged
                 );
                 if (res.status === 200 && res.data.followers) {
                     const followers: FollowingUser[] = [];
+                    console.log(`Followers: ${res.data.followers}`);
                     for (let i = 0; i < res.data.followers.length; i++) {
                         followers.push({
                             id: res.data.followers[i].profile_id,

@@ -98,6 +98,7 @@ function ProfilePage() {
     };
 
     useEffect(() => {
+        if (!pageProfileUserId) return;
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
