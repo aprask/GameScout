@@ -1,6 +1,9 @@
 import { ProfileTable, UserTable } from '../data/models/models.js';
 import * as userRepo from '../repository/user.js';
 import * as adminRepo from '../repository/admin.js';
+import * as articleRepo from '../repository/articles.js';
+import * as commentRepo from '../repository/article_comments.js';
+import * as profileRepo from '../repository/profile.js';
 import { throwErrorException } from '../util/error.js';
 import { v4 as uuidv4, validate } from 'uuid';
 import dotenv from 'dotenv';
@@ -9,6 +12,25 @@ dotenv.config();
 
 export function getAllUsers(): Promise<UserTable[]> {
   return userRepo.getAllUsers();
+}
+
+export async function getFeaturedUser(): Promise<ProfileTable> {
+  let topUserId: string | null = null;
+  let topScore = -1;
+  const users = await userRepo.getAllUsers();
+  for (let i = 0; i < users.length; i++) {
+    const [articles, comments] = await Promise.all([
+      articleRepo.getArticlesByUserId(users[i].user_id),
+      commentRepo.getCommentsByUserId(users[i].user_id),
+    ]);
+    const total = articles.length + comments.length;
+    if (total > topScore) {
+      topScore = total;
+      topUserId = users[i].user_id;
+    }
+  }
+  if (topUserId === null) throwErrorException(`[service.user.getFeaturedUser] No users found`, 'No users found or no activity', 404);
+  return await profileRepo.getProfileByUserId(topUserId!);
 }
 
 export async function getUserById(user_id: string): Promise<UserTable> {

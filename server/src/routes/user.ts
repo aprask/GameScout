@@ -26,6 +26,11 @@ router.get('/:user_id', asyncHandler(async (req, res) => {
     res.status(200).json({user: user});
 }));
 
+router.get('/featured/creator', asyncHandler(async (req, res) => {
+    const featuredUser = await userService.getFeaturedUser();
+    res.status(200).json({user: featuredUser});
+}));
+
 router.put('/:user_id', asyncHandler(async (req, res) => {
     const { email, is_active, is_banned, last_login } = req.body;
     const updatedUser = await userService.updateUser(req.params.user_id, email, is_active, is_banned, new Date(last_login));

@@ -185,8 +185,25 @@ function DynamicGame(): JSX.Element {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Card sx={{ mb: 4 }}>
+    <Container maxWidth="md"
+      sx={{
+        mt: 4,
+        backgroundColor: "#0d0d0d",
+        border: "1px solid #9400FF55",
+        boxShadow: "0 0 20px #9400FF88",
+        borderRadius: "12px",
+        p: 3,
+      }}
+    >
+      <Card
+        sx={{
+          mb: 4,
+          backgroundColor: "#1a1a1a",
+          border: "1px solid #9400FF44",
+          boxShadow: "0 0 12px #9400FF77",
+          borderRadius: "10px",
+        }}      
+      >
         <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
           <CardMedia
             component="img"
@@ -196,7 +213,13 @@ function DynamicGame(): JSX.Element {
           />
           <CardContent sx={{ flex: 1, padding: 3, mt: 3 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="h4" gutterBottom>
+              <Typography variant="h4" gutterBottom
+                sx={{
+                  color: "#fff",
+                  textShadow: "0 0 8px #9400FFaa",
+                  fontWeight: "bold",
+                }}            
+              >
                 {game.game_name}
               </Typography>
 
@@ -207,8 +230,14 @@ function DynamicGame(): JSX.Element {
                       aria-label="Remove from Wishlist"
                       onClick={removeFromWishlist}
                       title="Remove from Wishlist"
+                      sx={{
+                        transition: "transform 0.2s ease",
+                        "&:hover": {
+                          transform: "scale(1.2)",
+                        },
+                      }}
                     >
-                      <StarIcon color="primary" sx={{ fontSize: 40 }} />
+                      <StarIcon color="primary" sx={{ fontSize: 40, color: "#9400FF" }} />
                     </IconButton>
                   </>
                 ) : (
@@ -400,7 +429,26 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                   onChange={(e) => setReviewTitle(e.target.value)}
                   fullWidth
                   required
-                  sx={{ mb: 1 }}
+                  sx={{
+                    mb: 2,
+                    "& .MuiInputBase-root": {
+                      backgroundColor: "#0d0d0d",
+                      color: "#fff",
+                      border: "1px solid #9400FF44",
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#ccc",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                      borderColor: "#9400FF",
+                    },
+                    "& textarea": {
+                      scrollbarWidth: "none",
+                      "&::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                    },
+                  }}
                 />
                 <Box>
                   <Rating
@@ -419,13 +467,46 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 2,
+                    "& .MuiInputBase-root": {
+                      backgroundColor: "#0d0d0d",
+                      color: "#fff",
+                      border: "1px solid #9400FF44",
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#ccc",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                      borderColor: "#9400FF",
+                    },
+                    "& textarea": {
+                      scrollbarWidth: "none",
+                      "&::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                    },
+                  }}                  
                 />
 
                 <Box
                   sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}
                 >
-                  <Button type="submit" variant="contained" color="primary">
+                  <Button type="submit" variant="contained" color="primary"
+                    sx={{
+                      backgroundColor: "#9400FF",
+                      color: "#fff",
+                      boxShadow: "0 0 10px #9400FF88",
+                      "&:hover": {
+                        backgroundColor: "#7a00cc",
+                        boxShadow: "0 0 15px #9400FFcc",
+                      },
+                      "&:active": {
+                        transform: "scale(0.98)",
+                        boxShadow: "0 0 5px #9400FF",
+                      },
+                    }}                  
+                  >
                     Update Review
                   </Button>
                 </Box>
@@ -439,7 +520,18 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         <>
           <Card sx={{ backgroundColor: "primary.main" }}>
             <CardContent>
-              <Paper elevation={6} sx={{ p: 2, pl: 1, pr: 2 }}>
+              <Paper elevation={6}   sx={{
+                mb: 2,
+                p: 2,
+                backgroundColor: "#1a1a1a",
+                border: "1px solid #9400FF33",
+                boxShadow: "0 0 8px #9400FF66",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "scale(1.01)",
+                  boxShadow: "0 0 12px #9400FF99",
+                },
+              }}>
                 <Container>
                   <Typography variant="h6">
                     {submittedReview?.review_title}
@@ -454,6 +546,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     Review Made:
                     {" " +
                       new Date(
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
                         submittedReview?.updated_at!
                       ).toLocaleDateString()}
                   </Typography>
@@ -464,7 +557,21 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     </Typography>
                   )}
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button onClick={() => setIsEditing(true)} sx={{ mr: 2 }}>
+                    <Button onClick={() => setIsEditing(true)} 
+                    sx={{
+                      backgroundColor: "#9400FF",
+                      color: "#fff",
+                      boxShadow: "0 0 10px #9400FF88",
+                      "&:hover": {
+                        backgroundColor: "#7a00cc",
+                        boxShadow: "0 0 15px #9400FFcc",
+                      },
+                      "&:active": {
+                        transform: "scale(0.98)",
+                        boxShadow: "0 0 5px #9400FF",
+                      },
+                    }}                    
+                    >
                       Edit Review
                     </Button>
                   </Box>
@@ -491,7 +598,26 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
               onChange={(e) => setReviewTitle(e.target.value)}
               fullWidth
               required
-              sx={{ mb: 1 }}
+              sx={{
+                mb: 2,
+                "& .MuiInputBase-root": {
+                  backgroundColor: "#0d0d0d",
+                  color: "#fff",
+                  border: "1px solid #9400FF44",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#ccc",
+                },
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "#9400FF",
+                },
+                "& textarea": {
+                  scrollbarWidth: "none",
+                  "&::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                },
+              }}
             />
             <Box>
               <Rating
@@ -510,11 +636,44 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 2,
+                "& .MuiInputBase-root": {
+                  backgroundColor: "#0d0d0d",
+                  color: "#fff",
+                  border: "1px solid #9400FF44",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#ccc",
+                },
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "#9400FF",
+                },
+                "& textarea": {
+                  scrollbarWidth: "none",
+                  "&::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                },
+              }}              
             />
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}>
-              <Button type="submit" variant="contained" color="primary">
+              <Button type="submit" variant="contained" color="primary"
+                sx={{
+                  backgroundColor: "#9400FF",
+                  color: "#fff",
+                  boxShadow: "0 0 10px #9400FF88",
+                  "&:hover": {
+                    backgroundColor: "#7a00cc",
+                    boxShadow: "0 0 15px #9400FFcc",
+                  },
+                  "&:active": {
+                    transform: "scale(0.98)",
+                    boxShadow: "0 0 5px #9400FF",
+                  },
+                }}              
+              >
                 Submit Review
               </Button>
             </Box>
@@ -585,7 +744,20 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
       <Typography variant="body2">Reviews</Typography>
 
       {reviews.map((review, index) => (
-        <Paper key={index} sx={{ mb: 2, p: 2 }} elevation={6}>
+        <Paper key={index}   
+          sx={{
+            mb: 2,
+            p: 2,
+            backgroundColor: "#1a1a1a",
+            border: "1px solid #9400FF33",
+            boxShadow: "0 0 8px #9400FF66",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            "&:hover": {
+              transform: "scale(1.01)",
+              boxShadow: "0 0 12px #9400FF99",
+            },
+          }}
+          elevation={6}>
           <Typography variant="h6" fontWeight="bold">
             {review.review_title}
           </Typography>

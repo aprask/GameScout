@@ -6,7 +6,6 @@ import {
   Box,
   Typography,
   CircularProgress,
-  useTheme,
   IconButton,
   Tooltip,
 } from "@mui/material";
@@ -19,7 +18,6 @@ export default function Chatbot({game, summary}) {
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const { isAuthenticated } = useAuth();
-  const theme = useTheme();
 
   const baseUrl =
     `${import.meta.env.VITE_APP_ENV}` === "production"
@@ -63,70 +61,114 @@ export default function Chatbot({game, summary}) {
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", p: 3 }}>
-        <Box display="flex" justifyContent="center">
-            <Typography variant="h5" fontWeight={600} gutterBottom>
-                Chatbot
-            </Typography>
-        </Box>
-      <Box sx={{ mb: 3 }}>
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : output ? (
-          <Card elevation={3} sx={{ p: 3, backgroundColor: theme.palette.background.paper }}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{output}</ReactMarkdown>
-          </Card>
-        ) : null}
-      </Box>
-
-      <Card elevation={2} sx={{ p: 2 }}>
-        <Box
+    <Card
+      elevation={3}
+      sx={{
+        p: 3,
+        backgroundColor: "#1a1a1a",
+        border: "1px solid #9400FF44",
+        boxShadow: "0 0 12px #9400FF55",
+        borderRadius: 2,
+        maxWidth: 800,
+        mx: "auto",
+      }}
+    >
+      <Box display="flex" justifyContent="center" mb={2}>
+        <Typography
+          variant="h5"
+          fontWeight={600}
           sx={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: 1,
+            color: "#fff",
+            textShadow: "0 0 10px #9400FFaa",
           }}
         >
-          <Box
-            component="textarea"
-            placeholder="Ask me a question about this game..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={loading}
-            rows={3}
-            style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              fontSize: "1rem",
-              resize: "none",
-              padding: "12px",
-              borderRadius: "8px",
-              fontFamily: "inherit",
-              backgroundColor: loading
-                ? theme.palette.action.disabledBackground
-                : theme.palette.background.default,
-              color: theme.palette.text.primary,
-              opacity: loading ? 0.6 : 1,
-            }}
-          />
-          <Tooltip title="Send" arrow>
-            <span>
-              <IconButton
-                color="primary"
-                onClick={makeQuery}
-                disabled={loading || !query.trim()}
-                sx={{ mb: "4px" }}
-              >
-                <Send />
-              </IconButton>
-            </span>
-          </Tooltip>
+          Chatbot
+        </Typography>
+      </Box>
+
+      {loading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+          <CircularProgress />
         </Box>
-      </Card>
-    </Box>
+      ) : output ? (
+        <Box
+          sx={{
+            mb: 3,
+            p: 2,
+            backgroundColor: "#121212",
+            border: "1px solid #9400FF33",
+            boxShadow: "0 0 8px #9400FF66",
+            borderRadius: 2,
+            color: "#fff",
+            overflowWrap: "break-word",
+            whiteSpace: "pre-wrap",
+          }}
+        >
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{output}</ReactMarkdown>
+        </Box>
+      ) : null}
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 1,
+          mt: 2,
+        }}
+      >
+        <Box
+          component="textarea"
+          placeholder="Ask me a question about this game..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={loading}
+          rows={3}
+          style={{
+            flex: 1,
+            fontSize: "1rem",
+            resize: "none",
+            padding: "12px",
+            borderRadius: "8px",
+            fontFamily: "inherit",
+            backgroundColor: "#0d0d0d",
+            color: "#fff",
+            border: "1px solid #9400FF44",
+            outline: "none",
+            scrollbarWidth: "none",
+          }}
+          sx={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        />
+
+        <Tooltip title="Send" arrow>
+          <span>
+            <IconButton
+              color="primary"
+              onClick={makeQuery}
+              disabled={loading || !query.trim()}
+              sx={{
+                backgroundColor: "#9400FF",
+                color: "#fff",
+                boxShadow: "0 0 10px #9400FF99",
+                "&:hover": {
+                  backgroundColor: "#7a00cc",
+                  boxShadow: "0 0 15px #9400FFcc",
+                },
+                "&:active": {
+                  transform: "scale(0.95)",
+                  boxShadow: "0 0 6px #9400FFaa",
+                },
+              }}
+            >
+              <Send />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
+    </Card>
   );
 }

@@ -52,7 +52,7 @@ export default async function gameJob() {
   console.log(`Last saved date was ${lastDate}ms since Unix epoch`);
 
   cron.schedule(
-    "0 43 * * * *", // every 30 mins
+    "0 30 * * * *", // every 30 mins
     async () => {
       const games: Game[] = [];
       console.log("Starting game data job...");

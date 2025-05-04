@@ -18,9 +18,28 @@ router.get('/:follow_id', asyncHandler(async (req, res) => {
     res.status(200).json({ follow });
 }));
 
+router.get('/verify/:following_id/:follower_id', asyncHandler(async (req, res) => {
+    const status = await followsService.verifyFollowStatus(req.params.following_id, req.params.follower_id);
+    console.log(`Target User = ${req.params.following_id}`);
+    console.log(`Follower = ${req.params.follower_id}`);
+    console.log(`Status: ${status}`);
+    if (status === undefined) res.status(200).json({status: false});
+    res.status(200).json({status: true});
+}));
+
+router.get(`/user/followers/:userId`, asyncHandler(async (req, res) => {
+    const followers = await followsService.getAllFollowersByUserId(req.params.userId);
+    res.status(200).json({follows: followers});
+}));
+
+router.get(`/user/following/:userId`, asyncHandler(async (req, res) => {
+    const following_users = await followsService.getAllFollowingUsersByUserId(req.params.userId);
+    res.status(200).json({follows: following_users});
+}));
+
 router.post('/', asyncHandler(async (req, res) => {
-    const { user_id_following, user_id_follower, status, followed_time } = req.body;
-    const newFollow = await followsService.createFollow(user_id_following, user_id_follower, status, followed_time);
+    const { user_id_following, user_id_follower, status } = req.body;
+    const newFollow = await followsService.createFollow(user_id_following, user_id_follower, status);
     res.status(201).json({ new_follow: newFollow });
 }));
 
@@ -36,6 +55,12 @@ router.put('/:follow_id', asyncHandler(async (req, res) => {
     );
 
     res.status(200).json({ updated_follow: updatedFollow });
+}));
+
+router.delete('/following/:followingUserId/follower/:followerUserId', asyncHandler(async (req, res) => {
+    const {followingUserId, followerUserId} = req.params;
+    await followsService.deleteFollowByUserId(followerUserId, followingUserId);
+    res.sendStatus(204);
 }));
 
 router.delete('/:follow_id', asyncHandler(async (req, res) => {

@@ -15,11 +15,18 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useProfile } from '../context/profile/ProfileContext';
+import Following from '../components/follower/Following';
+import Follower from '../components/follower/Follower';
+import FollowAction from '../components/follower/FollowAction';
 
 interface WishListType {
     game_img_url: string;
     game_id: string
 }
+
+const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+? `${import.meta.env.VITE_PROD_URL}`
+: `${import.meta.env.VITE_DEV_URL}`;
 
 function ProfilePage() {
     const { id } = useParams();
@@ -28,12 +35,35 @@ function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
-    const {profileImage, profileName, setProfileName} = useProfile();
-    const [pageProfileName, setPageProfileName] = useState(profileName);
-    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
+    const {setProfileName} = useProfile();
+    const [profileImage, setProfileImage] = useState('');
+    const [pageProfileName, setPageProfileName] = useState('');
+    const [pageProfileUserId, setPageProfileUserId] = useState('');
     
+    useEffect(() => {
+        setPageProfileUserId('');
+        const fetchProfileData = async () => {
+            try {
+                const res = await axios.get(
+                    `${baseUrl}/api/v1/profile/${id}`,
+                    {
+                        withCredentials: true,
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+                if (res.status !== 200) return;
+                setProfileImage(res.data.profile.profile_img);
+                setPageProfileName(res.data.profile.profile_name);
+                setPageProfileUserId(res.data.profile.user_id);
+            } catch (err) {
+                console.error('Error fetching wishlist:', err);    
+            }
+        };
+        fetchProfileData();
+    }, [id]);    
+
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
             setIsEditing(false);
@@ -68,12 +98,12 @@ function ProfilePage() {
         }
     };
 
-
     useEffect(() => {
+        if (!pageProfileUserId) return;
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${pageProfileUserId}`,
                     {
                         withCredentials: true,
                         headers: {
@@ -106,17 +136,25 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    }, []);
+    }, [pageProfileUserId, userId]);
 
     return (
-        <Container sx={{ py: 8 }}>
+        <Container sx={{
+            py: 8,
+            backgroundColor: "#0d0d0d",
+            border: "2px solid #9400FF",
+            borderRadius: "12px",
+            boxShadow: "0 0 20px #9400FF55",
+          }}>
             <Paper 
                 elevation={3}
                 sx={{ 
-                    bgcolor: 'background.paper',
-                    borderRadius: 4,
-                    p: 12,
-                    mb: 6,
+                    bgcolor: "#1a1a1a",
+                    borderRadius: "0 0 12px 12px",
+                    p: 6,
+                    mb: 4,
+                    border: "1px solid #9400FF",
+                    boxShadow: "0 0 15px #9400FF66",                
                     background: theme.palette.primary.main,
                 }}
             >
@@ -132,9 +170,12 @@ function ProfilePage() {
                         sx={{
                             width: 120,
                             height: 120,
-                            border: '4px solid white',
-                            boxShadow: 3,
-                            cursor: 'pointer'
+                            border: "3px solid #9400FF",
+                            boxShadow: "0 0 10px #9400FFaa",
+                            transition: "transform 0.3s ease-in-out",
+                            "&:hover": {
+                              transform: "scale(1.1)",
+                            },
                         }}
                     />
                     {(id === profileId) && isEditing ? (
@@ -159,10 +200,16 @@ function ProfilePage() {
                             color="white" 
                             fontWeight="bold"
                             sx={{
-                                ml: 60,
-                                textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-                                cursor: 'pointer'
-                            }}
+                                ml: 6,
+                                fontWeight: 700,
+                                color: "#FFFFFF",
+                                textShadow: "0 0 5px #9400FF",
+                                letterSpacing: 1.5,
+                                cursor: "pointer",
+                                "&:hover": {
+                                  color: "#9400FF",
+                                },
+                              }}                            
                             onClick={() => setIsEditing(true)}
                         >
                             {pageProfileName}
@@ -170,6 +217,14 @@ function ProfilePage() {
                     )}
                 </Box>
             </Paper>
+   
+            {pageProfileUserId && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Following key={pageProfileUserId} id={pageProfileUserId} />
+                    <Follower key={pageProfileUserId} id={pageProfileUserId} />
+                    <FollowAction key={pageProfileUserId} id={pageProfileUserId} />
+                </Box>
+            )}
     
             <Box sx={{ mt: 6 }}>
                 <Typography 
@@ -228,16 +283,19 @@ function ProfilePage() {
                             <Paper
                                 key={index}
                                 elevation={3}
-                                sx={{ 
+                                sx={{
                                     minWidth: 220,
                                     height: 280,
-                                    borderRadius: 2,
-                                    overflow: 'hidden',
-                                    transition: 'transform 0.2s',
-                                    '&:hover': {
-                                        transform: 'scale(1.05)',
-                                    }
-                                }}
+                                    border: "1px solid #9400FF",
+                                    borderRadius: "6px",
+                                    overflow: "hidden",
+                                    transition: "transform 0.3s ease-in-out, box-shadow 0.3s",
+                                    boxShadow: "0 0 6px #9400FF66",
+                                    "&:hover": {
+                                        transform: "scale(1.05)",
+                                        boxShadow: "0 0 12px #9400FF",
+                                    },
+                                }}                                
                                 onClick={() => {
                                     navigate(`/game/?id=${game.game_id}`)
                                 }}
@@ -254,6 +312,7 @@ function ProfilePage() {
                             </Paper>
                         ))}
                     </Box>
+                    
 
                     <IconButton 
                         sx={{ 

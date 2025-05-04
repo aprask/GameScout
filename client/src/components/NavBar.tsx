@@ -10,7 +10,6 @@ import {
   Box,
   ListItemButton,
   Avatar,
-  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -32,7 +31,6 @@ function NavBar() {
     setDrawerOpen(!drawerOpen);
   };
 
-  const theme = useTheme();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -43,16 +41,38 @@ function NavBar() {
         color="primary"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: theme.palette.primary.main,
+          backgroundColor: "#0d0d0d",
+          borderBottom: "1px solid #9400FF55",
+          boxShadow: "0 0 15px #9400FF88",
         }}
       >
         <Toolbar>
           {isAuthenticated && (
-            <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+            <IconButton 
+              edge="start" 
+              color="inherit" 
+              onClick={toggleDrawer}
+              sx={{
+                color: "#fff",
+                "&:hover": {
+                  color: "#9400FF",
+                  transform: "scale(1.1)",
+                },
+              }}
+              >
               <SportsEsportsIcon />
             </IconButton>
           )}
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
+          <Typography 
+              variant="h6" 
+              noWrap
+              sx={{
+                flexGrow: 1,
+                color: "#fff",
+                textShadow: "0 0 10px #9400FFaa",
+                fontWeight: "bold",
+              }}                      
+          >
             Gamescout
           </Typography>
           {isAuthenticated && (
@@ -64,7 +84,16 @@ function NavBar() {
                 <Avatar
                   alt="Profile Pic"
                   src={profileImage || undefined}
-                  sx={{ width: 40, height: 40 }}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    border: "2px solid #9400FF88",
+                    boxShadow: "0 0 10px #9400FF66",
+                    transition: "transform 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                  }}
                 />
               </NavLink>
             </Box>
@@ -74,60 +103,66 @@ function NavBar() {
 
       {isAuthenticated && (
         <Drawer
-          anchor="left"
-          open={drawerOpen}
-          sx={{
+        anchor="left"
+        open={drawerOpen}
+        sx={{
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#121212",
+            borderRight: "1px solid #9400FF33",
+            boxShadow: "0 0 15px #9400FF88",
             width: 250,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: 250,
-              boxSizing: "border-box",
-            },
-          }}
-        >
-          <Toolbar />
-          <Box sx={{ overflow: "auto" }}>
-            <List>
+          },
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ overflow: "auto" }}>
+          <List>
+            {[
+              { to: "/", label: "Dashboard" },
+              { to: "/community", label: "Community" },
+              { to: "/search", label: "Games" },
+              ...(isAdmin ? [{ to: "/admin", label: "Admin" }] : []),
+            ].map((item) => (
               <NavLink
-                to="/"
+                key={item.to}
+                to={item.to}
                 style={{ textDecoration: "none", color: "inherit" }}
                 onClick={toggleDrawer}
               >
-                <ListItemButton>Dashboard</ListItemButton>
-              </NavLink>
-              <NavLink
-                to="/community"
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={toggleDrawer}
-              >
-                <ListItemButton>Community</ListItemButton>
-              </NavLink>
-              <NavLink
-                to="/search"
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={toggleDrawer}
-              >
-                <ListItemButton>Games</ListItemButton>
-              </NavLink>
-              {isAdmin && (
-                <NavLink
-                  to="/admin"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                  onClick={toggleDrawer}
+                <ListItemButton
+                  sx={{
+                    color: "#fff",
+                    borderBottom: "1px solid #9400FF22",
+                    "&:hover": {
+                      backgroundColor: "#1a1a1a",
+                      boxShadow: "inset 0 0 10px #9400FF44",
+                    },
+                  }}
                 >
-                  <ListItemButton>Admin</ListItemButton>
-                </NavLink>
-              )}
-              <NavLink
-                to="/login"
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={handleLogout}
-              >
-                <ListItemButton>Logout</ListItemButton>
+                  {item.label}
+                </ListItemButton>
               </NavLink>
-            </List>
-          </Box>
-        </Drawer>
+            ))}
+            <NavLink
+              to="/login"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={handleLogout}
+            >
+              <ListItemButton
+                sx={{
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#1a1a1a",
+                    boxShadow: "inset 0 0 10px #9400FF44",
+                  },
+                }}
+              >
+                Logout
+              </ListItemButton>
+            </NavLink>
+          </List>
+        </Box>
+      </Drawer>
       )}
 
       <Box

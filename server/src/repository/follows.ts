@@ -11,6 +11,42 @@ export async function getAllFollows(): Promise<FollowsTable[]> {
     return follows;
 }
 
+export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<FollowsTable | undefined> {
+    const follow = await db
+        .selectFrom('follows')
+        .selectAll()
+        .where('follows.user_id_following', '=', following_id)
+        .where('follows.user_id_follower', '=', follower_id)
+        .executeTakeFirst();
+    return follow;
+}
+
+export async function getFollowersByUserId(user_id: string): Promise<FollowsTable[]> {
+    const followers = await db
+        .selectFrom('follows')
+        .selectAll()
+        .where('follows.user_id_following', '=', user_id)
+        .execute();
+    return followers;
+}
+
+export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {
+    await db
+        .deleteFrom('follows')
+        .where('follows.user_id_follower', '=', user_id)
+        .where('follows.user_id_following', '=', following_user_id)
+        .executeTakeFirstOrThrow();
+}
+
+export async function getAllFollowingUsersByUserId(user_id: string): Promise<FollowsTable[]> {
+    const following_users = await db
+        .selectFrom('follows')
+        .selectAll()
+        .where('follows.user_id_follower', '=', user_id)
+        .execute();
+    return following_users;
+}
+
 export async function getFollowById(follow_id: string): Promise<FollowsTable> {
     const follow = await db
         .selectFrom("follows")

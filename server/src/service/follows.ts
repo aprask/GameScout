@@ -1,7 +1,8 @@
-import { FollowsTable } from "../data/models/models.js";
+import { FollowsTable, ProfileTable } from "../data/models/models.js";
 import * as followsRepo from "../repository/follows.js";
 import { throwErrorException } from "../util/error.js";
 import * as adminRepo from '../repository/admin.js';
+import * as profileRepo from '../repository/profile.js';
 import { v4 as uuidv4, validate } from "uuid";
 
 export function getAllFollows(): Promise<FollowsTable[]> {
@@ -13,11 +14,44 @@ export async function getFollowById(follow_id: string): Promise<FollowsTable> {
     return followsRepo.getFollowById(follow_id);
 }
 
+export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<FollowsTable | undefined> {
+    if (!validate(following_id) || !validate(follower_id)) throwErrorException(`[service.follows.verifyFollowStatus] Invalid UUID`, 'Invalid following/follower ID', 400);
+    return followsRepo.verifyFollowStatus(following_id, follower_id);
+}
+
+export async function getAllFollowersByUserId(user_id: string): Promise<ProfileTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    const followers = await followsRepo.getFollowersByUserId(user_id);
+    const followerProfiles: ProfileTable[] = [];
+    for (let i = 0; i < followers.length; i++) {
+        followerProfiles.push(await profileRepo.getProfileByUserId(followers[i].user_id_follower));
+        console.log(`Added User to follower Profile List: ${followerProfiles[i]}`);
+    }
+    return followerProfiles;
+}
+
+export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
+    if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowingUsersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    const followingUsers = await followsRepo.getAllFollowingUsersByUserId(user_id);
+    const followingUserProfiles: ProfileTable[] = [];
+    for (let i = 0; i < followingUsers.length; i++) {
+        followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_following));
+        console.log(`Added User to following Profile List: ${followingUsers[i]}`);
+    }
+    return followingUserProfiles;
+}
+
+export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {
+    if (!validate(user_id) || !validate(following_user_id)) throwErrorException(`[service.follows.deleteFollowByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
+    const status = await followsRepo.verifyFollowStatus(following_user_id, user_id);
+    if (!status) throwErrorException(`[service.follows.deleteFollowByUserId] Non-existing relationship`, 'Following relationship does not exist', 404);
+    return followsRepo.deleteFollowByUserId(user_id, following_user_id);
+}
+
 export async function createFollow(
     user_id_following: string,
     user_id_follower: string,
     status: string,
-    followed_time: Date
 ): Promise<FollowsTable> {
     let errorMessage = '';
     if (!user_id_following) errorMessage += "Following user ID not given";
@@ -25,7 +59,6 @@ export async function createFollow(
     if (!validate(user_id_following)) errorMessage += "Following user ID is invalid";
     if (!validate(user_id_follower)) errorMessage += "Follower user ID is invalid";
     if (!status) errorMessage += "Follow status not given";
-    if (!followed_time) errorMessage += "Followed time not given";
     if (errorMessage) {
         errorMessage.trim();
         throwErrorException(`[service.follows.createFollow] ${errorMessage}`, 'Cannot create follow', 400);
@@ -34,10 +67,10 @@ export async function createFollow(
     const currentDate = new Date();
     const newFollow: FollowsTable = {
         follow_id: uuidv4(),
-        user_id_following,
-        user_id_follower,
-        status,
-        followed_time,
+        user_id_following: user_id_following,
+        user_id_follower: user_id_follower,
+        status: status,
+        followed_time: currentDate,
         created_at: currentDate,
         updated_at: currentDate
     };

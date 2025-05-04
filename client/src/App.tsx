@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GameReviews from "./components/GameReviews/GameReviews";
 import { ProtectedRoute } from "./components/auth/ProtectedRouter";
+import { UnprotectedRoute } from "./components/auth/UnprotectedRoute";
 import { AuthProvider } from "./context/auth/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
@@ -44,7 +45,11 @@ function App() {
               <NavBar />
               <main>
                 <Routes>
-                  <Route path="/login" element={<GoogleAuth />} />
+                  <Route path="/login" element={
+                    <UnprotectedRoute>
+                      <GoogleAuth />
+                    </UnprotectedRoute>
+                  } />
                   <Route
                     path="/"
                     element={
