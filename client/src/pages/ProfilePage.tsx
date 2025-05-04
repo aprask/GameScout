@@ -137,7 +137,7 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    }, [baseUrl, id, profileId, userId]);
+    });
 
     return (
         <Container sx={{ py: 8 }}>
