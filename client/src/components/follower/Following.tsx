@@ -43,16 +43,16 @@ export default function Following({id}: {id: string}) {
                         },
                     }
                 );
-                if (res.status === 200 && res.data.followers) {
+                if (res.status === 200 && res.data.follows) {
                     const followingUsers: FollowingUser[] = [];
-                    console.log(`${res.data.followers} length`);
-                    console.log(`Following: ${res.data.followers}`);
-                    for (let i = 0; i < res.data.followers.length; i++) {
-                        console.log(`Profile ID of Following: ${res.data.followers[i].profile_id}`);
+                    console.log("Fetched follows array:", res.data.follows);
+                    console.log("Count:", res.data.follows.length);
+                    for (let i = 0; i < res.data.follows.length; i++) {
+                        console.log(`Profile ID of Following: ${res.data.follows[i].profile_id}`);
                         followingUsers.push({
-                            id: res.data.followers[i].profile_id,
-                            picture: res.data.followers[i].profile_img,
-                            name: res.data.followers[i].profile_name
+                            id: res.data.follows[i].profile_id,
+                            picture: res.data.follows[i].profile_img,
+                            name: res.data.follows[i].profile_name
                         })
                     }
                     setFollowers(followingUsers);
