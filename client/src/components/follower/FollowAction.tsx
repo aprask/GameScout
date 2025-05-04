@@ -9,7 +9,6 @@ import.meta.env.VITE_APP_ENV === "production"
     ? import.meta.env.VITE_PROD_URL
     : import.meta.env.VITE_DEV_URL;
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const FollowAction = ({ id }: {id: string}) => {
     const { userId } = useAuth();
@@ -62,7 +61,6 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                await delay(1000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
@@ -86,7 +84,6 @@ const FollowAction = ({ id }: {id: string}) => {
                         headers: { "Content-Type": "application/json" },
                     }
                 );
-                await delay(1000);
                 res = await axios.get(
                     `${baseUrl}/api/v1/follow/verify/${id}/${userId}`,
                     {
