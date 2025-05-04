@@ -35,7 +35,7 @@ export default function Following({id}: {id: string}) {
             setLoading(true);
             try {
                 const res = await axios.get(
-                    `${baseUrl}/api/v1/follow/user/following/${id}`,
+                    `${baseUrl}/api/v1/follow/user/followers/${id}`,
                     {
                         withCredentials: true,
                         headers: {
@@ -43,14 +43,16 @@ export default function Following({id}: {id: string}) {
                         },
                     }
                 );
-                if (res.status === 200 && res.data.following_users) {
+                if (res.status === 200 && res.data.followers) {
                     const followingUsers: FollowingUser[] = [];
-                    for (let i = 0; i < res.data.following_users.length; i++) {
-                        console.log(`Profile ID of Following: ${res.data.following_users[i].profile_id}`);
+                    console.log(`${res.data.followers} length`);
+                    console.log(`Following: ${res.data.followers}`);
+                    for (let i = 0; i < res.data.followers.length; i++) {
+                        console.log(`Profile ID of Following: ${res.data.followers[i].profile_id}`);
                         followingUsers.push({
-                            id: res.data.following_users[i].profile_id,
-                            picture: res.data.following_users[i].profile_img,
-                            name: res.data.following_users[i].profile_name
+                            id: res.data.followers[i].profile_id,
+                            picture: res.data.followers[i].profile_img,
+                            name: res.data.followers[i].profile_name
                         })
                     }
                     setFollowers(followingUsers);
