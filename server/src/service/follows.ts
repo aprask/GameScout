@@ -18,9 +18,9 @@ export async function getAllFollowersByUserId(user_id: string): Promise<ProfileT
     return followsRepo.getFollowersByUserId(user_id);
 }
 
-export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<boolean> {
+export async function verifyFollowStatus(following_id: string, follower_id: string): Promise<FollowsTable | undefined> {
     if (!validate(following_id) || !validate(follower_id)) throwErrorException(`[service.follows.verifyFollowStatus] Invalid UUID`, 'Invalid following/follower ID', 400);
-    return followsRepo.confirmFollowingStatus(following_id, follower_id);
+    return followsRepo.verifyFollowStatus(following_id, follower_id);
 }
 
 export async function getAllFollowingUsersByUserId(user_id: string): Promise<ProfileTable[]> {
@@ -30,7 +30,7 @@ export async function getAllFollowingUsersByUserId(user_id: string): Promise<Pro
 
 export async function deleteFollowByUserId(user_id: string, following_user_id: string): Promise<void> {
     if (!validate(user_id) || !validate(following_user_id)) throwErrorException(`[service.follows.deleteFollowByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
-    const status = await followsRepo.confirmFollowingStatus(user_id, following_user_id);
+    const status = await followsRepo.verifyFollowStatus(following_user_id, user_id);
     if (!status) throwErrorException(`[service.follows.deleteFollowByUserId] Non-existing relationship`, 'Following relationship does not exist', 404);
     return followsRepo.deleteFollowByUserId(user_id, following_user_id);
 }
