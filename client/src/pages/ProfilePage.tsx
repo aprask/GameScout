@@ -98,13 +98,10 @@ function ProfilePage() {
     };
 
     useEffect(() => {
-        if (profileId !== id) {
-            return;
-        }
         const fetchWishlistData = async() => {
             try {
                 let res = await axios.get(
-                    `${baseUrl}/api/v1/wishlist/userList/${userId}`,
+                    `${baseUrl}/api/v1/wishlist/userList/${pageProfileUserId}`,
                     {
                         withCredentials: true,
                         headers: {
