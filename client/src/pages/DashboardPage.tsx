@@ -39,9 +39,16 @@ interface ArticleData {
   updated_at: Date;
 }
 
+interface ProfileData {
+  profileName: string | null;
+  profileImage: string | null;
+  profileId: string | null;
+}
+
 function DashboardPage(): JSX.Element {
   const [newGames, setNewGames] = useState<GameData[] | null>();
   const [newArticles, setNewArticles] = useState<ArticleData[] | null>();
+  const [featuredCreator, setFeaturedCreator] = useState<ProfileData | null>();
   const navigate = useNavigate();
 
   const baseUrl =
@@ -73,6 +80,22 @@ function DashboardPage(): JSX.Element {
         if (articleResponse.status === 200) {
           setNewArticles(articleResponse.data.articles);
         }
+        const featuredCreator = await axios.get(
+          `${baseUrl}/api/v1/user/featured`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (featuredCreator.status === 200) {
+          setFeaturedCreator({
+            profileName: featuredCreator.data.user.profile_name,
+            profileImage: featuredCreator.data.user.profile_img,
+            profileId: featuredCreator.data.user.profile_id
+          });
+        }
       } catch (error) {
         console.error("Error fetching details:", error);
       }
@@ -101,7 +124,12 @@ function DashboardPage(): JSX.Element {
         >
           Welcome to Gamescout
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" gutterBottom
+          sx={{
+            color: "#FFFFFF",
+            textShadow: "0 0 10px #9400FFaa",
+          }}
+        >
           Discover and track your favorite games with ease.
         </Typography>
         <Box>
@@ -115,7 +143,14 @@ function DashboardPage(): JSX.Element {
               color: "#f0f0f0",
             }}>
               <CardContent sx={{ textAlign: "left" }}>
-                <Typography sx={{ ml: 3, mt: 1 }} variant="h5">
+                <Typography variant="h5"
+                sx={{
+                  color: "#FFFFFF",
+                  textShadow: "0 0 10px #9400FFaa",
+                  ml: 3, 
+                  mt: 1
+                }}
+                >
                   New Games
                 </Typography>
                 {newGames && (
@@ -147,30 +182,93 @@ function DashboardPage(): JSX.Element {
                 {!newGames && <Typography>Error Fethcing Games</Typography>}
               </CardContent>
             </Card>
-            <Card sx={{
+            <Card
+              sx={{
+                m: 5,
+                background: "linear-gradient(145deg, #1a1a1a, #121212)",
+                border: "1px solid #9400FF66",
+                borderRadius: "8px",
+                boxShadow: "0 0 12px #9400FF44",
+                color: "#f0f0f0",
+              }}
+            >
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  sx={{
+                    color: "#FFFFFF",
+                    textShadow: "0 0 10px #9400FFaa",
+                    mb: 2,
+                  }}
+                  variant="h5"
+                >
+                  Featured Creator
+                </Typography>
+
+                {featuredCreator ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={featuredCreator.profileImage || undefined}
+                      alt={featuredCreator.profileName || "Creator"}
+                      onClick={() => navigate(`/profile/${featuredCreator.profileId}`)}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        borderRadius: "50%",
+                        border: "2px solid #9400FF",
+                        boxShadow: "0 0 12px #9400FF88",
+                        cursor: "pointer",
+                        mb: 2,
+                        "&:hover": {
+                          transform: "scale(1.05)",
+                          boxShadow: "0 0 16px #9400FFcc",
+                        },
+                        transition: "0.3s ease",
+                      }}
+                    />
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "#ffffff",
+                        textShadow: "0 0 6px #9400FFaa",
+                      }}
+                    >
+                      {featuredCreator.profileName}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No featured creator at the moment.
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Box>
+          <Card 
+            sx={{
               m: 5,
               background: "linear-gradient(145deg, #1a1a1a, #121212)",
               border: "1px solid #9400FF66",
               borderRadius: "8px",
               boxShadow: "0 0 12px #9400FF44",
               color: "#f0f0f0",
-            }}>
-              <CardContent>
-                <Typography>Friends Activity</Typography>
-              </CardContent>
-            </Card>
-          </Box>
-
-          <Card sx={{
-            m: 5,
-            background: "linear-gradient(145deg, #1a1a1a, #121212)",
-            border: "1px solid #9400FF66",
-            borderRadius: "8px",
-            boxShadow: "0 0 12px #9400FF44",
-            color: "#f0f0f0",
-          }}>
+            }}
+          >
             <CardContent>
-              <Typography variant="h5">Newest Articles</Typography>
+              <Typography variant="h5"
+                sx={{
+                  color: "#FFFFFF",
+                  textShadow: "0 0 10px #9400FFaa",
+                  ml: 3, 
+                  mt: 1
+                }}
+              >Latest Articles</Typography>
 
               {newArticles && (
                 <Box>
@@ -195,7 +293,14 @@ function DashboardPage(): JSX.Element {
                         navigate(`/community/article?id=${article.article_id}`)
                       }
                     >
-                      <Typography>{article.article_title}</Typography>
+                      <Typography
+                        sx={{
+                          color: "#FFFFFF",
+                          textShadow: "0 0 10px #9400FFaa",
+                          ml: 3, 
+                          mt: 1
+                        }}
+                      >{article.article_title}</Typography>
                     </Paper>
                   ))}
                 </Box>
@@ -213,7 +318,14 @@ function DashboardPage(): JSX.Element {
             color: "#f0f0f0",
           }}>
             <CardContent>
-              <Typography variant="h5">About Us</Typography>
+              <Typography variant="h5"
+                sx={{
+                  color: "#FFFFFF",
+                  textShadow: "0 0 10px #9400FFaa",
+                  ml: 3, 
+                  mt: 1
+                }}
+              >About Us</Typography>
               <Box
                 sx={{
                   display: "flex",
@@ -251,8 +363,22 @@ function DashboardPage(): JSX.Element {
                     }}
                   />
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
-                    <Typography variant="h5">Andrew Praskala</Typography>
-                    <Typography variant="body1">
+                    <Typography variant="h5"
+                      sx={{
+                        color: "#FFFFFF",
+                        textShadow: "0 0 10px #9400FFaa",
+                        ml: 3, 
+                        mt: 1
+                      }}
+                    >Andrew Praskala</Typography>
+                    <Typography variant="body1"
+                      sx={{
+                        color: "#FFFFFF",
+                        textShadow: "0 0 10px #9400FFaa",
+                        ml: 3, 
+                        mt: 1
+                      }}
+                    >
                       Andrew Praskala, a senior undergraduate computer science
                       student at UNC Charlotte. Andrew’s prior experience
                       included internships with Astro AI Trading and Wells
@@ -305,8 +431,22 @@ function DashboardPage(): JSX.Element {
                     }}
                   />
                   <Paper elevation={3} sx={{ m: 2, p: 2 }}>
-                    <Typography variant="h5">Caleb Filip</Typography>
-                    <Typography variant="body1">
+                    <Typography variant="h5"
+                      sx={{
+                        color: "#FFFFFF",
+                        textShadow: "0 0 10px #9400FFaa",
+                        ml: 3, 
+                        mt: 1
+                      }}
+                    >Caleb Filip</Typography>
+                  <Typography variant="body1"
+                      sx={{
+                        color: "#FFFFFF",
+                        textShadow: "0 0 10px #9400FFaa",
+                        ml: 3, 
+                        mt: 1
+                      }}
+                    >
                       An undergraduate computer science student at UNC
                       Charlotte. Caleb has experience with data mining &
                       visualization, machine learning, and web development. His
