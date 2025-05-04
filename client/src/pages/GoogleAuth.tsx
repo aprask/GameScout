@@ -70,7 +70,7 @@ function GoogleAuth() {
             p: 2,
           }}
         >
-          <Container maxWidth="xs">
+          <Container maxWidth="md">
             <FormContainer
               header={<FormTitleHeader />}
               onSubmit={(e) => e.preventDefault()}
