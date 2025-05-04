@@ -61,7 +61,7 @@ function ProfilePage() {
             }
         };
         fetchProfileData();
-    }, [id]);    
+    }, [baseUrl, id]);    
 
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
@@ -137,7 +137,7 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    }, [id, profileId]);
+    }, [baseUrl, id, profileId, userId]);
 
     return (
         <Container sx={{ py: 8 }}>

@@ -45,7 +45,7 @@ const FollowAction = ({ id, onToggle }: FollowButtonProps) => {
             }
         };
         checkFollowing();
-    }, [userId, id]);
+    }, [userId, id, baseUrl, profileId]);
 
     const handleToggleFollow = async () => {
         if (!userId || userId === id) {

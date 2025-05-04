@@ -65,7 +65,7 @@ export default function Following({id, followChanged}: {id: string; followChange
             }
         };
         fetchFollowingUsers();
-    }, [id, followChanged]);
+    }, [id, followChanged, baseUrl]);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
