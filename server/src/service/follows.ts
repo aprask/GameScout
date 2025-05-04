@@ -23,7 +23,10 @@ export async function getAllFollowersByUserId(user_id: string): Promise<ProfileT
     if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
     const followers = await followsRepo.getFollowersByUserId(user_id);
     const followerProfiles: ProfileTable[] = [];
-    for (let i = 0; i < followers.length; i++) followerProfiles.push(await profileRepo.getProfileByUserId(followers[i].user_id_follower));
+    for (let i = 0; i < followers.length; i++) {
+        followerProfiles.push(await profileRepo.getProfileByUserId(followers[i].user_id_follower));
+        console.log(`Added User to follower Profile List: ${followerProfiles[i]}`);
+    }
     return followerProfiles;
 }
 
@@ -31,7 +34,10 @@ export async function getAllFollowingUsersByUserId(user_id: string): Promise<Pro
     if (!validate(user_id)) throwErrorException(`[service.follows.getAllFollowingUsersByUserId] Invalid UUID: ${user_id}`, 'Invalid user ID', 400);
     const followingUsers = await followsRepo.getAllFollowingUsersByUserId(user_id);
     const followingUserProfiles: ProfileTable[] = [];
-    for (let i = 0; i < followingUsers.length; i++) followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_follower));
+    for (let i = 0; i < followingUsers.length; i++) {
+        followingUserProfiles.push(await profileRepo.getProfileByUserId(followingUsers[i].user_id_follower));
+        console.log(`Added User to following Profile List: ${followingUsers[i]}`);
+    }
     return followingUserProfiles;
 }
 

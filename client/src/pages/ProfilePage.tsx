@@ -24,6 +24,10 @@ interface WishListType {
     game_id: string
 }
 
+const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
+? `${import.meta.env.VITE_PROD_URL}`
+: `${import.meta.env.VITE_DEV_URL}`;
+
 function ProfilePage() {
     const { id } = useParams();
     const { userId, profileId } = useAuth(); 
@@ -35,9 +39,6 @@ function ProfilePage() {
     const [profileImage, setProfileImage] = useState('');
     const [pageProfileName, setPageProfileName] = useState('');
     const [pageProfileUserId, setPageProfileUserId] = useState('');
-    const baseUrl = `${import.meta.env.VITE_APP_ENV}` === "production" 
-        ? `${import.meta.env.VITE_PROD_URL}`
-        : `${import.meta.env.VITE_DEV_URL}`;
     
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -60,7 +61,7 @@ function ProfilePage() {
             }
         };
         fetchProfileData();
-    }, [baseUrl, id]);    
+    }, [id]);    
 
     async function updateProfileName(newName: string) {
         if (profileId !== id) {
@@ -134,7 +135,7 @@ function ProfilePage() {
             }
         };
         if (userId) fetchWishlistData();
-    }, [baseUrl, pageProfileUserId, userId]);
+    }, [pageProfileUserId, userId]);
 
     return (
         <Container sx={{ py: 8 }}>
