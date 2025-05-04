@@ -215,19 +215,19 @@ function DashboardPage(): JSX.Element {
             <CardContent>
               <Typography variant="h5">About Us</Typography>
               <Box
-                  sx={{
-                    m: 1,
-                    p: 2,
-                    background: "#1a1a1a",
-                    border: "1px solid #9400FF55",
-                    boxShadow: "0 0 10px #9400FF33",
-                    color: "#f0f0f0",
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "#2a2a2a",
-                      boxShadow: "0 0 15px #9400FF88",
-                    },
-                  }}                
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  gap: 4,
+                  flexWrap: "wrap",
+                  p: 2,
+                  background: "#1a1a1a",
+                  border: "1px solid #9400FF55",
+                  boxShadow: "0 0 10px #9400FF33",
+                  borderRadius: 2,
+                }}              
               >
                 <Box
                   sx={{

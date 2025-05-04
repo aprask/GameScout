@@ -16,9 +16,9 @@ function GoogleAuth() {
     useEffect(() => {
         const fetchCoverIds = async () => {
             const res = await axios.get(`${baseUrl}/api/v1/game`, {
-                withCredentials: true,
                 headers: {
                   "Content-Type": "application/json",
+                  "Authorization": `${import.meta.env.VITE_API_MANAGEMENT_KEY}`
                 },
             });
             if (res.status !== 200) return;
@@ -75,22 +75,27 @@ function GoogleAuth() {
                 </Typography>
               )}
               <Button
-                fullWidth
                 onClick={handleGoogleLogin}
                 sx={{
-                  mt: 2,
-                  backgroundColor: "#9400FF",
-                  color: "#fff",
-                  boxShadow: "0 0 10px #9400FF99",
-                  "&:hover": {
-                    backgroundColor: "#7a00cc",
-                    boxShadow: "0 0 15px #9400FFcc",
-                  },
-                  "&:active": {
-                    transform: "scale(0.98)",
-                    boxShadow: "0 0 5px #9400FF",
-                  },
-                }}
+                    mt: 2,
+                    py: 1.5,
+                    fontSize: "1.1rem",
+                    width: "100%",
+                    fontWeight: 600,
+                    backgroundColor: "#9400FF",
+                    color: "#fff",
+                    boxShadow: "0 0 12px #9400FF88",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "#7a00cc",
+                      boxShadow: "0 0 18px #9400FFcc",
+                    },
+                    "&:active": {
+                      transform: "scale(0.98)",
+                      boxShadow: "0 0 5px #9400FF",
+                    },
+                  }}                
               >
                 Continue with Google
               </Button>
