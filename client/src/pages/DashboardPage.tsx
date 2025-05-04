@@ -81,7 +81,7 @@ function DashboardPage(): JSX.Element {
           setNewArticles(articleResponse.data.articles);
         }
         const featuredCreator = await axios.get(
-          `${baseUrl}/api/v1/user/featured`,
+          `${baseUrl}/api/v1/users/featured`,
           {
             withCredentials: true,
             headers: {
@@ -323,7 +323,8 @@ function DashboardPage(): JSX.Element {
                   color: "#FFFFFF",
                   textShadow: "0 0 10px #9400FFaa",
                   ml: 3, 
-                  mt: 1
+                  mt: 1,
+                  mb: 2
                 }}
               >About Us</Typography>
               <Box
