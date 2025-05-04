@@ -23,7 +23,9 @@ router.get('/verify/:following_id/:follower_id', asyncHandler(async (req, res) =
     console.log(`Target User = ${req.params.following_id}`);
     console.log(`Follower = ${req.params.follower_id}`);
     console.log(`Status: ${status}`);
-    res.status(200).json({status: status});
+    if (status === undefined) res.status(200).json({status: false});
+    res.status(200).json({status: true});
+    
 }));
 
 router.get(`/user/followers/:userId`, asyncHandler(async (req, res) => {
