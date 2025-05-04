@@ -24,7 +24,9 @@ function GoogleAuth() {
                 },
             });
             if (res.status !== 200) return;
+            console.log(`Status: ${res.status}`);
             for (let i = 0; i < res.data.games.length; i++) gameCovers.push(res.data.games[i].cover_id);
+            console.log(`Game Covers: ${gameCovers}`);
         }
         fetchCoverIds();
         const randomCover = gameCovers[Math.floor(Math.random() * gameCovers.length)];
