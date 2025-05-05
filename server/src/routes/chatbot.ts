@@ -45,4 +45,20 @@ router.post('/', asyncHandler(async (req, res) => {
     res.status(200).json({response: chatbotReply});
 }));
 
+router.post('/rebuild/database', asyncHandler(async (req, res) => {
+    const chatbotDbRebuild = await axios.post(
+        `http://chat:5000/rebuild`,
+        null,
+        {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `${API_MANAGEMENT_KEY}`
+            }
+        }
+    );
+    if (chatbotDbRebuild.data.status !== 'rebuilding db') res.sendStatus(500); 
+    else res.sendStatus(201);
+}));
+
 export default router;
