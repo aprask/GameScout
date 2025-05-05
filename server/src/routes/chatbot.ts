@@ -46,6 +46,7 @@ router.post('/', asyncHandler(async (req, res) => {
 }));
 
 router.post('/rebuild/database', asyncHandler(async (req, res) => {
+    console.log("Rebuilding DB in express endpoint");
     const chatbotDbRebuild = await axios.post(
         `http://chat:5000/rebuild`,
         {},

@@ -22,6 +22,7 @@ def read_root():
 
 @router.post("/rebuild")
 async def rebuild_index():
+    print("Rebuilding DB in fast api endpoint")
     try:
         db_thread = threading.Thread(target=make_db)
         db_thread.start()

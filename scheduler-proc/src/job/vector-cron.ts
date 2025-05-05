@@ -11,18 +11,20 @@ const API_MANAGEMENT_KEY = process.env.API_MANAGEMENT_KEY;
 export default async function vectorJob() {
 
   cron.schedule(
-    "0 8 15 * * 5",
+    "0 8 15 * * *",
     async () => {
-        await axios.post(
-            `${apiUrl}/chatbot/rebuild/database`,
-            {},
-            {
-                headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${API_MANAGEMENT_KEY}`
-                }
-            }
-        );
+      console.log("Starting job")
+      const res = await axios.post(
+          `${apiUrl}/chatbot/rebuild/database`,
+          {},
+          {
+              headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `${API_MANAGEMENT_KEY}`
+              }
+          }
+      );
+      console.log(`Status: ${res.status}`);
     },
     {
       scheduled: true,
