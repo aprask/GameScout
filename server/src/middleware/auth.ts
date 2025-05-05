@@ -9,7 +9,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         '/google-auth',
         '/oauth',
         '/login',
-        '/signup'
+        '/signup',
+        '/logout'
     ];
 
     if (publicPaths.includes(req.path)) {
