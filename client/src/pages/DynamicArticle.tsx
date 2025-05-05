@@ -1,6 +1,6 @@
-import { IconButton, Typography } from "@mui/material";
+import { Avatar, IconButton, Typography } from "@mui/material";
 import { JSX } from "react";
-import { useSearchParams } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, CircularProgress, Container } from "@mui/material";
@@ -18,10 +18,25 @@ interface Article {
   updated_at: Date;
 }
 
+interface User {
+  user_id: string;
+  email: string;
+  google_token: string;
+  created_at: Date;
+  updated_at: Date;
+  last_login: Date;
+  is_active: boolean;
+  is_banned: boolean;
+  profile_name?: string;
+  profile_img?: string;
+}
+
 function DynamicArticle(): JSX.Element {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [article, setArticle] = useState<Article | null>(null);
+  const [owner, setOwner] = useState<User | null>(null);
+  const [ownerProfID, setOwnerProfID] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
@@ -43,7 +58,39 @@ function DynamicArticle(): JSX.Element {
             },
           }
         );
-        if (response.status === 200) setArticle(response.data.article);
+        if (response.status === 200) {
+          setArticle(response.data.article);
+
+          const userResponse = await axios.get(
+            `${baseUrl}/api/v1/users/${response.data.article.article_owner}`,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (userResponse.status === 200) {
+            const profileResponse = await axios.get(
+              `${baseUrl}/api/v1/profile/user/${response.data.article.article_owner}`,
+              {
+                withCredentials: true,
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (profileResponse.status === 200) {
+              setOwnerProfID(profileResponse.data.profile.profile_id);
+
+              setOwner({
+                ...userResponse.data.user,
+                profile_name: profileResponse.data.profile.profile_name,
+                profile_img: profileResponse.data.profile.profile_img,
+              });
+            }
+          }
+        }
       } catch (err) {
         console.error("Error fetching article:", err);
         setError("Failed to fetch article.");
@@ -118,15 +165,21 @@ function DynamicArticle(): JSX.Element {
         color: "#fff",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Typography 
-          variant="h4" 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
           gutterBottom
           sx={{
             textShadow: "0 0 10px #9400FFaa",
             fontWeight: "bold",
           }}
-          >
+        >
           {article.article_title}
         </Typography>
         {article.article_owner === userId && (
@@ -151,12 +204,46 @@ function DynamicArticle(): JSX.Element {
           </IconButton>
         )}
       </Box>
-      <Typography variant="subtitle2" color="text.secondary" sx={{ color: "#ccc", mb: 2, textShadow: "0 0 6px #9400FF33" }}>
+      <Box sx={{ mb: 1 }}>
+        <NavLink
+          to={`/profile/${ownerProfID}`}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <Avatar
+            src={owner?.profile_img || undefined}
+            alt={owner?.profile_name || "Profile Picture"}
+            sx={{ width: 32, height: 32, border: "1px solid #9400FF" }}
+          />
+          <Typography
+            sx={{
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            {owner?.profile_name || "Unknown User"}
+          </Typography>
+        </NavLink>
+      </Box>
+      <Typography
+        variant="subtitle2"
+        color="text.secondary"
+        sx={{ color: "#ccc", mb: 2, textShadow: "0 0 6px #9400FF33" }}
+      >
         Posted on: {new Date(article.created_at).toLocaleDateString()}
       </Typography>
       <hr />
 
-      <Typography variant="body1" gutterBottom sx={{
+      <Typography
+        variant="body1"
+        gutterBottom
+        sx={{
           whiteSpace: "pre-wrap",
           backgroundColor: "#1a1a1a",
           p: 2,
@@ -169,7 +256,7 @@ function DynamicArticle(): JSX.Element {
             "&::-webkit-scrollbar": { display: "none" },
           },
         }}
-        >
+      >
         {article.article_content}
       </Typography>
 
