@@ -17,7 +17,6 @@ const FollowAction = ({ id }: {id: string}) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        console.log(`ID: ${id}`);
         if (!userId) return;
         const checkFollowing = async () => {
             if (userId === id) {
@@ -33,9 +32,7 @@ const FollowAction = ({ id }: {id: string}) => {
                     }
                 );
                 if (res.status !== 200) return;
-                console.log(`Status: ${res.data.status}`)
                 const isAFollower = res.data.status;
-                console.log(`Is following/a follower: ${isAFollower}`);
                 setIsFollowing(isAFollower);
             } catch (err) {
                 console.error(`Error checking follow status: ${err}`);
@@ -49,8 +46,6 @@ const FollowAction = ({ id }: {id: string}) => {
             setIsTarget(true);
             return;
         }
-        console.log(`Follower: ${userId}`);
-        console.log(`Target: ${id}`);
         setLoading(true);
         try {
             if (isFollowing) {
@@ -69,7 +64,6 @@ const FollowAction = ({ id }: {id: string}) => {
                     }
                 );
                 if (res.status !== 200) return;
-                console.log(`Status: ${res.data.status}`)
                 setIsFollowing(res.data.status);
             } else {
                 let res = await axios.post(
@@ -92,7 +86,6 @@ const FollowAction = ({ id }: {id: string}) => {
                     }
                 );
                 if (res.status !== 200) return;
-                console.log(`Status: ${res.data.status}`)
                 setIsFollowing(res.data.status);
             }
         } catch (err) {

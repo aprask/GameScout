@@ -34,7 +34,6 @@ function GoogleAuth() {
 
     async function handleGoogleLogin() {
         try {
-            console.log(`URL: ${baseUrl}`);
             const res = await axios.post(`${baseUrl}/api/v1/auth/google-auth`, 
                 {}, 
                 {
@@ -42,7 +41,6 @@ function GoogleAuth() {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(`Res Status: ${res}`);
             if (res.status === 200 && res.data.url) {
                 window.location.href = res.data.url;
             } else {
