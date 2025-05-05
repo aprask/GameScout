@@ -1,10 +1,11 @@
-import { Typography, Paper, IconButton } from "@mui/material";
+import { Typography, Paper, IconButton, Avatar } from "@mui/material";
 import { JSX } from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, CircularProgress } from "@mui/material";
 import { useAuth } from "../../context/auth/AuthContext";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { NavLink } from "react-router-dom";
 
 interface Comment {
   comment_id: string;
@@ -19,7 +20,12 @@ interface Comment {
 function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userEmails, setUserEmails] = useState<Record<string, string>>({});
+  const [userEmails, setUserEmails] = useState<
+    Record<
+      string,
+      { profile_name: string; profile_img: string; profile_id: string }
+    >
+  >({});
   const { userId } = useAuth();
 
   const baseUrl =
@@ -61,12 +67,15 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
 
         if (response.status === 200) {
           const comments = response.data.comments;
-          const emails: Record<string, string> = {};
+          const userProfiles: Record<
+            string,
+            { profile_name: string; profile_img: string; profile_id: string }
+          > = {};
 
           await Promise.all(
             comments.map(async (comment) => {
-              const userResponse = await axios.get(
-                `${baseUrl}/api/v1/users/${comment.comment_owner}`,
+              const profileResponse = await axios.get(
+                `${baseUrl}/api/v1/profile/user/${comment.comment_owner}`,
                 {
                   withCredentials: true,
                   headers: {
@@ -74,13 +83,17 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
                   },
                 }
               );
-              if (userResponse.status === 200) {
-                emails[comment.comment_owner] = userResponse.data.user.email;
+              if (profileResponse.status === 200) {
+                userProfiles[comment.comment_owner] = {
+                  profile_name: profileResponse.data.profile.profile_name,
+                  profile_img: profileResponse.data.profile.profile_img,
+                  profile_id: profileResponse.data.profile.profile_id,
+                };
               }
             })
           );
 
-          setUserEmails(emails);
+          setUserEmails(userProfiles);
           setComments(comments);
         }
       } catch (error) {
@@ -135,21 +148,61 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
             display: "flex",
             justifyContent: "space-between",
             color: "#fff",
-          }}        
+          }}
           elevation={6}
         >
           <Box>
-            <Typography variant="body2" sx={{ color: "#bbb" }}>
-              {userEmails[comment.comment_owner] || "Unknown User"}
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#bbb",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <NavLink
+                to={`/profile/${userEmails[comment.comment_owner]?.profile_id}`}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <Avatar
+                  src={
+                    userEmails[comment.comment_owner]?.profile_img || undefined
+                  }
+                  alt={
+                    userEmails[comment.comment_owner]?.profile_name ||
+                    "Profile Picture"
+                  }
+                  sx={{ width: 24, height: 24, border: "1px solid #9400FF" }}
+                />
+                <Typography
+                  sx={{
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  {userEmails[comment.comment_owner]?.profile_name ||
+                    "Unknown User"}
+                </Typography>
+              </NavLink>
             </Typography>
             <Typography variant="caption" sx={{ color: "#777" }}>
               Posted on: {new Date(comment.created_at).toLocaleDateString()}
             </Typography>
-            <Typography variant="body1" sx={{
-              mt: 1,
-              color: "#fff",
-              whiteSpace: "pre-wrap",
-            }}
+            <Typography
+              variant="body1"
+              sx={{
+                mt: 1,
+                color: "#fff",
+                whiteSpace: "pre-wrap",
+              }}
             >
               {comment.comment_content}
             </Typography>
@@ -172,7 +225,7 @@ function DisplayComments({ articleId }: { articleId: string }): JSX.Element {
                     transform: "scale(0.98)",
                     boxShadow: "0 0 5px #9400FF",
                   },
-                }}          
+                }}
               >
                 <DeleteOutlineIcon />
               </IconButton>

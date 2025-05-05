@@ -1,4 +1,4 @@
-import { Button, IconButton, Typography } from "@mui/material";
+import { Avatar, IconButton, Typography } from "@mui/material";
 import { JSX } from "react";
 import { NavLink, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -27,6 +27,8 @@ interface User {
   last_login: Date;
   is_active: boolean;
   is_banned: boolean;
+  profile_name?: string;
+  profile_img?: string;
 }
 
 function DynamicArticle(): JSX.Element {
@@ -69,8 +71,6 @@ function DynamicArticle(): JSX.Element {
             }
           );
           if (userResponse.status === 200) {
-            setOwner(userResponse.data.user);
-
             const profileResponse = await axios.get(
               `${baseUrl}/api/v1/profile/user/${response.data.article.article_owner}`,
               {
@@ -80,8 +80,15 @@ function DynamicArticle(): JSX.Element {
                 },
               }
             );
-            if (profileResponse.status === 200)
+            if (profileResponse.status === 200) {
               setOwnerProfID(profileResponse.data.profile.profile_id);
+
+              setOwner({
+                ...userResponse.data.user,
+                profile_name: profileResponse.data.profile.profile_name,
+                profile_img: profileResponse.data.profile.profile_img,
+              });
+            }
           }
         }
       } catch (err) {
@@ -197,23 +204,33 @@ function DynamicArticle(): JSX.Element {
           </IconButton>
         )}
       </Box>
-      <NavLink
-        to={`/profile/${ownerProfID}`}
-        style={{
-          textDecoration: "none",
-          color: "inherit",
-        }}
-      >
-        <Typography
-          sx={{
-            "&:hover": {
-              textDecoration: "underline",
-            },
+      <Box sx={{ mb: 1 }}>
+        <NavLink
+          to={`/profile/${ownerProfID}`}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
-          {owner?.email}
-        </Typography>
-      </NavLink>
+          <Avatar
+            src={owner?.profile_img || undefined}
+            alt={owner?.profile_name || "Profile Picture"}
+            sx={{ width: 32, height: 32, border: "1px solid #9400FF" }}
+          />
+          <Typography
+            sx={{
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            {owner?.profile_name || "Unknown User"}
+          </Typography>
+        </NavLink>
+      </Box>
       <Typography
         variant="subtitle2"
         color="text.secondary"
