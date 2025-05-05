@@ -185,7 +185,8 @@ function DynamicGame(): JSX.Element {
   }
 
   return (
-    <Container maxWidth="md"
+    <Container
+      maxWidth="md"
       sx={{
         mt: 4,
         backgroundColor: "#0d0d0d",
@@ -202,7 +203,7 @@ function DynamicGame(): JSX.Element {
           border: "1px solid #9400FF44",
           boxShadow: "0 0 12px #9400FF77",
           borderRadius: "10px",
-        }}      
+        }}
       >
         <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
           <CardMedia
@@ -213,12 +214,14 @@ function DynamicGame(): JSX.Element {
           />
           <CardContent sx={{ flex: 1, padding: 3, mt: 3 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="h4" gutterBottom
+              <Typography
+                variant="h4"
+                gutterBottom
                 sx={{
                   color: "#fff",
                   textShadow: "0 0 8px #9400FFaa",
                   fontWeight: "bold",
-                }}            
+                }}
               >
                 {game.game_name}
               </Typography>
@@ -237,7 +240,10 @@ function DynamicGame(): JSX.Element {
                         },
                       }}
                     >
-                      <StarIcon color="primary" sx={{ fontSize: 40, color: "#9400FF" }} />
+                      <StarIcon
+                        color="primary"
+                        sx={{ fontSize: 40, color: "#9400FF" }}
+                      />
                     </IconButton>
                   </>
                 ) : (
@@ -255,12 +261,6 @@ function DynamicGame(): JSX.Element {
             </Box>
 
             {rating && <Rating name="review-rating" value={+rating} readOnly />}
-
-            {game.release_date && (
-              <Typography variant="subtitle2" color="text.secondary">
-                Release Date: {new Date(game.release_date).toLocaleDateString()}
-              </Typography>
-            )}
 
             {game.summary && (
               <Typography variant="body1" sx={{ mt: 2 }}>
@@ -486,13 +486,16 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                         display: "none",
                       },
                     },
-                  }}                  
+                  }}
                 />
 
                 <Box
                   sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}
                 >
-                  <Button type="submit" variant="contained" color="primary"
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
                     sx={{
                       backgroundColor: "#9400FF",
                       color: "#fff",
@@ -505,7 +508,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                         transform: "scale(0.98)",
                         boxShadow: "0 0 5px #9400FF",
                       },
-                    }}                  
+                    }}
                   >
                     Update Review
                   </Button>
@@ -520,18 +523,21 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
         <>
           <Card sx={{ backgroundColor: "primary.main" }}>
             <CardContent>
-              <Paper elevation={6}   sx={{
-                mb: 2,
-                p: 2,
-                backgroundColor: "#1a1a1a",
-                border: "1px solid #9400FF33",
-                boxShadow: "0 0 8px #9400FF66",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                "&:hover": {
-                  transform: "scale(1.01)",
-                  boxShadow: "0 0 12px #9400FF99",
-                },
-              }}>
+              <Paper
+                elevation={6}
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  backgroundColor: "#1a1a1a",
+                  border: "1px solid #9400FF33",
+                  boxShadow: "0 0 8px #9400FF66",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.01)",
+                    boxShadow: "0 0 12px #9400FF99",
+                  },
+                }}
+              >
                 <Container>
                   <Typography variant="h6">
                     {submittedReview?.review_title}
@@ -557,20 +563,21 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     </Typography>
                   )}
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button onClick={() => setIsEditing(true)} 
-                    sx={{
-                      backgroundColor: "#9400FF",
-                      color: "#fff",
-                      boxShadow: "0 0 10px #9400FF88",
-                      "&:hover": {
-                        backgroundColor: "#7a00cc",
-                        boxShadow: "0 0 15px #9400FFcc",
-                      },
-                      "&:active": {
-                        transform: "scale(0.98)",
-                        boxShadow: "0 0 5px #9400FF",
-                      },
-                    }}                    
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      sx={{
+                        backgroundColor: "#9400FF",
+                        color: "#fff",
+                        boxShadow: "0 0 10px #9400FF88",
+                        "&:hover": {
+                          backgroundColor: "#7a00cc",
+                          boxShadow: "0 0 15px #9400FFcc",
+                        },
+                        "&:active": {
+                          transform: "scale(0.98)",
+                          boxShadow: "0 0 5px #9400FF",
+                        },
+                      }}
                     >
                       Edit Review
                     </Button>
@@ -655,11 +662,14 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     display: "none",
                   },
                 },
-              }}              
+              }}
             />
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mr: 4 }}>
-              <Button type="submit" variant="contained" color="primary"
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
                 sx={{
                   backgroundColor: "#9400FF",
                   color: "#fff",
@@ -672,7 +682,7 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
                     transform: "scale(0.98)",
                     boxShadow: "0 0 5px #9400FF",
                   },
-                }}              
+                }}
               >
                 Submit Review
               </Button>
@@ -744,7 +754,8 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
       <Typography variant="body2">Reviews</Typography>
 
       {reviews.map((review, index) => (
-        <Paper key={index}   
+        <Paper
+          key={index}
           sx={{
             mb: 2,
             p: 2,
@@ -757,7 +768,8 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
               boxShadow: "0 0 12px #9400FF99",
             },
           }}
-          elevation={6}>
+          elevation={6}
+        >
           <Typography variant="h6" fontWeight="bold">
             {review.review_title}
           </Typography>
