@@ -34,6 +34,11 @@ export async function deleteSession(userId: string): Promise<AuthTable> {
     return authRepo.invalidateSession(userId);
 }
 
+export async function deleteSessionBySessionId(sessionId: string): Promise<AuthTable> {
+    if (!sessionId) throwErrorException(`[service.auth.deleteSessionBySessionId] Session ID invalid`, 'No session ID', 400);
+    return authRepo.invalidateSessionBySessionId(sessionId);
+}
+
 export async function authenticateSession(sessionId: string): Promise<AuthTable | undefined> {
     if (!sessionId) throwErrorException(`[service.auth.authenticateSession] Session ID missing`, 'No session ID', 401);
     return authRepo.authenticateSession(sessionId);

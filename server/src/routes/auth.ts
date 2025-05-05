@@ -114,8 +114,26 @@ router.get('/oauth', asyncHandler(async (req, res) => {
 }));
 
 router.post('/logout', asyncHandler(async (req, res) => {
-    const { session_user_id } = req.body;
-    await authService.deleteSession(session_user_id);
+    const sessionId = req.cookies?.session_token;
+    const userId = req.body.session_user_id;
+
+    try {
+        if (userId) {
+            await authService.deleteSession(userId);
+        } else if (sessionId) {
+            await authService.deleteSessionBySessionId(sessionId);
+        }
+    } catch (err) {
+        console.warn(`Logout warning: failed to delete session, possibly already invalid: ${err}`);
+    }
+
+    res.clearCookie('session_token', {
+        httpOnly: true,
+        secure: process.env.APP_ENV === 'production',
+        sameSite: process.env.APP_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+    });
+
     res.sendStatus(204);
 }));
 
