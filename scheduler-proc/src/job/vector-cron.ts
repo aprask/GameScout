@@ -15,7 +15,7 @@ export default async function vectorJob() {
     async () => {
         await axios.post(
             `${apiUrl}/chatbot/rebuild/database`,
-            null,
+            {},
             {
                 headers: {
                 'Content-Type': 'application/json',

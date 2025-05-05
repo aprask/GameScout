@@ -48,7 +48,7 @@ router.post('/', asyncHandler(async (req, res) => {
 router.post('/rebuild/database', asyncHandler(async (req, res) => {
     const chatbotDbRebuild = await axios.post(
         `http://chat:5000/rebuild`,
-        null,
+        {},
         {
             withCredentials: true,
             headers: {
