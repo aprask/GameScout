@@ -114,7 +114,6 @@ function ProfilePage() {
                 if (res.status !== 200) return;
                 const gameIds: string[] = [];
                 for (let i = 0; i < res.data.wishlists.length; ++i) gameIds.push(res.data.wishlists[i].game_id);
-                console.log(gameIds);
                 const wishListData: WishListType[] = [];
                 for (let i = 0; i < gameIds.length; ++i) {
                     res = await axios.get(

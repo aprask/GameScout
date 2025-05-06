@@ -75,7 +75,6 @@ export default function OAuthCallbackPage() {
                 navigate('/login');
                 return;
             }
-            console.log(res.data);
             const loginData: loginResp = {
                 email: res.data.email,
                 user_id: res.data.user_id,

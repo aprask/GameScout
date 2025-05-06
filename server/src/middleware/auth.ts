@@ -9,7 +9,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         '/google-auth',
         '/oauth',
         '/login',
-        '/signup'
+        '/signup',
+        '/logout'
     ];
 
     if (publicPaths.includes(req.path)) {
@@ -30,7 +31,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     }
 
     const sessionCookie = req.cookies?.session_token;
-    console.log(`Cookie: ${sessionCookie}`);
 
     if (!sessionCookie) {
         return res.status(401).json({ error: 'Authentication required' });

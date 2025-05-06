@@ -54,3 +54,17 @@ export async function invalidateSession(user_id: string): Promise<AuthTable> {
     if (!session) throwErrorException(`[repository.auth.invalidateSession] unable to invalidate session`, 'Failed to invalidate session', 500);
     return session;
 }
+
+export async function invalidateSessionBySessionId(session_id: string): Promise<AuthTable> {
+    const session = await db
+        .updateTable('auth')
+        .set({
+            valid: false
+        })
+        .where('auth.session_id', '=', session_id)
+        .where('auth.valid', '=', true)
+        .returningAll()
+        .executeTakeFirst();
+    if (!session) throwErrorException(`[repository.auth.invalidateSessionBySessionId] unable to invalidate session`, 'Failed to invalidate session', 500);
+    return session;
+}

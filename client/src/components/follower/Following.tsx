@@ -45,10 +45,7 @@ export default function Following({id}: {id: string}) {
                 );
                 if (res.status === 200 && res.data.follows) {
                     const followingUsers: FollowingUser[] = [];
-                    console.log("Fetched follows array:", res.data.follows);
-                    console.log("Count:", res.data.follows.length);
                     for (let i = 0; i < res.data.follows.length; i++) {
-                        console.log(`Profile ID of Following: ${res.data.follows[i].profile_id}`);
                         followingUsers.push({
                             id: res.data.follows[i].profile_id,
                             picture: res.data.follows[i].profile_img,
