@@ -333,6 +333,15 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
     }
   }, []);
 
+  // Automatically populate the form with the review's current text when editing
+  useEffect(() => {
+    if (isEditing && submittedReview) {
+      setReviewTitle(submittedReview.review_title);
+      setRating(submittedReview.rating);
+      setReviewText(submittedReview.review);
+    }
+  }, [isEditing, submittedReview]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
