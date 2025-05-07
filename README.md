@@ -10,6 +10,7 @@ GameScout is a community-driven game tracking platform that connects gamers and 
 - **Wishlists**: Keep track of games you're interested in
 - **User Profiles**: Customize your profile and showcase your gaming preferences
 - **Real-time Updates**: Stay informed about the latest game releases and community activities
+- **AI Integration**: An AI integrated chatbot using Pinecone for vector persistence and the legacy gpt-3.5-turbo as the LLM.
 
 ## Tech Stack
 
@@ -23,53 +24,12 @@ GameScout is a community-driven game tracking platform that connects gamers and 
 - TypeScript
 - PostgreSQL database
 - IGDB API integration for game data
-- JWT for authentication
+- Google OAuth
+- FastAPI 
 
 ### Infrastructure
 - Cron jobs for automated game data updates
 - Message queue for handling game data processing
 - RESTful API architecture
 - Nginx for reverse proxy
-
-## Getting Started
-
-### Prerequisites
-- Node.js
-- PostgreSQL
-- IGDB API credentials
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone <repository-url>
-cd gamescout
-```
-
-2. Install dependencies
-```bash
-# Install server dependencies
-cd server
-npm install
-
-# Install client dependencies
-cd ../client
-npm install
-```
-
-3. Set up environment variables
-```bash
-# Create .env files in both server and client directories
-# Add necessary environment variables
-```
-
-4. Start the development servers
-```bash
-# Start server
-cd server
-npm run dev
-
-# Start client
-cd client
-npm run dev
-```
+- FastAPI service for chatbot
