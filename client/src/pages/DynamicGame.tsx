@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -13,6 +13,7 @@ import {
   Rating,
   Paper,
   IconButton,
+  Avatar,
 } from "@mui/material";
 import { useEffect } from "react";
 import axios from "axios";
@@ -331,6 +332,15 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
       console.log("Error: ", e);
     }
   }, []);
+
+  // Automatically populate the form with the review's current text when editing
+  useEffect(() => {
+    if (isEditing && submittedReview) {
+      setReviewTitle(submittedReview.review_title);
+      setRating(submittedReview.rating);
+      setReviewText(submittedReview.review);
+    }
+  }, [isEditing, submittedReview]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -696,6 +706,12 @@ function ReviewForm({ gameId }: { gameId: string }): JSX.Element {
 function GameReviews({ gameId }: { gameId: string }): JSX.Element {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userProfiles, setUserProfiles] = useState<
+    Record<
+      string,
+      { profile_name: string; profile_img: string; profile_id: string }
+    >
+  >({});
   const baseUrl =
     `${import.meta.env.VITE_APP_ENV}` === "production"
       ? `${import.meta.env.VITE_PROD_URL}`
@@ -714,7 +730,35 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
           }
         );
         if (response.status === 200) {
-          setReviews(response.data.reviews);
+          const reviews = response.data.reviews;
+          const userProfiles: Record<
+            string,
+            { profile_name: string; profile_img: string; profile_id: string }
+          > = {};
+
+          await Promise.all(
+            reviews.map(async (review) => {
+              const profileResponse = await axios.get(
+                `${baseUrl}/api/v1/profile/user/${review.user_id}`,
+                {
+                  withCredentials: true,
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              if (profileResponse.status === 200) {
+                userProfiles[review.user_id] = {
+                  profile_name: profileResponse.data.profile.profile_name,
+                  profile_img: profileResponse.data.profile.profile_img,
+                  profile_id: profileResponse.data.profile.profile_id,
+                };
+              }
+            })
+          );
+
+          setUserProfiles(userProfiles);
+          setReviews(reviews);
         }
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -773,6 +817,36 @@ function GameReviews({ gameId }: { gameId: string }): JSX.Element {
           <Typography variant="h6" fontWeight="bold">
             {review.review_title}
           </Typography>
+          <Box sx={{ mb: 1, mt: 1 }}>
+            <NavLink
+              to={`/profile/${userProfiles[review.user_id]?.profile_id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <Avatar
+                src={userProfiles[review.user_id]?.profile_img || undefined}
+                alt={
+                  userProfiles[review.user_id]?.profile_name ||
+                  "Profile Picture"
+                }
+                sx={{ width: 24, height: 24, border: "1px solid #9400FF" }}
+              />
+              <Typography
+                sx={{
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {userProfiles[review.user_id]?.profile_name || "Unknown User"}
+              </Typography>
+            </NavLink>
+          </Box>
           <Rating name="review-rating" value={+review.rating} readOnly />
           <Typography variant="subtitle2" color="text.secondary">
             Posted:
